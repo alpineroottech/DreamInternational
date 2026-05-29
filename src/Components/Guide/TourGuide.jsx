@@ -4,19 +4,18 @@ import { Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 import { Link } from "react-router-dom";
+import { useCollection, resolveAssetUrl } from "../../public-cms/hooks";
 
-const guides = [
-  { id: 1, name: "Jacob Jones", image: "team_1_1.jpg" },
-  { id: 2, name: "Jane Cooper", image: "team_1_2.jpg" },
-  { id: 3, name: "Guy Hawkins", image: "team_1_3.jpg" },
-  { id: 4, name: "Jenny Wilson", image: "team_1_4.jpg" },
-  { id: 5, name: "Jacob Jones", image: "team_1_1.jpg" },
-  { id: 6, name: "Jane Cooper", image: "team_1_2.jpg" },
-  { id: 7, name: "Guy Hawkins", image: "team_1_3.jpg" },
-  { id: 8, name: "Jenny Wilson", image: "team_1_4.jpg" },
+const FALLBACK = [
+  { id: 1, name: "Jacob Jones", photoUrl: "/assets/img/team/team_1_1.jpg", role: "Tourist Guide" },
+  { id: 2, name: "Jane Cooper", photoUrl: "/assets/img/team/team_1_2.jpg", role: "Tourist Guide" },
+  { id: 3, name: "Guy Hawkins", photoUrl: "/assets/img/team/team_1_3.jpg", role: "Tourist Guide" },
+  { id: 4, name: "Jenny Wilson", photoUrl: "/assets/img/team/team_1_4.jpg", role: "Tourist Guide" },
 ];
 
-function TourGuide() {
+function TourGuide({ data = {} }) {
+  const cms = useCollection("/public/team");
+  const guides = cms && cms.length ? cms : FALLBACK;
   const [swiperInstance, setSwiperInstance] = useState(null);
   const paginationRef = useRef(null);
 
@@ -35,8 +34,8 @@ function TourGuide() {
     >
       <div className="container z-index-common">
         <div className="title-area text-center">
-          <span className="sub-title">Meet with Guide</span>
-          <h2 className="sec-title">Tour Guide</h2>
+          <span className="sub-title">{data.subTitle || "Meet with Guide"}</span>
+          <h2 className="sec-title">{data.title || "Tour Guide"}</h2>
         </div>
         <div className="slider-area">
           <Swiper
@@ -55,30 +54,33 @@ function TourGuide() {
             className="th-slider teamSlider1 has-shadow"
             onSwiper={setSwiperInstance} // Save Swiper instance
           >
-            {guides.map((guide) => (
-              <SwiperSlide key={guide.id}>
-                <div className="th-team team-box">
-                  <div className="team-img">
-                    <img src={`/assets/img/team/${guide.image}`} alt={guide.name} />
-                  </div>
-                  <div className="team-content">
-                    <div className="media-body">
-                      <h3 className="box-title">
-                        <Link to="/tour-guide/1">{guide.name}</Link>
-                      </h3>
-                      <span className="team-desig">Tourist Guide</span>
-                      <div className="th-social">
-                        {["facebook", "twitter", "instagram", "linkedin"].map((platform) => (
-                          <Link key={platform} target="_blank" rel="noopener noreferrer" to={`https://${platform}.com/`}>
-                            <i className={`fab fa-${platform}`} />
-                          </Link>
-                        ))}
+            {guides.map((guide) => {
+              const socials = guide.socials || {};
+              return (
+                <SwiperSlide key={guide.id || guide.slug}>
+                  <div className="th-team team-box">
+                    <div className="team-img">
+                      <img src={resolveAssetUrl(guide.photoUrl) || "/assets/img/team/team_1_1.jpg"} alt={guide.name} />
+                    </div>
+                    <div className="team-content">
+                      <div className="media-body">
+                        <h3 className="box-title">
+                          <Link to={guide.slug ? `/tour-guide/${guide.slug}` : "/tour-guide/1"}>{guide.name}</Link>
+                        </h3>
+                        <span className="team-desig">{guide.role || "Tourist Guide"}</span>
+                        <div className="th-social">
+                          {["facebook", "twitter", "instagram", "linkedin"].map((platform) => (
+                            <Link key={platform} target="_blank" rel="noopener noreferrer" to={socials[platform] || `https://${platform}.com/`}>
+                              <i className={`fab fa-${platform}`} />
+                            </Link>
+                          ))}
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </SwiperSlide>
-            ))}
+                </SwiperSlide>
+              );
+            })}
           </Swiper>
         </div>
       </div>

@@ -3,27 +3,16 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
 import "swiper/css";
 import { Link } from "react-router-dom";
+import { useCollection, resolveAssetUrl } from "../../public-cms/hooks";
 
-const brands = [
-  "brand_1_1.svg",
-  "brand_1_2.svg",
-  "brand_1_3.svg",
-  "brand_1_4.svg",
-  "brand_1_5.svg",
-  "brand_1_6.svg",
-  "brand_1_7.svg",
-  "brand_1_8.svg",
-  "brand_1_1.svg",
-  "brand_1_2.svg",
-  "brand_1_3.svg",
-  "brand_1_4.svg",
-  "brand_1_5.svg",
-  "brand_1_6.svg",
-  "brand_1_7.svg",
-  "brand_1_8.svg",
-];
+const FALLBACK = [
+  "brand_1_1.svg", "brand_1_2.svg", "brand_1_3.svg", "brand_1_4.svg",
+  "brand_1_5.svg", "brand_1_6.svg", "brand_1_7.svg", "brand_1_8.svg",
+].map((f) => ({ logoUrl: `/assets/img/brand/${f}`, url: "#", name: "Brand" }));
 
-function BrandOne({className}) {
+function BrandOne({ className }) {
+  const cms = useCollection("/public/brands");
+  const brands = cms && cms.length ? cms : FALLBACK;
   return (
     <div className={`brand-area overflow-hidden ${className}`}>
       <div className="container th-container">
@@ -43,24 +32,19 @@ function BrandOne({className}) {
           }}
           className="brandSlider1"
         >
-          {brands.map((brand, index) => (
-            <SwiperSlide key={index}>
-              <div className="brand-box">
-                <Link to="#">
-                  <img
-                    className="original"
-                    src={`/assets/img/brand/${brand}`}
-                    alt="Brand Logo"
-                  />
-                  <img
-                    className="gray"
-                    src={`/assets/img/brand/${brand}`}
-                    alt="Brand Logo"
-                  />
-                </Link>
-              </div>
-            </SwiperSlide>
-          ))}
+          {brands.map((brand, index) => {
+            const src = resolveAssetUrl(brand.logoUrl);
+            return (
+              <SwiperSlide key={index}>
+                <div className="brand-box">
+                  <Link to={brand.url || "#"}>
+                    <img className="original" src={src} alt={brand.name || "Brand Logo"} />
+                    <img className="gray" src={src} alt={brand.name || "Brand Logo"} />
+                  </Link>
+                </div>
+              </SwiperSlide>
+            );
+          })}
         </Swiper>
       </div>
     </div>

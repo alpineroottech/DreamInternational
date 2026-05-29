@@ -1,17 +1,22 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
+import { resolveAssetUrl } from '../../public-cms/hooks';
 
 function ActivitiesCard(props) {
-    const { activitiesID, activitiesImage, activitiesTitle, activitiesPrice } = props;
+    const { activitiesImage, activitiesTitle, activitiesPrice, activitiesLink } = props;
+    const src = activitiesImage && (activitiesImage.startsWith('/') || activitiesImage.startsWith('http'))
+        ? resolveAssetUrl(activitiesImage)
+        : `/assets/img/tour/${activitiesImage}`;
+    const link = activitiesLink || '/activities-details';
     return (
         <>
             <div className="tour-box th-ani">
                 <div className="tour-box_img global-img">
-                    <img src={`/assets/img/tour/${activitiesImage}`} alt="" />
+                    <img src={src} alt={activitiesTitle || ''} />
                 </div>
                 <div className="tour-content">
                     <h3 className="box-title">
-                        <Link to="/activities-details">{activitiesTitle ? activitiesTitle : 'Paragliding'}</Link>
+                        <Link to={link}>{activitiesTitle ? activitiesTitle : 'Paragliding'}</Link>
                     </h3>
                     <div className="tour-rating">
                         <div
@@ -26,7 +31,7 @@ function ActivitiesCard(props) {
                             </span>
                         </div>
                         <Link
-                            to="/activities-details"
+                            to={link}
                             className="woocommerce-review-link"
                         >
                             (<span className="count">4.8</span>
@@ -34,13 +39,13 @@ function ActivitiesCard(props) {
                         </Link>
                     </div>
                     <h4 className="tour-box_price">
-                        <span className="currency">{activitiesPrice ? activitiesPrice : '$980.00'}$980.00</span>/Person
+                        <span className="currency">{activitiesPrice ? activitiesPrice : '$980.00'}</span>/Person
                     </h4>
                     <div className="tour-action">
                         <span>
-                            <i className="fa-light fa-clock" />7 Days
+                            <i className="fa-light fa-clock" />Half / Full day
                         </span>
-                        <Link to="/activities-details" className="th-btn style4">
+                        <Link to={link} className="th-btn style4">
                             Detail View
                         </Link>
                     </div>

@@ -1,211 +1,117 @@
 import React, { useEffect, useRef } from 'react'
 import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/swiper-bundle.css'; // Core Swiper styles
+import 'swiper/swiper-bundle.css';
 import { Pagination, EffectFade, Navigation } from 'swiper/modules';
-// Import Swiper styles
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/scrollbar';
 import { Link } from 'react-router-dom';
-function BannerOne() {
+import { resolveAssetUrl } from '../../public-cms/hooks';
+
+const FALLBACK_SLIDES = [
+    {
+        image: "/assets/img/hero/Hero2.jpg",
+        subtitle: "Dream International Travel and Tours",
+        title: "Explore Nepal's Natural Wonders",
+        primaryCta: { label: "Explore Tours", url: "/tour" },
+        secondaryCta: { label: "Plan Custom Trip", url: "/service" },
+    },
+    {
+        image: "/assets/img/hero/R.jpg",
+        subtitle: "Trusted Local Experts in Nepal",
+        title: "Trekking, Cultural, and Luxury Journeys",
+        primaryCta: { label: "Explore Tours", url: "/tour" },
+        secondaryCta: { label: "Plan Custom Trip", url: "/service" },
+    },
+];
+
+function BannerOne({ data = {} }) {
     const swiperRef = useRef(null);
+    const slides = Array.isArray(data.slides) && data.slides.length ? data.slides : FALLBACK_SLIDES;
 
     useEffect(() => {
-        // Function to add animation classes
-        const animationProperties = () => {
-            document.querySelectorAll('[data-ani]').forEach((element) => {
-                const animationName = element.getAttribute('data-ani');
-                element.classList.add(animationName);
-            });
+        document.querySelectorAll('[data-ani]').forEach((element) => {
+            element.classList.add(element.getAttribute('data-ani'));
+        });
+        document.querySelectorAll('[data-ani-delay]').forEach((element) => {
+            element.style.animationDelay = element.getAttribute('data-ani-delay');
+        });
+    }, [slides]);
 
-            document.querySelectorAll('[data-ani-delay]').forEach((element) => {
-                const delayTime = element.getAttribute('data-ani-delay');
-                element.style.animationDelay = delayTime;
-            });
-        };
-
-        animationProperties();
-    }, []);
-
-    // Event handler for custom navigation arrows
     const handleSliderNavigation = (direction) => {
-        if (swiperRef.current && swiperRef.current.swiper) {
-            const swiper = swiperRef.current.swiper;
-            if (direction === "prev") {
-                swiper.slidePrev();
-            } else {
-                swiper.slideNext();
-            }
-        }
+        const swiper = swiperRef.current?.swiper;
+        if (!swiper) return;
+        if (direction === "prev") swiper.slidePrev();
+        else swiper.slideNext();
     };
 
     return (
         <div className="th-hero-wrapper hero-1" id="hero">
-
             <Swiper
-                modules={[Navigation, Pagination, EffectFade]} // Initialize necessary modules
-                effect="fade" // Use fade effect
-                loop={true} // Enable loop
+                ref={swiperRef}
+                modules={[Navigation, Pagination, EffectFade]}
+                effect="fade"
+                loop
                 speed={1000}
-                pagination={{
-                    el: ".swiper-pagination", // Custom pagination container
-                    clickable: true, // Enable clickable pagination
-                }}
-                navigation={{
-                    nextEl: ".slider-next", // Custom next button
-                    prevEl: ".slider-prev", // Custom prev button
-                }}
+                pagination={{ el: ".swiper-pagination", clickable: true }}
+                navigation={{ nextEl: ".slider-next", prevEl: ".slider-prev" }}
                 className="th-slider hero-slider-1"
                 id="heroSlide1"
             >
-                <div className="swiper-wrapper">
-                    <SwiperSlide>
+                {slides.map((slide, i) => (
+                    <SwiperSlide key={i}>
                         <div className="hero-inner">
                             <div
                                 className="th-hero-bg"
                                 style={{
-                                    backgroundImage: "url(/assets/img/hero/Hero2.jpg)",
+                                    backgroundImage: `url(${resolveAssetUrl(slide.image)})`,
                                     backgroundRepeat: "no-repeat",
                                     backgroundSize: "cover",
                                 }}
-                            >
-
-                            </div>
+                            />
                             <div className="container">
                                 <div className="hero-style1">
-                                    <span
-                                        className="sub-title style1"
-                                        data-ani="slideinup"
-                                        data-ani-delay="0.2s"
-                                    >
-                                        Dream International Travel and Tours
-                                    </span>
-                                    <h1
-                                        className="hero-title"
-                                        data-ani="slideinup"
-                                        data-ani-delay="0.4s"
-                                    >
-                                        Explore Nepal's Natural Wonders{" "}
+                                    {slide.subtitle && (
+                                        <span className="sub-title style1" data-ani="slideinup" data-ani-delay="0.2s">
+                                            {slide.subtitle}
+                                        </span>
+                                    )}
+                                    <h1 className="hero-title" data-ani="slideinup" data-ani-delay="0.4s">
+                                        {slide.title}
                                     </h1>
-                                    <div
-                                        className="btn-group"
-                                        data-ani="slideinup"
-                                        data-ani-delay="0.6s"
-                                    >
-                                        <Link to="/tour" className="th-btn th-icon">
-                                            Explore Tours
-                                        </Link>
-                                        <Link to="/service" className="th-btn style2 th-icon">
-                                            Plan Custom Trip
-                                        </Link>
+                                    {slide.text && (
+                                        <p className="hero-text" data-ani="slideinup" data-ani-delay="0.5s">
+                                            {slide.text}
+                                        </p>
+                                    )}
+                                    <div className="btn-group" data-ani="slideinup" data-ani-delay="0.6s">
+                                        {slide.primaryCta?.label && (
+                                            <Link to={slide.primaryCta.url || "/tour"} className="th-btn th-icon">
+                                                {slide.primaryCta.label}
+                                            </Link>
+                                        )}
+                                        {slide.secondaryCta?.label && (
+                                            <Link to={slide.secondaryCta.url || "/contact"} className="th-btn style2 th-icon">
+                                                {slide.secondaryCta.label}
+                                            </Link>
+                                        )}
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </SwiperSlide>
-                    <SwiperSlide>
-                        <div className="hero-inner">
-                            <div
-                                className="th-hero-bg"
-                                style={{
-                                    backgroundImage: "url(/assets/img/hero/R.jpg)", 
-                                    backgroundRepeat: "no-repeat",
-                                    backgroundSize: "cover",
-                                }}
-                            ></div>
-                            <div className="container">
-                                <div className="hero-style1">
-                                    <span
-                                        className="sub-title style1"
-                                        data-ani="slideinup"
-                                        data-ani-delay="0.2s"
-                                    >
-                                        Trusted Local Experts in Nepal
-                                    </span>
-                                    <h1
-                                        className="hero-title"
-                                        data-ani="slideinup"
-                                        data-ani-delay="0.4s"
-                                    >
-                                        Trekking, Cultural, and Luxury Journeys{" "}
-                                    </h1>
-                                    <div
-                                        className="btn-group"
-                                        data-ani="slideinup"
-                                        data-ani-delay="0.6s"
-                                    >
-                                        <Link to="/tour" className="th-btn th-icon">
-                                            Explore Tours
-                                        </Link>
-                                        <Link to="/service" className="th-btn style2 th-icon">
-                                            Plan Custom Trip
-                                        </Link>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </SwiperSlide>
-                    <SwiperSlide>
-                        <div className="hero-inner">
-                            <div
-                                className="th-hero-bg"
-                                style={{
-                                    backgroundImage: "url(/assets/img/hero/Hero3.jpg)",
-                                    backgroundRepeat: "no-repeat",
-                                    backgroundSize: "cover",
-                                }}
-                            ></div>
-                            <div className="container">
-                                <div className="hero-style1">
-                                    <span
-                                        className="sub-title style1"
-                                        data-ani="slideinup"
-                                        data-ani-delay="0.2s"
-                                    >
-                                        Authentic Nepal Experiences
-                                    </span>
-                                    <h1
-                                        className="hero-title"
-                                        data-ani="slideinup"
-                                        data-ani-delay="0.4s"
-                                    >
-                                        Your Journey Starts in Kathmandu{" "}
-                                    </h1>
-                                    <div
-                                        className="btn-group"
-                                        data-ani="slideinup"
-                                        data-ani-delay="0.6s"
-                                    >
-                                        <Link to="/tour" className="th-btn th-icon">
-                                            Explore Tours
-                                        </Link>
-                                        <Link to="/service" className="th-btn style2 th-icon">
-                                            Plan Custom Trip
-                                        </Link>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </SwiperSlide>
-                </div>
+                ))}
                 <div className="th-swiper-custom">
-                    <button
-                        className="slider-arrow slider-prev"
-                        onClick={() => handleSliderNavigation("prev")}
-                    >
+                    <button className="slider-arrow slider-prev" onClick={() => handleSliderNavigation("prev")}>
                         <img src="/assets/img/icon/right-arrow.svg" alt="Prev" />
                     </button>
-                    <div className="swiper-pagination" /> {/* Pagination container */}
-                    <button
-                        className="slider-arrow slider-next"
-                        onClick={() => handleSliderNavigation("next")}
-                    >
+                    <div className="swiper-pagination" />
+                    <button className="slider-arrow slider-next" onClick={() => handleSliderNavigation("next")}>
                         <img src="/assets/img/icon/left-arrow.svg" alt="Next" />
                     </button>
                 </div>
             </Swiper>
         </div>
-
     )
 }
 

@@ -30,6 +30,7 @@ import Error from './Error'
 import Blog from './Blog'
 import BlogDetails from './BlogDetails'
 import Contact from './Contact'
+import AdminApp from '../admin/AdminApp'
 function RouterPage() {
   return (
     <div>
@@ -64,7 +65,8 @@ function RouterPage() {
           <Route path="/error" element={<Error />}></Route>
           <Route path="/blog" element={<Blog />}></Route>
           <Route path="/blog/:id" element={<BlogDetails />}></Route>
-          <Route path="/contact" element={<Contact />}></Route> 
+          <Route path="/contact" element={<Contact />}></Route>
+          <Route path="/admin/*" element={<AdminApp />}></Route>
         </Routes>
       </Router>
     </div>

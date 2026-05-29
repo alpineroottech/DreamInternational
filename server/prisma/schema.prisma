@@ -1,0 +1,367 @@
+// Dream International Travel and Tours — CMS data model
+//
+// NOTE: This uses SQLite for zero-setup local development.
+// For production: change `provider` to "postgresql" and point DATABASE_URL at Neon.
+// Because SQLite has no native enum/array types, enums are stored as String
+// (validated by Zod in the API) and list/structured fields use Json.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model AdminUser {
+  id           String     @id @default(cuid())
+  email        String     @unique
+  passwordHash String
+  name         String
+  role         String     @default("ADMIN") // SUPER_ADMIN | ADMIN | EDITOR
+  isActive     Boolean    @default(true)
+  lastLoginAt  DateTime?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  blogPosts    BlogPost[]
+}
+
+model Category {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  type        String   @default("tour") // tour | blog
+  icon        String?
+  imageUrl    String?
+  description String?
+  order       Int      @default(0)
+  isVisible   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  tours       Tour[]
+}
+
+model Destination {
+  id               String   @id @default(cuid())
+  slug             String   @unique
+  name             String
+  shortDescription String?
+  description      String?  // HTML (rich text)
+  heroImageUrl     String?
+  heroImageAlt     String?
+  galleryImages    Json?    // [{ url, alt, sortOrder }]
+  bestTimeToVisit  String?  // HTML
+  gettingThere     String?  // HTML
+  tips             String?  // HTML
+  thingsToDo       Json?    // string[]
+  status           String   @default("DRAFT") // DRAFT | PUBLISHED | ARCHIVED
+  isFeatured       Boolean  @default(false)
+  seoTitle         String?
+  seoDescription   String?
+  ogImageUrl       String?
+  canonicalUrl     String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  publishedAt      DateTime?
+}
+
+model Tour {
+  id                 String         @id @default(cuid())
+  slug               String         @unique
+  title              String
+  shortDescription   String?
+  description        String?        // HTML
+  highlights         Json?          // string[]
+  categoryId         String?
+  category           Category?      @relation(fields: [categoryId], references: [id])
+  status             String         @default("DRAFT") // DRAFT | PUBLISHED | ARCHIVED
+  isFeatured         Boolean        @default(false)
+  basePrice          Float?
+  pricingTiers       Json?          // [{ label, minPax, maxPax, price }]
+  priceIncludes      Json?          // string[]
+  priceExcludes      Json?          // string[]
+  durationDays       Int?
+  durationNights     Int?
+  difficulty         String?        // EASY | MODERATE | STRENUOUS | CHALLENGING
+  maxAltitude        Int?
+  groupSizeMin       Int?
+  groupSizeMax       Int?
+  minAge             Int?
+  startPoint         String?
+  endPoint           String?
+  accommodationTypes Json?          // string[]
+  bestMonths         Json?          // number[] 1-12
+  featuredImageUrl   String?
+  featuredImageAlt   String?
+  galleryImages      Json?          // [{ url, alt }]
+  mapImageUrl        String?
+  videoUrl           String?
+  seoTitle           String?
+  seoDescription     String?
+  ogImageUrl         String?
+  canonicalUrl       String?
+  itineraryDays      ItineraryDay[]
+  faqs               TourFAQ[]
+  reviews            Review[]
+  inquiries          Inquiry[]
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+  publishedAt        DateTime?
+}
+
+model ItineraryDay {
+  id            String  @id @default(cuid())
+  tourId        String
+  tour          Tour    @relation(fields: [tourId], references: [id], onDelete: Cascade)
+  dayNumber     Int
+  title         String
+  description   String?
+  startLocation String?
+  endLocation   String?
+  altitudeM     Int?
+  accommodation String?
+  mealsIncluded Json?   // { breakfast, lunch, dinner }
+  distanceKm    Float?
+  walkTimeHrs   Float?
+  notes         String?
+  order         Int     @default(0)
+}
+
+model TourFAQ {
+  id       String @id @default(cuid())
+  tourId   String
+  tour     Tour   @relation(fields: [tourId], references: [id], onDelete: Cascade)
+  question String
+  answer   String
+  order    Int    @default(0)
+}
+
+model BlogPost {
+  id             String     @id @default(cuid())
+  slug           String     @unique
+  title          String
+  excerpt        String?
+  content        String?    // HTML
+  coverImageUrl  String?
+  coverImageAlt  String?
+  authorId       String?
+  author         AdminUser? @relation(fields: [authorId], references: [id])
+  categoryId     String?
+  tags           Json?      // string[]
+  status         String     @default("DRAFT") // DRAFT | PUBLISHED | SCHEDULED | ARCHIVED
+  scheduledAt    DateTime?
+  seoTitle       String?
+  seoDescription String?
+  ogImageUrl     String?
+  canonicalUrl   String?
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+  publishedAt    DateTime?
+}
+
+model Inquiry {
+  id            String   @id @default(cuid())
+  type          String   @default("STANDARD") // STANDARD | CUSTOM_TRIP
+  tourId        String?
+  tour          Tour?    @relation(fields: [tourId], references: [id])
+  name          String
+  email         String
+  phone         String?
+  nationality   String?
+  travelDates   String?
+  groupSize     Int?
+  customDetails Json?
+  message       String?
+  status        String   @default("NEW") // NEW | IN_PROGRESS | RESPONDED | CLOSED
+  internalNotes String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Review {
+  id              String    @id @default(cuid())
+  reviewerName    String
+  reviewerCountry String?
+  reviewerPhoto   String?
+  tourId          String?
+  tour            Tour?     @relation(fields: [tourId], references: [id])
+  rating          Int       @default(5) // 1-5
+  reviewText      String
+  source          String    @default("DIRECT") // TRIPADVISOR | GOOGLE | DIRECT
+  sourceUrl       String?
+  isFeatured      Boolean   @default(false)
+  isVisible       Boolean   @default(true)
+  reviewDate      DateTime?
+  createdAt       DateTime  @default(now())
+}
+
+model MediaAsset {
+  id           String   @id @default(cuid())
+  url          String
+  publicId     String?  @unique
+  fileName     String
+  altText      String?
+  caption      String?
+  tags         Json?    // string[]
+  width        Int?
+  height       Int?
+  mimeType     String?
+  createdAt    DateTime @default(now())
+}
+
+model Setting {
+  key       String   @id
+  value     String?
+  type      String   @default("string") // string | json | boolean | number
+  updatedAt DateTime @updatedAt
+}
+
+model Activity {
+  id               String   @id @default(cuid())
+  slug             String   @unique
+  title            String
+  shortDescription String?
+  description      String?  // HTML
+  price            String?
+  imageUrl         String?
+  imageAlt         String?
+  galleryImages    Json?    // [{ url, alt }]
+  status           String   @default("DRAFT") // DRAFT | PUBLISHED | ARCHIVED
+  isFeatured       Boolean  @default(false)
+  order            Int      @default(0)
+  seoTitle         String?
+  seoDescription   String?
+  ogImageUrl       String?
+  canonicalUrl     String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  publishedAt      DateTime?
+}
+
+model Service {
+  id               String   @id @default(cuid())
+  slug             String   @unique
+  title            String
+  shortDescription String?
+  description      String?  // HTML
+  iconUrl          String?
+  imageUrl         String?
+  imageAlt         String?
+  features         Json?    // string[]
+  status           String   @default("DRAFT")
+  isFeatured       Boolean  @default(false)
+  order            Int      @default(0)
+  seoTitle         String?
+  seoDescription   String?
+  ogImageUrl       String?
+  canonicalUrl     String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  publishedAt      DateTime?
+}
+
+model TeamMember {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  name        String
+  role        String?
+  photoUrl    String?
+  bio         String?  // HTML
+  expertise   Json?    // string[]
+  socials     Json?    // { facebook, instagram, twitter, linkedin }
+  status      String   @default("DRAFT")
+  isFeatured  Boolean  @default(false)
+  order       Int      @default(0)
+  seoTitle    String?
+  seoDescription String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  publishedAt DateTime?
+}
+
+model Resort {
+  id               String   @id @default(cuid())
+  slug             String   @unique
+  title            String
+  shortDescription String?
+  description      String?  // HTML
+  price            String?
+  location         String?
+  imageUrl         String?
+  imageAlt         String?
+  galleryImages    Json?    // [{ url, alt }]
+  amenities        Json?    // string[]
+  status           String   @default("DRAFT")
+  isFeatured       Boolean  @default(false)
+  order            Int      @default(0)
+  seoTitle         String?
+  seoDescription   String?
+  ogImageUrl       String?
+  canonicalUrl     String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  publishedAt      DateTime?
+}
+
+model Brand {
+  id        String   @id @default(cuid())
+  name      String
+  logoUrl   String?
+  url       String?
+  order     Int      @default(0)
+  isVisible Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model GalleryImage {
+  id        String   @id @default(cuid())
+  title     String?
+  imageUrl  String
+  imageAlt  String?
+  category  String?
+  order     Int      @default(0)
+  isVisible Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Counter {
+  id        String   @id @default(cuid())
+  label     String
+  value     String
+  suffix    String?
+  icon      String?
+  order     Int      @default(0)
+  isVisible Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Faq {
+  id        String   @id @default(cuid())
+  question  String
+  answer    String   // HTML
+  category  String?
+  order     Int      @default(0)
+  isVisible Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Flexible page-section store powering the landing page builder and
+// editable per-page content blocks (hero, about, CTA, headings, etc.).
+model Section {
+  id        String   @id @default(cuid())
+  page      String   // home | about | tour | service | activities | contact | global
+  key       String   // hero | about | categories | featuredTours | cta | ...
+  label     String?  // human label for the admin
+  enabled   Boolean  @default(true)
+  order     Int      @default(0)
+  data      Json?    // arbitrary section content
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([page, key])
+}

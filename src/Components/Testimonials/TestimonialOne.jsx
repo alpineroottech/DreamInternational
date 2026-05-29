@@ -3,53 +3,31 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
+import { useCollection, resolveAssetUrl } from "../../public-cms/hooks";
 
-const testimonials = [
-  {
-    name: "Maria Doe",
-    designation: "Traveller",
-    image: "/assets/img/testimonial/testi_1_1.jpg",
-    text: "A home that perfectly blends sustainability with luxury until I discovered Ecoland Residence. From the moment I stepped into this community, I knew it was where I wanted to live. The commitment to eco-friendly living.",
-  },
-  {
-    name: "Andrew Simon",
-    designation: "Traveller",
-    image: "/assets/img/testimonial/testi_1_2.jpg",
-    text: "The home boasts sleek, contemporary architecture with clean lines and expansive windows, allowing natural light to flood the interiors. It incorporates passive design principles.",
-  },
-  {
-    name: "Alex Jordan",
-    designation: "Traveller",
-    image: "/assets/img/testimonial/testi_1_1.jpg",
-    text: "Solar panels adorn the roof, harnessing renewable energy to power the home and even feed excess electricity back into the grid. High-performance insulation and triple-glazed windows enhance energy efficiency.",
-  },
-  {
-    name: "Maria Doe",
-    designation: "Traveller",
-    image: "/assets/img/testimonial/testi_1_1.jpg",
-    text: "A home that perfectly blends sustainability with luxury until I discovered Ecoland Residence. From the moment I stepped into this community, I knew it was where I wanted to live. The commitment to eco-friendly living.",
-  },
-  {
-    name: "Andrew Simon",
-    designation: "Traveller",
-    image: "/assets/img/testimonial/testi_1_2.jpg",
-    text: "The home boasts sleek, contemporary architecture with clean lines and expansive windows, allowing natural light to flood the interiors. It incorporates passive design principles.",
-  },
-  {
-    name: "Alex Jordan",
-    designation: "Traveller",
-    image: "/assets/img/testimonial/testi_1_1.jpg",
-    text: "Solar panels adorn the roof, harnessing renewable energy to power the home and even feed excess electricity back into the grid. High-performance insulation and triple-glazed windows enhance energy efficiency.",
-  },
+const FALLBACK = [
+  { name: "Maria Doe", designation: "Traveller", image: "/assets/img/testimonial/testi_1_1.jpg", text: "An unforgettable trip — superbly organised from start to finish." },
+  { name: "Andrew Simon", designation: "Traveller", image: "/assets/img/testimonial/testi_1_2.jpg", text: "Knowledgeable guides and seamless logistics. Highly recommended." },
+  { name: "Alex Jordan", designation: "Traveller", image: "/assets/img/testimonial/testi_1_1.jpg", text: "Great value and a wonderful experience across Nepal." },
 ];
 
-function TestimonialOne() {
+function TestimonialOne({ data = {} }) {
+  const cms = useCollection("/public/reviews", { featured: true });
+  const testimonials =
+    cms && cms.length
+      ? cms.map((r) => ({
+          name: r.reviewerName,
+          designation: r.reviewerCountry || "Traveller",
+          image: resolveAssetUrl(r.reviewerPhoto) || "/assets/img/testimonial/testi_1_1.jpg",
+          text: r.reviewText,
+        }))
+      : FALLBACK;
   return (
     <section className="testi-area overflow-hidden space shape-mockup-wrap" id="testi-sec">
       <div className="container-fluid p-0">
         <div className="title-area mb-20 text-center">
-          <span className="sub-title">Testimonial</span>
-          <h2 className="sec-title">What Clients Say About Us</h2>
+          <span className="sub-title">{data.subTitle || "Testimonial"}</span>
+          <h2 className="sec-title">{data.title || "What Clients Say About Us"}</h2>
         </div>
         <div className="slider-area">
           <Swiper

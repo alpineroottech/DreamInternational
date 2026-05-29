@@ -14,23 +14,51 @@ import BrandOne from '../Components/Brand/BrandOne'
 import BlogOne from '../Components/Blog/BlogOne'
 import FooterOne from '../Components/Footer/FooterOne'
 import ScrollToTop from '../Components/ScrollToTop'
+import { useHomeSections } from '../public-cms/hooks'
+
+// Maps a CMS section key to the React component that renders it.
+const SECTION_COMPONENTS = {
+    hero: BannerOne,
+    categories: CategoryOne,
+    featuredDestination: DestinationOne,
+    about: AboutOne,
+    featuredTours: TourOne,
+    gallery: GalleryOne,
+    counters: CounterOne,
+    team: TourGuide,
+    testimonials: TestimonialOne,
+    brands: BrandOne,
+    blog: BlogOne,
+};
+
+const DEFAULT_ORDER = [
+    "hero", "categories", "featuredDestination", "about", "featuredTours",
+    "gallery", "counters", "team", "testimonials", "brands", "blog",
+];
 
 function HomeOne() {
+    const { byKey, order } = useHomeSections();
+    const keys = order && order.length ? order : DEFAULT_ORDER;
+
     return (
         <div>
             <HeaderOne />
-            <BannerOne />
-            <Booking />
-            <CategoryOne />
-            <DestinationOne />
-            <AboutOne />
-            <TourOne />
-            <GalleryOne />
-            <CounterOne />
-            <TourGuide />
-            <TestimonialOne />
-            <BrandOne className="space-bottom"/>
-            <BlogOne />
+            {keys.map((key) => {
+                const Comp = SECTION_COMPONENTS[key];
+                if (!Comp) return null;
+                const extra = key === "brands" ? { className: "space-bottom" } : {};
+                const el = <Comp key={key} data={byKey[key] || {}} {...extra} />;
+                // The booking widget always sits directly under the hero.
+                if (key === "hero") {
+                    return (
+                        <React.Fragment key="hero-group">
+                            {el}
+                            <Booking />
+                        </React.Fragment>
+                    );
+                }
+                return el;
+            })}
             <FooterOne />
             <ScrollToTop />
         </div>

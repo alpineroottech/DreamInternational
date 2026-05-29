@@ -1,14 +1,24 @@
 import React from "react";
 import CountUp from "react-countup";
 import { useInView } from "react-intersection-observer";
+import { useCollection } from "../../public-cms/hooks";
+
+const FALLBACK = [
+    { value: 12, suffix: "", title: "Years Experience" },
+    { value: 97, suffix: "%", title: "Retention Rate" },
+    { value: 8, suffix: "k", title: "Tour Completed" },
+    { value: 19, suffix: "k", title: "Happy Travellers" }
+];
 
 const CounterOne = () => {
-    const counters = [
-        { value: 12, suffix: "", title: "Years Experience" },
-        { value: 97, suffix: "%", title: "Retention Rate" },
-        { value: 8, suffix: "k", title: "Tour Completed" },
-        { value: 19, suffix: "k", title: "Happy Travellers" }
-    ];
+    const cms = useCollection("/public/counters");
+    const counters =
+        cms && cms.length
+            ? cms.map((c) => {
+                const num = parseInt(String(c.value).replace(/[^0-9]/g, ""), 10);
+                return { value: Number.isNaN(num) ? 0 : num, suffix: c.suffix || "", title: c.label };
+            })
+            : FALLBACK;
 
     // Use intersection observer to detect when component is in view
     const { ref, inView } = useInView({ triggerOnce: true });

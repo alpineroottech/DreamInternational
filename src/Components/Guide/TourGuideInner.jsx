@@ -1,12 +1,17 @@
 import React, { useState } from 'react';
 import TourguideCard from './TourguideCard';
-import posts from '../data/data-guide.json';
+import jsonPosts from '../data/data-guide.json';
+import { useCollection } from '../../public-cms/hooks';
 
 function TourGuideInner() {
     const [currentPage, setCurrentPage] = useState(1);
     const postsPerPage = 6;
 
-    // Get current posts
+    const cms = useCollection('/public/team');
+    const posts = cms && cms.length
+        ? cms.map((m) => ({ id: m.slug, thumb: m.photoUrl, image: m.photoUrl, title: m.name, role: m.role, socials: m.socials }))
+        : jsonPosts;
+
     const indexOfLastPost = currentPage * postsPerPage;
     const indexOfFirstPost = indexOfLastPost - postsPerPage;
     const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
@@ -22,6 +27,8 @@ function TourGuideInner() {
                                 guideThumb={`${data.thumb}`}
                                 guideImage={`${data.image}`}
                                 guideTitle={data.title}
+                                guideRole={data.role}
+                                guideSocials={data.socials}
                             />
                         </div>
                     ))}

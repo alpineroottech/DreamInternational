@@ -1,7 +1,24 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { useSettings } from '../../public-cms/hooks'
 
 function FooterOne() {
+    const settings = useSettings();
+    const socials = [
+        { url: settings.facebookUrl, icon: "fab fa-facebook-f" },
+        { url: settings.tripadvisorUrl, icon: "fab fa-tripadvisor" },
+        { url: settings.youtubeUrl, icon: "fab fa-youtube" },
+        { url: settings.instagramUrl, icon: "fab fa-instagram" },
+    ].filter((s) => s.url);
+    const quickLinks = (Array.isArray(settings.footerColumns) && settings.footerColumns[0]) || {
+        title: "Quick Links",
+        links: [
+            { label: "Home", url: "/" },
+            { label: "About us", url: "/about" },
+            { label: "Our Service", url: "/service" },
+            { label: "Contact", url: "/contact" },
+        ],
+    };
     return (
         <footer className="footer-wrapper footer-layout1">
             <div className="widget-area">
@@ -44,49 +61,29 @@ function FooterOne() {
                                         </Link>
                                     </div>
                                     <p className="about-text">
-                                        Rapidiously myocardinate cross-platform intellectual capital
-                                        model. Appropriately create interactive infrastructures
+                                        {settings.footerAbout ||
+                                            "Dream International Travel and Tours — your trusted partner for trekking, cultural tours, and tailor-made journeys across Nepal."}
                                     </p>
                                     <div className="th-social">
-                                        <Link to="https://www.facebook.com/">
-                                            <i className="fab fa-facebook-f" />
-                                        </Link>
-                                        <Link to="https://www.twitter.com/">
-                                            <i className="fab fa-twitter" />
-                                        </Link>
-                                        <Link to="https://www.linkedin.com/">
-                                            <i className="fab fa-linkedin-in" />
-                                        </Link>
-                                        <Link to="https://www.whatsapp.com/">
-                                            <i className="fab fa-whatsapp" />
-                                        </Link>
-                                        <Link to="https://instagram.com/">
-                                            <i className="fab fa-instagram" />
-                                        </Link>
+                                        {socials.map((s, i) => (
+                                            <Link key={i} to={s.url} target="_blank" rel="noopener noreferrer">
+                                                <i className={s.icon} />
+                                            </Link>
+                                        ))}
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div className="col-md-6 col-xl-auto">
                             <div className="widget widget_nav_menu footer-widget">
-                                <h3 className="widget_title">Quick Links</h3>
+                                <h3 className="widget_title">{quickLinks.title || "Quick Links"}</h3>
                                 <div className="menu-all-pages-container">
                                     <ul className="menu">
-                                        <li>
-                                            <Link to="/">Home</Link>
-                                        </li>
-                                        <li>
-                                            <Link to="/about">About us</Link>
-                                        </li>
-                                        <li>
-                                            <Link to="/service">Our Service</Link>
-                                        </li>
-                                        <li>
-                                            <Link to="/contact">Terms of Service</Link>
-                                        </li>
-                                        <li>
-                                            <Link to="/contact">Tour Booking Now</Link>
-                                        </li>
+                                        {(quickLinks.links || []).map((l, i) => (
+                                            <li key={i}>
+                                                <Link to={l.url || "#"}>{l.label}</Link>
+                                            </li>
+                                        ))}
                                     </ul>
                                 </div>
                             </div>
@@ -101,15 +98,17 @@ function FooterOne() {
                                         </div>
                                         <div className="details">
                                             <p>
-                                                <Link to="tel:+01234567890" className="info-box_link">
-                                                    +01 234 567 890
+                                                <Link to={`tel:${(settings.contactPhone || "").replace(/\s/g, "")}`} className="info-box_link">
+                                                    {settings.contactPhone || "+977-1-0000000"}
                                                 </Link>
                                             </p>
-                                            <p>
-                                                <Link to="tel:+09876543210" className="info-box_link">
-                                                    +09 876 543 210
-                                                </Link>
-                                            </p>
+                                            {settings.whatsappNumber && (
+                                                <p>
+                                                    <Link to={`tel:${settings.whatsappNumber.replace(/\s/g, "")}`} className="info-box_link">
+                                                        {settings.whatsappNumber}
+                                                    </Link>
+                                                </p>
+                                            )}
                                         </div>
                                     </div>
                                     <div className="info-box_text">
@@ -119,18 +118,10 @@ function FooterOne() {
                                         <div className="details">
                                             <p>
                                                 <Link
-                                                    to="mailto:info@dreaminternationaltours.com"
+                                                    to={`mailto:${settings.contactEmail || "info@dreaminternationaltours.com"}`}
                                                     className="info-box_link"
                                                 >
-                                                    info@dreaminternationaltours.com
-                                                </Link>
-                                            </p>
-                                            <p>
-                                                <Link
-                                                    to="mailto:support@dreaminternationaltours.com"
-                                                    className="info-box_link"
-                                                >
-                                                    support@dreaminternationaltours.com
+                                                    {settings.contactEmail || "info@dreaminternationaltours.com"}
                                                 </Link>
                                             </p>
                                         </div>
@@ -140,7 +131,7 @@ function FooterOne() {
                                             <img src="/assets/img/icon/location-dot.svg" alt="img" />
                                         </div>
                                         <div className="details">
-                                            <p>Kathmandu, Nepal</p>
+                                            <p>{settings.address || "Kathmandu, Nepal"}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -242,7 +233,7 @@ function FooterOne() {
                     <div className="row justify-content-between align-items-center">
                         <div className="col-md-6">
                             <p className="copyright-text">
-                                Copyright 2026 <Link to="/">Dream International Travel and Tours</Link>. All Rights
+                                Copyright {new Date().getFullYear()} <Link to="/">{settings.siteTitle || "Dream International Travel and Tours"}</Link>. All Rights
                                 Reserved.
                             </p>
                         </div>

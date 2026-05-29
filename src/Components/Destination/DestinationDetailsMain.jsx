@@ -1,17 +1,63 @@
-import React, {useState} from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom';
 import Posts from '../data/data-destination.json';
 import Modal from '../Gallery/Modal';
+import api from '../../admin/api/client';
+import SafeHtml from '../../public-cms/SafeHtml';
+
+const API_ORIGIN = (process.env.REACT_APP_API_URL || "http://localhost:4000/api").replace(/\/api$/, "");
+function resolveUrl(url) {
+    if (!url) return "";
+    if (url.startsWith("http") || url.startsWith("/assets")) return url;
+    if (url.startsWith("/uploads")) return `${API_ORIGIN}${url}`;
+    return url;
+}
 
 function DestinationDetailsMain() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalImage, setModalImage] = useState("");
     const { id } = useParams();
-    const destinationPost = Posts.find(post => post.id === parseInt(id));
+    const [cms, setCms] = useState(null);
+    const [loading, setLoading] = useState(true);
 
-    if (!destinationPost) {
-        return <div>Post not found!</div>;
+    // API-first: treat the URL param as a slug and load published content from the CMS.
+    useEffect(() => {
+        let active = true;
+        setLoading(true);
+        api.get(`/public/destinations/${id}`)
+            .then(({ data }) => { if (active) setCms(data); })
+            .catch(() => { if (active) setCms(null); })
+            .finally(() => { if (active) setLoading(false); });
+        return () => { active = false; };
+    }, [id]);
+
+    // Fallback to bundled demo JSON for non-CMS (numeric) demo links.
+    const destinationPost = Posts.find(post => post.id === parseInt(id)) || null;
+
+    if (loading) {
+        return <section className="space"><div className="container">Loading…</div></section>;
     }
+
+    if (!cms && !destinationPost) {
+        return <section className="space"><div className="container">Destination not found.</div></section>;
+    }
+
+    // Display model: prefer CMS content, fall back to demo JSON.
+    const view = {
+        name: cms?.name || destinationPost?.title || "Destination",
+        bannerImg: cms?.heroImage?.url
+            ? resolveUrl(cms.heroImage.url)
+            : (destinationPost?.bannerImg?.startsWith("/")
+                ? destinationPost.bannerImg
+                : `/assets/img/destination/${destinationPost?.bannerImg}`),
+        descriptionHtml: cms?.descriptionHtml || null,
+        shortDescription: cms?.shortDescription || null,
+        bestTimeToVisit: cms?.bestTimeToVisit || null,
+        gettingThere: cms?.gettingThere || null,
+        tips: cms?.tips || null,
+        thingsToDo: cms?.thingsToDo || [],
+        price: destinationPost?.price || "On request",
+    };
 
     const openModal = (imageSrc, event) => {
         event.preventDefault();
@@ -27,14 +73,7 @@ function DestinationDetailsMain() {
                     <div className="col-xxl-8 col-lg-7">
                         <div className="page-single">
                             <div className="service-img">
-                                <img
-                                    src={
-                                        destinationPost.bannerImg?.startsWith("/")
-                                            ? destinationPost.bannerImg
-                                            : `/assets/img/destination/${destinationPost.bannerImg}`
-                                    }
-                                    alt={destinationPost.title || "Destination"}
-                                />
+                                <img src={view.bannerImg} alt={view.name} />
                             </div>
                             <div className="page-content d-block">
                                 <div className="page-meta mt-50 mb-45">
@@ -47,23 +86,13 @@ function DestinationDetailsMain() {
                                     </span>
                                 </div>
                                 <h2 className="box-title">
-                                    Explore the Beauty of Pokhara City
+                                    Explore the Beauty of {view.name}
                                 </h2>
-                                <p className="blog-text mb-30">
-                                    Pokhara is Nepal&apos;s most visited lakeside city and the gateway to the
-                                    Annapurna region. Set beside Phewa Lake with the Annapurna and
-                                    Machhapuchhre (Fishtail) peaks reflected on the water, it blends
-                                    adventure, culture, and relaxation in one destination. Visitors come for
-                                    short city breaks, paragliding, boating, trekking starts, and family
-                                    holidays.
-                                </p>
-                                <p className="blog-text mb-35">
-                                    From Lakeside cafes to Davis Falls, the World Peace Pagoda, and Sarangkot
-                                    sunrise viewpoints, Pokhara offers easy day trips and multi-day itineraries.
-                                    Dream International Travel and Tours helps you plan guided city tours,
-                                    hotel stays, transport from Kathmandu, and add-on treks such as Ghorepani
-                                    Poon Hill or Annapurna Base Camp.
-                                </p>
+                                {view.descriptionHtml ? (
+                                    <SafeHtml className="blog-text mb-35" html={view.descriptionHtml} />
+                                ) : (
+                                    <p className="blog-text mb-30">{view.shortDescription}</p>
+                                )}
                                 <h2 className="box-title">Basic Information</h2>
                                 <p className="blog-text mb-35">
                                     Pokhara lies in Kaski District at roughly 822 m elevation, with a mild
@@ -131,13 +160,16 @@ function DestinationDetailsMain() {
                                 <h2 className="box-title">Highlights</h2>
                                 <div className="checklist">
                                     <ul>
-                                        <li>Phewa Lake boating with views of Machhapuchhre</li>
-                                        <li>Sarangkot sunrise over the Annapurna Himalayas</li>
-                                        <li>World Peace Pagoda (Shanti Stupa) hill hike or drive</li>
-                                        <li>Davis Falls, Gupteshwor Cave, and Tibetan refugee camp visits</li>
-                                        <li>Paragliding from Sarangkot (seasonal, weather permitting)</li>
-                                        <li>International Mountain Museum and Lakeside dining</li>
-                                        <li>Gateway treks: Ghorepani Poon Hill, ABC, and short village walks</li>
+                                        {(view.thingsToDo && view.thingsToDo.length > 0
+                                            ? view.thingsToDo
+                                            : [
+                                                "Phewa Lake boating with views of Machhapuchhre",
+                                                "Sarangkot sunrise over the Annapurna Himalayas",
+                                                "World Peace Pagoda (Shanti Stupa) hill hike or drive",
+                                              ]
+                                        ).map((item, i) => (
+                                            <li key={i}>{item}</li>
+                                        ))}
                                     </ul>
                                 </div>
                             </div>

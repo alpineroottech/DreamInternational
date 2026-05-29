@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import BlogPost from './BlogPost';
-import posts from '../data/data-post.json';
+import jsonPosts from '../data/data-post.json';
+import { useCollection, resolveAssetUrl } from '../../public-cms/hooks';
 
 function BlogInner() {
     const [currentPage, setCurrentPage] = useState(1);
-    const postsPerPage = 1;
+    const cms = useCollection('/public/blog');
+    const usingCms = cms && cms.length > 0;
+    const postsPerPage = usingCms ? 6 : 1;
+    const posts = usingCms ? cms : jsonPosts;
     const totalPages = Math.ceil(posts.length / postsPerPage);
 
     const indexOfLastPost = currentPage * postsPerPage;
@@ -23,14 +27,39 @@ function BlogInner() {
             <div className="container">
                 <div className="row">
                     <div className="col-xxl-8 col-lg-7">
-                        {currentPosts.map((data) => (
-                            <BlogPost
-                                key={data.id}
-                                blogID={data.id}
-                                blogImage={data.image}
-                                blogTitle={data.title}
-                            />
-                        ))}
+                        {usingCms
+                            ? currentPosts.map((data) => (
+                                <div key={data.slug} className="th-blog blog-single has-post-thumbnail mb-4">
+                                    {data.coverImageUrl && (
+                                        <div className="blog-img">
+                                            <Link to={`/blog/${data.slug}`}>
+                                                <img src={resolveAssetUrl(data.coverImageUrl)} alt={data.title} />
+                                            </Link>
+                                        </div>
+                                    )}
+                                    <div className="blog-content">
+                                        <div className="blog-meta">
+                                            <Link to={`/blog/${data.slug}`}>
+                                                <i className="fa-solid fa-calendar-days" />
+                                                {data.publishedAt ? new Date(data.publishedAt).toLocaleDateString() : ''}
+                                            </Link>
+                                        </div>
+                                        <h2 className="blog-title">
+                                            <Link to={`/blog/${data.slug}`}>{data.title}</Link>
+                                        </h2>
+                                        {data.excerpt && <p className="blog-text">{data.excerpt}</p>}
+                                        <Link to={`/blog/${data.slug}`} className="th-btn style4 th-icon">Read More</Link>
+                                    </div>
+                                </div>
+                            ))
+                            : currentPosts.map((data) => (
+                                <BlogPost
+                                    key={data.id}
+                                    blogID={data.id}
+                                    blogImage={data.image}
+                                    blogTitle={data.title}
+                                />
+                            ))}
                         <div className="th-pagination">
                             <ul>
                                 {Array.from({ length: totalPages }, (_, i) => (

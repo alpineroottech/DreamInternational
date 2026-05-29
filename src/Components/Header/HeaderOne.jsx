@@ -3,8 +3,22 @@ import { Link } from 'react-router-dom'
 import NiceSelect from './NiceSelect';
 import MobileMenu from './MobileMenu';
 import LoginForm from './LoginForm';
+import { useSettings } from '../../public-cms/hooks';
+
+const DEFAULT_NAV = [
+    { label: "Home", url: "/" },
+    { label: "About", url: "/about" },
+    { label: "Tours", url: "/tour" },
+    { label: "Destinations", url: "/destination" },
+    { label: "Activities", url: "/activities" },
+    { label: "Services", url: "/service" },
+    { label: "Blog", url: "/blog" },
+    { label: "Contact", url: "/contact" },
+];
 
 function HeaderOne() {
+    const settings = useSettings();
+    const nav = Array.isArray(settings.headerNav) && settings.headerNav.length ? settings.headerNav : DEFAULT_NAV;
     const languageOptions = [
         { value: "language", label: "Language" },
         { value: "CNY", label: "CNY" },
@@ -42,11 +56,11 @@ function HeaderOne() {
                                     <ul>
                                         <li className="d-none d-xl-inline-block">
                                             <i className="fa-sharp fa-regular  fa-location-dot" />
-                                            <span>Kathmandu, Nepal</span>
+                                            <span>{settings.address || "Kathmandu, Nepal"}</span>
                                         </li>
                                         <li className="d-none d-xl-inline-block">
                                             <i className="fa-regular fa-clock" />
-                                            <span>Sun to Fri: 8:00 am - 7:00 pm</span>
+                                            <span>{settings.officeHours || "Sun to Fri: 8:00 am - 7:00 pm"}</span>
                                         </li>
                                     </ul>
                                 </div>
@@ -129,226 +143,20 @@ function HeaderOne() {
                                 <div className="col-auto me-xl-auto">
                                     <nav className="main-menu d-none d-xl-inline-block">
                                         <ul>
-                                            <li className="menu-item-has-children mega-menu-wrap">
-                                                <Link className="active" to="/">
-                                                    Home
-                                                </Link>
-                                                <ul className="mega-menu mega-menu-content">
-                                                    <li>
-                                                        <div className="container">
-                                                            <div className="row gy-4">
-                                                                <div className="col-lg-3">
-                                                                    <div className="mega-menu-box">
-                                                                        <div className="mega-menu-img">
-                                                                            <img
-                                                                                src="/assets/img/pages/home-travel.jpg"
-                                                                                alt="Home One"
-                                                                            />
-                                                                            <div className="btn-wrap">
-                                                                                <Link
-
-                                                                                    to="/"
-                                                                                    className="th-btn"
-                                                                                >
-                                                                                    View Demo
-                                                                                </Link>
-                                                                            </div>
-                                                                        </div>
-                                                                        <h3 className="mega-menu-title">
-                                                                            <Link to="/">
-                                                                                <span>01.</span>Home Travel
-                                                                            </Link>
-                                                                        </h3>
-                                                                    </div>
-                                                                </div>
-                                                                <div className="col-lg-3">
-                                                                    <div className="mega-menu-box">
-                                                                        <div className="mega-menu-img">
-                                                                            <img
-                                                                                src="/assets/img/pages/home-tour.jpg"
-                                                                                alt="Home Two"
-                                                                            />
-                                                                            <div className="btn-wrap">
-                                                                                <Link
-                                                                                    to="/home-tour"
-                                                                                    className="th-btn "
-                                                                                >
-                                                                                    View Demo
-                                                                                </Link>
-                                                                            </div>
-                                                                        </div>
-                                                                        <h3 className="mega-menu-title">
-                                                                            <Link to="/home-tour">
-                                                                                <span>02.</span>Home Tour
-                                                                            </Link>
-                                                                        </h3>
-                                                                    </div>
-                                                                </div>
-                                                                <div className="col-lg-3">
-                                                                    <div className="mega-menu-box">
-                                                                        <div className="mega-menu-img">
-                                                                            <img
-                                                                                src="/assets/img/pages/home-agency.jpg"
-                                                                                alt="Home Three"
-                                                                            />
-                                                                            <div className="btn-wrap">
-                                                                                <Link
-
-                                                                                    to="/home-agency"
-                                                                                    className="th-btn "
-                                                                                >
-                                                                                    View Demo
-                                                                                </Link>
-                                                                            </div>
-                                                                        </div>
-                                                                        <h3 className="mega-menu-title">
-                                                                            <Link to="/home-agency">
-                                                                                <span>03.</span>Home Agency
-                                                                            </Link>
-                                                                        </h3>
-                                                                    </div>
-                                                                </div>
-                                                                <div className="col-lg-3">
-                                                                    <div className="mega-menu-box">
-                                                                        <div className="mega-menu-img">
-                                                                            <img
-                                                                                src="/assets/img/pages/home-yacht.jpg"
-                                                                                alt="Home Four"
-                                                                            />
-                                                                            <div className="btn-wrap">
-                                                                                <Link
-
-                                                                                    to="/home-yacht"
-                                                                                    className="th-btn "
-                                                                                >
-                                                                                    View Demo
-                                                                                </Link>
-                                                                            </div>
-                                                                        </div>
-                                                                        <h3 className="mega-menu-title">
-                                                                            <Link to="/home-yacht">
-                                                                                <span>04.</span>Home Yacht
-                                                                            </Link>
-                                                                        </h3>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </li>
-                                                </ul>
-                                            </li>
-                                            <li>
-                                                <Link to="/about">About Us</Link>
-                                            </li>
-                                            <li className="menu-item-has-children">
-                                                <Link to="#">Destination</Link>
-                                                <ul className="sub-menu">
-                                                    <li>
-                                                        <Link to="/destination">Destination</Link>
-                                                    </li>
-                                                    <li>
-                                                        <Link to="/destination/1">
-                                                            Destination Details
-                                                        </Link>
-                                                    </li>
-                                                </ul>
-                                            </li>
-                                            <li className="menu-item-has-children">
-                                                <Link to="#">Service</Link>
-                                                <ul className="sub-menu">
-                                                    <li>
-                                                        <Link to="/service">Services</Link>
-                                                    </li>
-                                                    <li>
-                                                        <Link to="/service/1">Service Details</Link>
-                                                    </li>
-                                                </ul>
-                                            </li>
-                                            <li className="menu-item-has-children">
-                                                <Link to="#">Activities</Link>
-                                                <ul className="sub-menu">
-                                                    <li>
-                                                        <Link to="/activities">activities</Link>
-                                                    </li>
-                                                    <li>
-                                                        <Link to="/activities-details">activities Details</Link>
-                                                    </li>
-                                                </ul>
-                                            </li>
-                                            <li className="menu-item-has-children">
-                                                <Link to="#">Pages</Link>
-                                                <ul className="sub-menu">
-                                                    <li className="menu-item-has-children">
-                                                        <Link to="#">Shop</Link>
+                                            {nav.map((item, i) => (
+                                                <li key={i} className={item.children?.length ? "menu-item-has-children" : ""}>
+                                                    <Link to={item.url || "#"}>{item.label}</Link>
+                                                    {item.children?.length > 0 && (
                                                         <ul className="sub-menu">
-                                                            <li>
-                                                                <Link to="/shop">Shop</Link>
-                                                            </li>
-                                                            <li>
-                                                                <Link to="/shop/1">Shop Details</Link>
-                                                            </li>
-                                                            <li>
-                                                                <Link to="/cart">Cart Page</Link>
-                                                            </li>
-                                                            <li>
-                                                                <Link to="/checkout">Checkout</Link>
-                                                            </li>
-                                                            <li>
-                                                                <Link to="/wishlist">Wishlist</Link>
-                                                            </li>
+                                                            {item.children.map((child, ci) => (
+                                                                <li key={ci}>
+                                                                    <Link to={child.url || "#"}>{child.label}</Link>
+                                                                </li>
+                                                            ))}
                                                         </ul>
-                                                    </li>
-                                                    <li>
-                                                        <Link to="/gallery">Gallery</Link>
-                                                    </li>
-                                                    <li>
-                                                        <Link to="/tour">Our Tour</Link>
-                                                    </li>
-                                                    <li>
-                                                        <Link to="/tour-details">Tour Details</Link>
-                                                    </li>
-                                                    <li>
-                                                        <Link to="/resort">Resort page</Link>
-                                                    </li>
-                                                    <li>
-                                                        <Link to="/resort/1">Resort Details</Link>
-                                                    </li>
-                                                    <li>
-                                                        <Link to="/tour-details">Tour Details</Link>
-                                                    </li>
-                                                    <li>
-                                                        <Link to="/tour-guide">Tour Guider</Link>
-                                                    </li>
-                                                    <li>
-                                                        <Link to="/tour-guide/1">
-                                                            Tour Guider Details
-                                                        </Link>
-                                                    </li>
-                                                    <li>
-                                                        <Link to="/faq">Faq Page</Link>
-                                                    </li>
-                                                    <li>
-                                                        <Link to="/price">Price Package</Link>
-                                                    </li>
-                                                    <li>
-                                                        <Link to="/error">Error Page</Link>
-                                                    </li>
-                                                </ul>
-                                            </li>
-                                            <li className="menu-item-has-children">
-                                                <Link to="#">Blog</Link>
-                                                <ul className="sub-menu">
-                                                    <li>
-                                                        <Link to="/blog">Blog</Link>
-                                                    </li>
-                                                    <li>
-                                                        <Link to="/blog/1">Blog Details</Link>
-                                                    </li>
-                                                </ul>
-                                            </li>
-                                            <li>
-                                                <Link to="/contact">Contact us</Link>
-                                            </li>
+                                                    )}
+                                                </li>
+                                            ))}
                                         </ul>
                                     </nav>
                                     <button

@@ -4,22 +4,24 @@ import { Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 import { Link } from "react-router-dom";
+import { useCollection, resolveAssetUrl } from "../../public-cms/hooks";
 
-const CategoryOne = () => {
+const FALLBACK = [
+  { id: 1, title: "Cruises", imgSrc: "/assets/img/category/category_1_1.jpg" },
+  { id: 2, title: "Hiking", imgSrc: "/assets/img/category/category_1_2.jpg" },
+  { id: 3, title: "Airbirds", imgSrc: "/assets/img/category/category_1_3.jpg" },
+  { id: 4, title: "Wildlife", imgSrc: "/assets/img/category/category_1_4.jpg" },
+  { id: 5, title: "Walking", imgSrc: "/assets/img/category/category_1_5.jpg" },
+];
+
+const CategoryOne = ({ data = {} }) => {
   const swiperRef = useRef(null);
+  const cms = useCollection("/public/categories");
 
-  const categories = [
-    { id: 1, title: "Cruises", imgSrc: "/assets/img/category/category_1_1.jpg" },
-    { id: 2, title: "Hiking", imgSrc: "/assets/img/category/category_1_2.jpg" },
-    { id: 3, title: "Airbirds", imgSrc: "/assets/img/category/category_1_3.jpg" },
-    { id: 4, title: "Wildlife", imgSrc: "/assets/img/category/category_1_4.jpg" },
-    { id: 5, title: "Walking", imgSrc: "/assets/img/category/category_1_5.jpg" },
-    { id: 6, title: "Cruises", imgSrc: "/assets/img/category/category_1_1.jpg" },
-    { id: 7, title: "Hiking", imgSrc: "/assets/img/category/category_1_2.jpg" },
-    { id: 8, title: "Airbirds", imgSrc: "/assets/img/category/category_1_3.jpg" },
-    { id: 9, title: "Wildlife", imgSrc: "/assets/img/category/category_1_4.jpg" },
-    { id: 10, title: "Walking", imgSrc: "/assets/img/category/category_1_5.jpg" },
-  ];
+  const categories =
+    cms && cms.length
+      ? cms.map((c) => ({ id: c.slug, title: c.name, imgSrc: resolveAssetUrl(c.imageUrl) || "/assets/img/category/category_1_1.jpg", slug: c.slug }))
+      : FALLBACK;
 
   useEffect(() => {
     if (!swiperRef.current) return;
@@ -78,8 +80,8 @@ const CategoryOne = () => {
     >
       <div className="container th-container">
         <div className="title-area text-center">
-          <span className="sub-title">Wonderful Place For You</span>
-          <h2 className="sec-title">Tour Categories</h2>
+          <span className="sub-title">{data.subTitle || "Wonderful Place For You"}</span>
+          <h2 className="sec-title">{data.title || "Tour Categories"}</h2>
         </div>
 
         <Swiper
@@ -111,9 +113,9 @@ const CategoryOne = () => {
                   <img src={category.imgSrc} alt={category.title} loading="lazy" />
                 </div>
                 <h3 className="box-title">
-                  <Link to="/destination">{category.title}</Link>
+                  <Link to="/tour">{category.title}</Link>
                 </h3>
-                <Link className="line-btn" to="/destination">
+                <Link className="line-btn" to="/tour">
                   See more
                 </Link>
               </div>

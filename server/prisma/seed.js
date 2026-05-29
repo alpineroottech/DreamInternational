@@ -1,0 +1,480 @@
+import "dotenv/config";
+import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcryptjs";
+
+const prisma = new PrismaClient();
+const now = () => new Date();
+
+// Create rows only when a collection is still empty (idempotent re-seeding).
+async function seedIfEmpty(model, rows) {
+  const count = await model.count();
+  if (count === 0 && rows.length) {
+    for (const data of rows) {
+      // create() (not createMany) keeps Json fields portable across providers
+      // eslint-disable-next-line no-await-in-loop
+      await model.create({ data });
+    }
+  }
+}
+
+async function main() {
+  // ---------- Admin user ----------
+  const email = process.env.SEED_ADMIN_EMAIL || "admin@dreaminternationaltours.com";
+  const password = process.env.SEED_ADMIN_PASSWORD || "Admin@12345";
+  const name = process.env.SEED_ADMIN_NAME || "Dream Admin";
+  const passwordHash = await bcrypt.hash(password, 12);
+  await prisma.adminUser.upsert({
+    where: { email },
+    update: {},
+    create: { email, passwordHash, name, role: "SUPER_ADMIN" },
+  });
+
+  // ---------- Settings (incl. navigation + social) ----------
+  const settings = {
+    siteTitle: { v: "Dream International Travel and Tours", t: "string" },
+    tagline: { v: "Trekking, Cultural and Custom Journeys across Nepal", t: "string" },
+    contactEmail: { v: "info@dreaminternationaltours.com", t: "string" },
+    contactPhone: { v: "+977-1-0000000", t: "string" },
+    whatsappNumber: { v: "+9779800000000", t: "string" },
+    address: { v: "Thamel, Kathmandu, Nepal", t: "string" },
+    facebookUrl: { v: "https://facebook.com/", t: "string" },
+    instagramUrl: { v: "https://instagram.com/", t: "string" },
+    youtubeUrl: { v: "https://youtube.com/", t: "string" },
+    tripadvisorUrl: { v: "https://tripadvisor.com/", t: "string" },
+    defaultSeoTitle: { v: "%page_title% | Dream International Travel and Tours", t: "string" },
+    defaultSeoDescription: {
+      v: "Nepal travel and tour experiences — trekking, cultural tours, and tailor-made journeys.",
+      t: "string",
+    },
+    headerNav: {
+      t: "json",
+      v: JSON.stringify([
+        { label: "Home", url: "/" },
+        { label: "About", url: "/about" },
+        { label: "Tours", url: "/tour" },
+        { label: "Destinations", url: "/destination" },
+        { label: "Activities", url: "/activities" },
+        { label: "Services", url: "/service" },
+        { label: "Blog", url: "/blog" },
+        { label: "Contact", url: "/contact" },
+      ]),
+    },
+    footerColumns: {
+      t: "json",
+      v: JSON.stringify([
+        {
+          title: "Quick Links",
+          links: [
+            { label: "About Us", url: "/about" },
+            { label: "Tours", url: "/tour" },
+            { label: "Destinations", url: "/destination" },
+            { label: "Contact", url: "/contact" },
+          ],
+        },
+        {
+          title: "Support",
+          links: [
+            { label: "FAQ", url: "/faq" },
+            { label: "Gallery", url: "/gallery" },
+            { label: "Services", url: "/service" },
+          ],
+        },
+      ]),
+    },
+  };
+  for (const [key, { v, t }] of Object.entries(settings)) {
+    // eslint-disable-next-line no-await-in-loop
+    await prisma.setting.upsert({
+      where: { key },
+      update: {},
+      create: { key, value: v, type: t },
+    });
+  }
+
+  // ---------- Featured destination: Pokhara ----------
+  await prisma.destination.upsert({
+    where: { slug: "pokhara-city" },
+    update: {},
+    create: {
+      slug: "pokhara-city",
+      name: "Pokhara City",
+      shortDescription:
+        "Nepal's lakeside city with Phewa Lake, mountain views, paragliding, and easy access to Annapurna treks.",
+      description:
+        "<p>Pokhara is Nepal's most visited lakeside city and the gateway to the Annapurna region. Set beside Phewa Lake with the Annapurna and Machhapuchhre (Fishtail) peaks reflected on the water, it blends adventure, culture, and relaxation in one destination.</p>",
+      heroImageUrl: "/assets/img/destination/destination_4_1.jpg",
+      heroImageAlt: "Pokhara City and Phewa Lake",
+      bestTimeToVisit: "<p>Best seasons are Mar-May and Sep-Nov for clear mountain views.</p>",
+      gettingThere:
+        "<p>Tourist buses and private cars run daily from Kathmandu (6-7 hours). Flights take about 25 minutes.</p>",
+      tips: "<p>Stay in Lakeside (Baidam) for the widest choice of hotels and restaurants.</p>",
+      thingsToDo: [
+        "Phewa Lake boating with views of Machhapuchhre",
+        "Sarangkot sunrise over the Annapurna Himalayas",
+        "World Peace Pagoda (Shanti Stupa)",
+        "Davis Falls and Gupteshwor Cave",
+        "Paragliding from Sarangkot (seasonal)",
+      ],
+      status: "PUBLISHED",
+      isFeatured: true,
+      publishedAt: now(),
+      seoTitle: "Pokhara City, Nepal — Travel Guide",
+      seoDescription:
+        "Plan your Pokhara trip: Phewa Lake, Sarangkot sunrise, paragliding, and Annapurna trek gateways.",
+    },
+  });
+
+  // ---------- Tour categories ----------
+  const categories = [
+    ["Trekking", "trekking", "category_1_1.jpg", "High-altitude treks across the Himalayas."],
+    ["Cultural Tours", "cultural-tours", "category_1_2.jpg", "Temples, heritage sites, and local life."],
+    ["Adventure", "adventure", "category_1_3.jpg", "Rafting, paragliding, and adrenaline."],
+    ["Jungle Safari", "jungle-safari", "category_1_4.jpg", "Wildlife in Chitwan and Bardia."],
+    ["Pilgrimage", "pilgrimage", "category_1_5.jpg", "Sacred journeys and spiritual sites."],
+    ["Peak Climbing", "peak-climbing", "category_2_1.jpg", "Guided climbs for aspiring mountaineers."],
+  ];
+  for (let i = 0; i < categories.length; i += 1) {
+    const [cname, cslug, cimg, cdesc] = categories[i];
+    // eslint-disable-next-line no-await-in-loop
+    await prisma.category.upsert({
+      where: { slug: cslug },
+      update: {},
+      create: {
+        name: cname,
+        slug: cslug,
+        type: "tour",
+        imageUrl: `/assets/img/category/${cimg}`,
+        description: cdesc,
+        order: i,
+        isVisible: true,
+      },
+    });
+  }
+
+  // ---------- Counters ----------
+  await seedIfEmpty(prisma.counter, [
+    { label: "Years of Experience", value: "12", suffix: "+", order: 0 },
+    { label: "Happy Travelers", value: "5000", suffix: "+", order: 1 },
+    { label: "Tour Packages", value: "150", suffix: "+", order: 2 },
+    { label: "Expert Guides", value: "25", suffix: "+", order: 3 },
+  ]);
+
+  // ---------- Partner brands ----------
+  await seedIfEmpty(
+    prisma.brand,
+    [1, 2, 3, 4, 5, 6].map((n) => ({
+      name: `Partner ${n}`,
+      logoUrl: `/assets/img/brand/brand_1_${n}.svg`,
+      order: n - 1,
+      isVisible: true,
+    }))
+  );
+
+  // ---------- Team / Guides ----------
+  const team = [
+    ["Michel Smith", "Senior Trek Guide"],
+    ["Janny Willson", "Tour Manager"],
+    ["Jacob Jones", "Cultural Guide"],
+    ["Maria Prova", "Travel Consultant"],
+    ["Rebeka Maliha", "Customer Care Lead"],
+    ["Alif Mahmud", "Adventure Specialist"],
+  ];
+  await seedIfEmpty(
+    prisma.teamMember,
+    team.map(([tname, role], i) => ({
+      name: tname,
+      slug: tname.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+      role,
+      photoUrl: `/assets/img/team/team_1_${i + 1}.jpg`,
+      bio: `<p>${tname} is part of the Dream International team, dedicated to crafting memorable journeys across Nepal.</p>`,
+      status: "PUBLISHED",
+      isFeatured: true,
+      order: i,
+      publishedAt: now(),
+    }))
+  );
+
+  // ---------- Reviews / testimonials ----------
+  await seedIfEmpty(prisma.review, [
+    {
+      reviewerName: "Sarah Thompson",
+      reviewerCountry: "United Kingdom",
+      reviewerPhoto: "/assets/img/testimonial/testi-img-1.jpg",
+      rating: 5,
+      reviewText:
+        "An unforgettable trek to Annapurna Base Camp. The guides were knowledgeable and the arrangements were flawless.",
+      source: "TRIPADVISOR",
+      isFeatured: true,
+      isVisible: true,
+    },
+    {
+      reviewerName: "David Chen",
+      reviewerCountry: "Singapore",
+      reviewerPhoto: "/assets/img/testimonial/testi-img-2.jpg",
+      rating: 5,
+      reviewText:
+        "Dream International planned our family trip to Pokhara and Chitwan perfectly. Highly recommended!",
+      source: "GOOGLE",
+      isFeatured: true,
+      isVisible: true,
+    },
+    {
+      reviewerName: "Emma Wilson",
+      reviewerCountry: "Australia",
+      rating: 5,
+      reviewText: "Seamless cultural tour of Kathmandu Valley. Great value and wonderful local guides.",
+      source: "DIRECT",
+      isFeatured: true,
+      isVisible: true,
+    },
+  ]);
+
+  // ---------- Activities ----------
+  const activities = [
+    ["Paragliding", "$120.00", "tour_5_1.jpg"],
+    ["Coastal Adventure", "$88.00", "tour_5_2.jpg"],
+    ["White Water Rafting", "$68.00", "tour_5_3.jpg"],
+    ["Cultural Immersion", "$58.00", "tour_5_4.jpg"],
+    ["Mountain Hiking", "$48.00", "tour_5_5.jpg"],
+    ["Lake Boating", "$30.00", "tour_5_6.jpg"],
+  ];
+  await seedIfEmpty(
+    prisma.activity,
+    activities.map(([atitle, price, img], i) => ({
+      title: atitle,
+      slug: atitle.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+      shortDescription: `${atitle} experiences with Dream International.`,
+      description: `<p>Enjoy ${atitle.toLowerCase()} with experienced local guides and full safety support.</p>`,
+      price,
+      imageUrl: `/assets/img/tour/${img}`,
+      status: "PUBLISHED",
+      isFeatured: true,
+      order: i,
+      publishedAt: now(),
+    }))
+  );
+
+  // ---------- Services ----------
+  const services = [
+    ["Custom Itinerary Planning", "feature_1_1.svg"],
+    ["Licensed Tour Guides", "feature_1_2.svg"],
+    ["Airport & Transport", "feature_1_3.svg"],
+    ["Hotel & Lodge Booking", "feature_1_4.svg"],
+    ["Trekking Permits & TIMS", "tour_icon_1.svg"],
+    ["24/7 Travel Support", "tour_icon_2.svg"],
+  ];
+  await seedIfEmpty(
+    prisma.service,
+    services.map(([stitle, icon], i) => ({
+      title: stitle,
+      slug: stitle.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+      shortDescription: `${stitle} for a smooth and worry-free journey.`,
+      description: `<p>Dream International provides ${stitle.toLowerCase()} as part of our end-to-end travel service.</p>`,
+      iconUrl: `/assets/img/icon/${icon}`,
+      status: "PUBLISHED",
+      isFeatured: true,
+      order: i,
+      publishedAt: now(),
+    }))
+  );
+
+  // ---------- Resorts ----------
+  const resorts = [
+    ["Ocean View Resort", "$350.00", "resort_1_1.jpg"],
+    ["Premier Forest Resort", "$250.00", "resort_1_2.jpg"],
+    ["Deluxe Hilltop Resort", "$180.00", "resort_1_3.jpg"],
+  ];
+  await seedIfEmpty(
+    prisma.resort,
+    resorts.map(([rtitle, price, img], i) => ({
+      title: rtitle,
+      slug: rtitle.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+      shortDescription: `${rtitle} — comfortable stays with great views.`,
+      description: `<p>${rtitle} offers a relaxing stay with modern amenities.</p>`,
+      price,
+      location: "Nepal",
+      imageUrl: `/assets/img/destination/destination_4_${i + 1}.jpg`,
+      amenities: ["Free Wi-Fi", "Restaurant", "Mountain View", "Airport Transfer"],
+      status: "PUBLISHED",
+      isFeatured: true,
+      order: i,
+      publishedAt: now(),
+    }))
+  );
+
+  // ---------- Tours ----------
+  const tours = [
+    ["Everest Base Camp Trek", 1450, 14, "tour_4_1.jpg", "Trek to the foot of the world's highest peak."],
+    ["Annapurna Circuit Trek", 1150, 12, "tour_4_2.jpg", "Classic circuit through diverse landscapes."],
+    ["Ghorepani Poon Hill Trek", 650, 5, "tour_4_3.jpg", "Short scenic trek with sunrise views."],
+    ["Chitwan Jungle Safari", 420, 3, "tour_4_4.jpg", "Wildlife adventure in the Terai lowlands."],
+    ["Kathmandu Valley Cultural Tour", 380, 4, "tour_4_5.jpg", "UNESCO heritage sites and temples."],
+    ["Langtang Valley Trek", 890, 8, "tour_4_6.jpg", "Glacial valley close to Kathmandu."],
+  ];
+  await seedIfEmpty(
+    prisma.tour,
+    tours.map(([ttitle, price, days, img, desc], i) => ({
+      title: ttitle,
+      slug: ttitle.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+      shortDescription: desc,
+      description: `<p>${desc} Operated by Dream International with licensed guides, permits, and full support.</p>`,
+      highlights: ["Licensed guide", "Permits included", "Daily breakfast", "Airport transfers"],
+      basePrice: price,
+      durationDays: days,
+      durationNights: Math.max(days - 1, 0),
+      difficulty: "MODERATE",
+      featuredImageUrl: `/assets/img/tour/${img}`,
+      status: "PUBLISHED",
+      isFeatured: i < 6,
+      publishedAt: now(),
+    }))
+  );
+
+  // ---------- Gallery ----------
+  await seedIfEmpty(
+    prisma.galleryImage,
+    [1, 2, 3, 4, 5, 6].map((n) => ({
+      title: `Gallery image ${n}`,
+      imageUrl: `/assets/img/gallery/gallery_6_${n}.jpg`,
+      category: "Tours",
+      order: n - 1,
+      isVisible: true,
+    }))
+  );
+
+  // ---------- FAQs ----------
+  await seedIfEmpty(prisma.faq, [
+    {
+      question: "How do I book a tour?",
+      answer: "<p>Contact us via the inquiry form or email and our team will tailor a package for you.</p>",
+      order: 0,
+    },
+    {
+      question: "Do I need a visa for Nepal?",
+      answer: "<p>Most nationalities can obtain a tourist visa on arrival at Kathmandu airport.</p>",
+      order: 1,
+    },
+    {
+      question: "What is the best season to trek?",
+      answer: "<p>Spring (Mar–May) and autumn (Sep–Nov) offer the clearest mountain views.</p>",
+      order: 2,
+    },
+    {
+      question: "Are permits included in the price?",
+      answer: "<p>Yes, trekking permits and TIMS cards are included in our standard packages.</p>",
+      order: 3,
+    },
+  ]);
+
+  // ---------- Blog ----------
+  await seedIfEmpty(prisma.blogPost, [
+    {
+      title: "Top 5 Treks in Nepal for First-Timers",
+      slug: "top-5-treks-in-nepal-for-first-timers",
+      excerpt: "New to trekking in Nepal? Start with these beginner-friendly classics.",
+      content: "<p>From Poon Hill to Langtang, here are the best treks to begin your Himalayan journey.</p>",
+      coverImageUrl: "/assets/img/blog/blog_1_1.jpg",
+      tags: ["trekking", "guide"],
+      status: "PUBLISHED",
+      publishedAt: now(),
+    },
+    {
+      title: "A Cultural Guide to Kathmandu Valley",
+      slug: "a-cultural-guide-to-kathmandu-valley",
+      excerpt: "Explore the temples, stupas, and durbar squares of the Kathmandu Valley.",
+      content: "<p>The Kathmandu Valley is home to seven UNESCO World Heritage Sites.</p>",
+      coverImageUrl: "/assets/img/blog/blog_1_2.jpg",
+      tags: ["culture", "kathmandu"],
+      status: "PUBLISHED",
+      publishedAt: now(),
+    },
+  ]);
+
+  // ---------- Homepage sections (page builder) ----------
+  const sections = [
+    {
+      key: "hero",
+      label: "Hero Slider",
+      order: 0,
+      data: {
+        slides: [
+          {
+            image: "/assets/img/bg/hero_bg_7_1.jpg",
+            subtitle: "Welcome to Dream International",
+            title: "Discover the Himalayas of Nepal",
+            text: "Trekking, cultural tours, and tailor-made journeys with trusted local experts.",
+            primaryCta: { label: "Explore Tours", url: "/tour" },
+            secondaryCta: { label: "Contact Us", url: "/contact" },
+          },
+          {
+            image: "/assets/img/bg/breadcumb-bg.jpg",
+            subtitle: "Adventure Awaits",
+            title: "Custom Journeys Across Nepal",
+            text: "From Everest Base Camp to Chitwan's jungles — we craft trips around you.",
+            primaryCta: { label: "Plan My Trip", url: "/contact" },
+            secondaryCta: { label: "View Destinations", url: "/destination" },
+          },
+        ],
+      },
+    },
+    { key: "categories", label: "Tour Categories", order: 1, data: { subTitle: "Tour Categories", title: "Browse by Experience" } },
+    { key: "featuredDestination", label: "Featured Destination", order: 2, data: { subTitle: "Featured Destination", title: "Where to Go" } },
+    {
+      key: "about",
+      label: "About Section",
+      order: 3,
+      data: {
+        subTitle: "About Dream International",
+        title: "Your Trusted Travel Partner in Nepal",
+        text: "We are a Nepal-based travel company specializing in trekking, cultural tours, and bespoke itineraries. Our experienced guides and personal service ensure a safe, memorable journey.",
+        image: "/assets/img/normal/about_10_1.jpg",
+        points: ["Licensed local guides", "Tailor-made itineraries", "24/7 on-trip support", "Fair, transparent pricing"],
+        experienceYears: 12,
+      },
+    },
+    { key: "featuredTours", label: "Featured Tours", order: 4, data: { subTitle: "Popular Packages", title: "Featured Tours" } },
+    { key: "gallery", label: "Gallery", order: 5, data: { subTitle: "Our Gallery", title: "Moments From the Trail" } },
+    { key: "counters", label: "Stats / Counters", order: 6, data: { bgImage: "/assets/img/bg/cta_bg_2.jpg" } },
+    { key: "team", label: "Team / Guides", order: 7, data: { subTitle: "Our Team", title: "Meet Your Guides" } },
+    { key: "testimonials", label: "Testimonials", order: 8, data: { subTitle: "Testimonials", title: "What Travelers Say" } },
+    { key: "brands", label: "Partner Brands", order: 9, data: {} },
+    { key: "blog", label: "Blog Teaser", order: 10, data: { subTitle: "Our Blog", title: "News & Articles" } },
+  ];
+  for (const s of sections) {
+    // eslint-disable-next-line no-await-in-loop
+    await prisma.section.upsert({
+      where: { page_key: { page: "home", key: s.key } },
+      update: {},
+      create: { page: "home", key: s.key, label: s.label, order: s.order, enabled: true, data: s.data },
+    });
+  }
+
+  // ---------- About page content ----------
+  await prisma.section.upsert({
+    where: { page_key: { page: "about", key: "intro" } },
+    update: {},
+    create: {
+      page: "about",
+      key: "intro",
+      label: "About Intro",
+      order: 0,
+      enabled: true,
+      data: {
+        subTitle: "About Us",
+        title: "About Dream International Travel and Tours",
+        text: "<p>Dream International Travel and Tours is a Kathmandu-based travel company offering trekking, cultural tours, jungle safaris, and custom journeys across Nepal.</p>",
+        image: "/assets/img/normal/about_11_1.jpg",
+      },
+    },
+  });
+
+  console.log("Seed complete.");
+}
+
+main()
+  .then(() => prisma.$disconnect())
+  .catch(async (e) => {
+    console.error(e);
+    await prisma.$disconnect();
+    process.exit(1);
+  });

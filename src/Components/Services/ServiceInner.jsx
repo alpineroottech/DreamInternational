@@ -1,8 +1,13 @@
 import React from 'react';
 import ServiceCard from './ServiceCard';
-import posts from '../data/data-service.json';
+import jsonPosts from '../data/data-service.json';
+import { useCollection } from '../../public-cms/hooks';
 
 function ServiceInner() {
+    const cms = useCollection('/public/services');
+    const posts = cms && cms.length
+        ? cms.map((s) => ({ id: s.slug, image: s.iconUrl || s.imageUrl, title: s.title, item: s.shortDescription || '' }))
+        : jsonPosts;
     return (
         <section className="position-relative overflow-hidden space" id="destination-sec">
             <div className="container shape-mockup-wrap">

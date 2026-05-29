@@ -1,38 +1,39 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { resolveAssetUrl } from '../../public-cms/hooks'
 
 function TourguideCard(props) {
-    const { guideID, guideThumb, guideImage, guideTitle } = props;
+    const { guideID, guideThumb, guideImage, guideTitle, guideRole, guideSocials } = props;
+    const resolve = (img, fallback) =>
+        img && (img.startsWith('/') || img.startsWith('http')) ? resolveAssetUrl(img) : `/assets/img/team/${img || fallback}`;
+    const socials = guideSocials || {};
+    const socialLinks = [
+        { key: 'facebook', icon: 'fab fa-facebook-f' },
+        { key: 'twitter', icon: 'fab fa-twitter' },
+        { key: 'linkedin', icon: 'fab fa-linkedin-in' },
+        { key: 'youtube', icon: 'fab fa-youtube' },
+        { key: 'instagram', icon: 'fab fa-instagram' },
+    ];
     return (
         <div className="th-team team-grid">
             <div className="team-img">
-                <img src={`/assets/img/team/${guideThumb}`} alt="Team" />
+                <img src={resolve(guideThumb, 'team_1_1.jpg')} alt="Team" />
             </div>
             <div className="team-img2">
-                <img src= {`/assets/img/team/${guideImage}`} alt="Team" />
+                <img src={resolve(guideImage, 'team_1_1.jpg')} alt="Team" />
             </div>
             <div className="team-content">
                 <div className="media-body">
                     <h3 className="box-title">
                         <Link to={`/tour-guide/${guideID}`}>{guideTitle ? guideTitle : 'Michel Smith'}</Link>
                     </h3>
-                    <span className="team-desig">Tourist Guide</span>
+                    <span className="team-desig">{guideRole || 'Tourist Guide'}</span>
                     <div className="th-social">
-                        <Link target="_blank" to="https://facebook.com/">
-                            <i className="fab fa-facebook-f" />
-                        </Link>
-                        <Link target="_blank" to="https://twitter.com/">
-                            <i className="fab fa-twitter" />
-                        </Link>
-                        <Link target="_blank" to="https://linkedin.com/">
-                            <i className="fab fa-linkedin-in" />
-                        </Link>
-                        <Link target="_blank" to="https://youtube.com/">
-                            <i className="fab fa-youtube" />
-                        </Link>
-                        <Link target="_blank" to="https://instagram.com/">
-                            <i className="fab fa-instagram" />
-                        </Link>
+                        {socialLinks.map((s) => (
+                            <Link key={s.key} target="_blank" rel="noopener noreferrer" to={socials[s.key] || `https://${s.key}.com/`}>
+                                <i className={s.icon} />
+                            </Link>
+                        ))}
                     </div>
                 </div>
             </div>

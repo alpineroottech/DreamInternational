@@ -1,11 +1,25 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
+import { Link, useSearchParams } from 'react-router-dom'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Navigation, Thumbs, EffectFade } from "swiper/modules";
+import { publicApi, resolveAssetUrl } from '../../public-cms/hooks';
+import SafeHtml from '../../public-cms/SafeHtml';
 
 function TourDetailsMain() {
     const [thumbsSwiper, setThumbsSwiper] = useState(null);
     const [activeTab, setActiveTab] = useState("day-tab1");
+    const [searchParams] = useSearchParams();
+    const slug = searchParams.get('slug');
+    const [cms, setCms] = useState(null);
+
+    useEffect(() => {
+        if (!slug) { setCms(null); return undefined; }
+        let active = true;
+        publicApi.get(`/public/tours/${slug}`)
+            .then(({ data }) => active && setCms(data))
+            .catch(() => active && setCms(null));
+        return () => { active = false; };
+    }, [slug]);
 
     const days = [
         { id: "day-tab1", label: "Day 01" },
@@ -76,6 +90,49 @@ function TourDetailsMain() {
             "Donec eu mi vel felis vehicula dapibus.",
         ],
     };
+
+    // CMS-driven tour detail (when reached via /tour-details?slug=...)
+    if (cms) {
+        return (
+            <section className="space">
+                <div className="container">
+                    <div className="row">
+                        <div className="col-lg-8">
+                            <div className="page-single">
+                                <div className="page-img">
+                                    <img className="w-100" src={resolveAssetUrl(cms.featuredImageUrl)} alt={cms.featuredImageAlt || cms.title} />
+                                </div>
+                                <div className="page-content">
+                                    <h2 className="box-title mt-4">{cms.title}</h2>
+                                    {cms.shortDescription && <p className="mb-3">{cms.shortDescription}</p>}
+                                    <SafeHtml className="mb-4" html={cms.description} />
+                                    {Array.isArray(cms.highlights) && cms.highlights.length > 0 && (
+                                        <>
+                                            <h3 className="box-title">Highlights</h3>
+                                            <div className="checklist mb-4"><ul>{cms.highlights.map((h, i) => <li key={i}>{h}</li>)}</ul></div>
+                                        </>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                        <div className="col-lg-4">
+                            <div className="widget widget_offer p-4" style={{ background: '#f4f7fb', borderRadius: 12 }}>
+                                <h5 className="mb-3">Trip facts</h5>
+                                <ul className="list-unstyled mb-4">
+                                    {cms.basePrice != null && <li className="mb-2"><strong>From:</strong> ${cms.basePrice}</li>}
+                                    {cms.durationDays != null && <li className="mb-2"><strong>Duration:</strong> {cms.durationDays} days</li>}
+                                    {cms.difficulty && <li className="mb-2"><strong>Difficulty:</strong> {cms.difficulty}</li>}
+                                    {cms.startPoint && <li className="mb-2"><strong>Start:</strong> {cms.startPoint}</li>}
+                                </ul>
+                                <Link to="/contact" className="th-btn th-icon w-100 text-center">Book This Tour</Link>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        );
+    }
+
     return (
         <section className="space">
             <div className="container shape-mockup-wrap">

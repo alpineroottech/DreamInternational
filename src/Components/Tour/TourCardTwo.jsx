@@ -1,16 +1,21 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
+import { resolveAssetUrl } from '../../public-cms/hooks';
 
 function TourCardTwo(props) {
-    const { tourImage, tourTitle, tourPrice } = props;
+    const { tourImage, tourTitle, tourPrice, tourLink } = props;
+    const src = tourImage && (tourImage.startsWith('/') || tourImage.startsWith('http'))
+        ? resolveAssetUrl(tourImage)
+        : `/assets/img/tour/${tourImage}`;
+    const link = tourLink || '/tour-details';
     return (
         <div className="tour-box style-flex th-ani">
             <div className="tour-box_img global-img">
-                <img src={`/assets/img/tour/${tourImage}`} alt="" />
+                <img src={src} alt={tourTitle || ''} />
             </div>
             <div className="tour-content">
                 <h3 className="box-title">
-                   <Link to="/tour-details">{tourTitle ? tourTitle : 'Greece Tour Package'}</Link>
+                   <Link to={link}>{tourTitle ? tourTitle : 'Greece Tour Package'}</Link>
                 </h3>
                 <div className="tour-rating">
                     <div
@@ -26,7 +31,7 @@ function TourCardTwo(props) {
                         </span>
                     </div>
                     <Link
-                        to="/tour-details"
+                        to={link}
                         className="woocommerce-review-link"
                     >
                         (<span className="count">4.8</span>
@@ -40,7 +45,7 @@ function TourCardTwo(props) {
                     <span>
                         <i className="fa-light fa-clock" />7 Days
                     </span>
-                    <Link to="/tour-details" className="th-btn style4">
+                    <Link to={link} className="th-btn style4">
                         Detail View
                     </Link>
                 </div>

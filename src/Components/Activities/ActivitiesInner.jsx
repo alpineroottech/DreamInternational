@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import posts from '../data/data-activities.json';
+import jsonPosts from '../data/data-activities.json';
 import ActivitiesCard from './ActivitiesCard';
+import { useCollection } from '../../public-cms/hooks';
 
 function ActivitiesInner() {
     const [value, setValue] = useState(30);
@@ -13,6 +14,11 @@ function ActivitiesInner() {
 
     const [currentPage, setCurrentPage] = useState(1);
     const postsPerPage = 8;
+
+    const cms = useCollection('/public/activities');
+    const posts = cms && cms.length
+        ? cms.map((a) => ({ id: a.slug, slug: a.slug, image: a.imageUrl, title: a.title, price: a.price || 'On request' }))
+        : jsonPosts;
 
     const totalPages = Math.ceil(posts.length / postsPerPage);
     const indexOfLastPost = currentPage * postsPerPage;
@@ -35,6 +41,7 @@ function ActivitiesInner() {
                                         activitiesImage={`${data.image}`}
                                         activitiesTitle={data.title}
                                         activitiesPrice={data.price}
+                                        activitiesLink={data.slug ? `/activities-details?slug=${data.slug}` : undefined}
                                     />
                                 </div>
                             ))}

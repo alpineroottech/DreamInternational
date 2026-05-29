@@ -1,13 +1,25 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import TourCard from './TourCard';
-import posts from '../data/data-tour.json';
+import jsonPosts from '../data/data-tour.json';
 import TourCardTwo from './TourCardTwo';
+import { useCollection } from '../../public-cms/hooks';
 
 function TourInner() {
     const [activeTab, setActiveTab] = useState('tab-grid');
     const [currentPage, setCurrentPage] = useState(1);
     const postsPerPage = 8;
+
+    const cms = useCollection('/public/tours');
+    const posts = cms && cms.length
+        ? cms.map((t) => ({
+            id: t.slug,
+            slug: t.slug,
+            image: t.featuredImageUrl,
+            title: t.title,
+            price: t.basePrice ? `$${t.basePrice}.00` : 'On request',
+        }))
+        : jsonPosts;
 
     const totalPages = Math.ceil(posts.length / postsPerPage);
     const indexOfLastPost = currentPage * postsPerPage;
@@ -97,6 +109,7 @@ function TourInner() {
                                                 tourImage={`${data.image}`}
                                                 tourTitle={data.title}
                                                 tourPrice={data.price}
+                                                tourLink={data.slug ? `/tour-details?slug=${data.slug}` : undefined}
                                             />
                                         </div>
                                     ))}
@@ -113,6 +126,7 @@ function TourInner() {
                                                 tourImage={`${data.image}`}
                                                 tourTitle={data.title}
                                                 tourPrice={data.price}
+                                                tourLink={data.slug ? `/tour-details?slug=${data.slug}` : undefined}
                                             />
                                         </div>
                                     ))}

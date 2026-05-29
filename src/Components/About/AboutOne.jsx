@@ -1,7 +1,10 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { resolveAssetUrl } from '../../public-cms/hooks'
+import SafeHtml from '../../public-cms/SafeHtml'
 
-function AboutOne() {
+function AboutOne({ data = {} }) {
+    const aboutImg = resolveAssetUrl(data.image);
     return (
         <div
             className="about-area position-relative overflow-hidden space"
@@ -12,7 +15,7 @@ function AboutOne() {
                     <div className="col-xl-6">
                         <div className="img-box1">
                             <div className="img1">
-                                <img src="/assets/img/normal/temple.webp" alt="About" />
+                                <img src={aboutImg || "/assets/img/normal/temple.webp"} alt="About" />
                             </div>
                             <div className="img2">
                                 <img src="/assets/img/normal/lake.jpg" alt="About" />
@@ -25,15 +28,19 @@ function AboutOne() {
                     <div className="col-xl-6">
                         <div className="ps-xl-4 ms-xl-2">
                             <div className="title-area mb-20 pe-xl-5 me-xl-5">
-                                <span className="sub-title style1 ">About Dream International</span>
+                                <span className="sub-title style1 ">{data.subTitle || "About Dream International"}</span>
                                 <h2 className="sec-title mb-20 pe-xl-5 me-xl-5 heading">
-                                    Plan Your Nepal Journey With Us
+                                    {data.title || "Plan Your Nepal Journey With Us"}
                                 </h2>
-                                <p className="sec-text mb-30">
-                                    We are a Kathmandu-based travel and tour company providing
-                                    trekking, cultural, and customized holiday experiences across
-                                    Nepal with experienced local guides and dedicated support.
-                                </p>
+                                {data.text ? (
+                                    <SafeHtml className="sec-text mb-30" html={data.text} />
+                                ) : (
+                                    <p className="sec-text mb-30">
+                                        We are a Kathmandu-based travel and tour company providing
+                                        trekking, cultural, and customized holiday experiences across
+                                        Nepal with experienced local guides and dedicated support.
+                                    </p>
+                                )}
                             </div>
                             <div className="about-item-wrap">
                                 <div className="about-item">

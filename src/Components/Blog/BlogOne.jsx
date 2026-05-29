@@ -4,59 +4,27 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import { useCollection, resolveAssetUrl } from "../../public-cms/hooks";
 
-const blogPosts = [
-  {
-    id: 1,
-    date: "July 05 2024",
-    readTime: "6 min read",
-    title: "10 Reasons why you should visit New Jersey",
-    image: "/assets/img/blog/blog_1_1.jpg",
-    detailsLink: "/blog/1",
-  },
-  {
-    id: 2,
-    date: "July 06 2024",
-    readTime: "7 min read",
-    title: "The best time to visit Japan & enjoy the cherry blossoms",
-    image: "/assets/img/blog/blog_1_2.jpg",
-    detailsLink: "/blog/1",
-  },
-  {
-    id: 3,
-    date: "July 07 2024",
-    readTime: "8 min read",
-    title: "The 7 amazing destinations for adventure seekers",
-    image: "/assets/img/blog/blog_1_3.jpg",
-    detailsLink: "/blog/1",
-  },
-  {
-    id: 4,
-    date: "July 09 2024",
-    readTime: "9 min read",
-    title: "10 Reasons why you should visit New Jersey",
-    image: "/assets/img/blog/blog_1_1.jpg",
-    detailsLink: "/blog/1",
-  },
-  {
-    id: 5,
-    date: "July 10 2024",
-    readTime: "10 min read",
-    title: "The best time to visit Japan & enjoy the cherry blossoms",
-    image: "/assets/img/blog/blog_1_2.jpg",
-    detailsLink: "/blog/1",
-  },
-  {
-    id: 6,
-    date: "July 12 2024",
-    readTime: "11 min read",
-    title: "The 7 amazing destinations for adventure seekers",
-    image: "/assets/img/blog/blog_1_3.jpg",
-    detailsLink: "/blog/1",
-  },
+const FALLBACK = [
+  { id: 1, date: "", readTime: "6 min read", title: "Top treks in Nepal for first-timers", image: "/assets/img/blog/blog_1_1.jpg", detailsLink: "/blog/1" },
+  { id: 2, date: "", readTime: "7 min read", title: "A cultural guide to Kathmandu Valley", image: "/assets/img/blog/blog_1_2.jpg", detailsLink: "/blog/1" },
+  { id: 3, date: "", readTime: "8 min read", title: "Best destinations for adventure seekers", image: "/assets/img/blog/blog_1_3.jpg", detailsLink: "/blog/1" },
 ];
 
-function BlogOne() {
+function BlogOne({ data = {} }) {
+  const cms = useCollection("/public/blog");
+  const blogPosts =
+    cms && cms.length
+      ? cms.map((p) => ({
+          id: p.slug,
+          date: p.publishedAt ? new Date(p.publishedAt).toLocaleDateString() : "",
+          readTime: "",
+          title: p.title,
+          image: resolveAssetUrl(p.coverImageUrl) || "/assets/img/blog/blog_1_1.jpg",
+          detailsLink: `/blog/${p.slug}`,
+        }))
+      : FALLBACK;
   return (
     <section className="bg-smoke overflow-hidden space overflow-hidden" id="blog-sec">
       <div className="container shape-mockup-wrap">
@@ -64,8 +32,8 @@ function BlogOne() {
           <div className="row align-items-center justify-content-between">
             <div className="col-md-7">
               <div className="title-area mb-md-0">
-                <span className="sub-title">About Us Restaurant</span>
-                <h2 className="sec-title">News & Articles From Dream International</h2>
+                <span className="sub-title">{data.subTitle || "Our Blog"}</span>
+                <h2 className="sec-title">{data.title || "News & Articles From Dream International"}</h2>
               </div>
             </div>
             <div className="col-md-auto">
