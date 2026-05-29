@@ -1,0 +1,51 @@
+{
+  "name": "dream-international-travel-and-tours",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.2.0",
+    "@testing-library/user-event": "^13.5.0",
+    "imagesloaded": "^5.0.0",
+    "jquery": "^3.7.1",
+    "jquery-ui-dist": "^1.13.3",
+    "masonry-layout": "^4.2.2",
+    "matter-js": "^0.20.0",
+    "react": "^18.2.0",
+    "react-burger-menu": "^3.1.0",
+    "react-countup": "^6.5.3",
+    "react-dom": "^18.2.0",
+    "react-intersection-observer": "^9.15.1",
+    "react-modal": "^3.16.3",
+    "react-router-dom": "^7.2.0",
+    "react-scripts": "5.0.1",
+    "react-select": "^5.10.0",
+    "swiper": "^11.2.4",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
