@@ -36,3 +36,19 @@
     transform: rotate(360deg);
   }
 }
+
+/* -------------------------------------------------------
+   Homepage layout: ensure the booking widget and first
+   content section below the hero have proper breathing room.
+------------------------------------------------------- */
+.booking-sec {
+  padding-top: 30px;
+  padding-bottom: 30px;
+  background: #f4f9fc;
+}
+
+/* Add top-space to the category section that follows the booking bar */
+.category-area {
+  padding-top: 80px;
+  padding-bottom: 60px;
+}

@@ -1,35 +1,39 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import api from "../../admin/api/client";
+import { publicApi, resolveAssetUrl } from "../../public-cms/hooks";
 
-const API_ORIGIN = (process.env.REACT_APP_API_URL || "http://localhost:4000/api").replace(/\/api$/, "");
-function resolveUrl(url) {
-  if (!url) return "/assets/img/hero/R.jpg";
-  if (url.startsWith("http") || url.startsWith("/assets")) return url;
-  if (url.startsWith("/uploads")) return `${API_ORIGIN}${url}`;
-  return url;
-}
-
-function DestinationOne() {
+function DestinationOne({ data = {} }) {
   const [dest, setDest] = useState(null);
 
   // Pull the featured destination from the CMS; fall back to seeded Pokhara content.
+  // If CMS section data provides a specific slug, load that destination.
+  // Otherwise fall back to the first featured destination.
+  const specificSlug = data.destinationSlug;
+
   useEffect(() => {
     let active = true;
-    api
-      .get("/public/destinations", { params: { featured: true } })
-      .then(({ data }) => {
-        if (active && Array.isArray(data) && data.length) setDest(data[0]);
+    const req = specificSlug
+      ? publicApi.get(`/public/destinations/${specificSlug}`)
+      : publicApi.get("/public/destinations", { params: { featured: "true" } });
+
+    req
+      .then(({ data: payload }) => {
+        if (!active) return;
+        if (Array.isArray(payload)) {
+          if (payload.length) setDest(payload[0]);
+        } else {
+          setDest(payload);
+        }
       })
       .catch(() => {});
     return () => {
       active = false;
     };
-  }, []);
+  }, [specificSlug]);
 
   const name = dest?.name || "Pokhara City";
   const slug = dest?.slug || "pokhara-city";
-  const image = resolveUrl(dest?.heroImage?.url);
+  const image = resolveAssetUrl(dest?.heroImage?.url) || "/assets/img/destination/destination_4_1.jpg";
   const summary =
     dest?.shortDescription ||
     "Nepal's lakeside city with Phewa Lake, mountain views, paragliding, and easy access to Annapurna treks.";
@@ -38,8 +42,8 @@ function DestinationOne() {
     <div className="position-relative overflow-hidden">
       <div className="container">
         <div className="title-area text-center">
-          <span className="sub-title">Featured Destination</span>
-          <h2 className="sec-title">{name}, Nepal</h2>
+          <span className="sub-title">{data.subTitle || "Featured Destination"}</span>
+          <h2 className="sec-title">{data.title || `${name}, Nepal`}</h2>
         </div>
         <div className="row justify-content-center">
           <div className="col-lg-10">

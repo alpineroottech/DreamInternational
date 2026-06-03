@@ -3,11 +3,15 @@ import { Link } from 'react-router-dom';
 
 function DestinationCard(props) {
     const { destinationID, destinationImage, destinationTitle, destinationPrice } = props;
+    // Accept either a full URL/path (CMS) or a bare filename (static JSON)
+    const imgSrc = destinationImage && (destinationImage.startsWith('/') || destinationImage.startsWith('http'))
+        ? destinationImage
+        : `/assets/img/tour/${destinationImage}`;
     return (
         <>
             <div className="tour-box th-ani">
                 <div className="tour-box_img global-img">
-                    <img src={`/assets/img/tour/${destinationImage}`} alt="" />
+                    <img src={imgSrc} alt={destinationTitle || 'Destination'} />
                 </div>
                 <div className="tour-content">
                     <h3 className="box-title">

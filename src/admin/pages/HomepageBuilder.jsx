@@ -5,10 +5,20 @@ import FieldRenderer from "../components/FieldRenderer";
 import { MediaInput } from "../components/MediaPicker";
 
 // Which editable fields each section type exposes.
+// "collectionNote" sections show a helper hint instead of empty fields.
 const SECTION_FIELDS = {
   hero: "heroSlides",
-  categories: [{ name: "subTitle", label: "Sub title", type: "text" }, { name: "title", label: "Title", type: "text" }],
-  featuredDestination: [{ name: "subTitle", label: "Sub title", type: "text" }, { name: "title", label: "Title", type: "text" }],
+  categories: [
+    { name: "subTitle", label: "Sub title", type: "text" },
+    { name: "title", label: "Title", type: "text" },
+    { name: "_hint", label: "hint", type: "_hint", hint: "Items are managed under Tour Categories in the sidebar." },
+  ],
+  featuredDestination: [
+    { name: "subTitle", label: "Sub title", type: "text" },
+    { name: "title", label: "Section heading (leave blank to use destination name)", type: "text" },
+    { name: "destinationSlug", label: "Destination slug to feature (e.g. pokhara-city)", type: "text" },
+    { name: "_hint", label: "hint", type: "_hint", hint: "Leave destination slug blank to auto-show the first destination marked 'Featured'. To mark a destination featured, edit it in Destinations." },
+  ],
   about: [
     { name: "subTitle", label: "Sub title", type: "text" },
     { name: "title", label: "Title", type: "text" },
@@ -17,13 +27,38 @@ const SECTION_FIELDS = {
     { name: "points", label: "Bullet points", type: "stringList" },
     { name: "experienceYears", label: "Years of experience", type: "number" },
   ],
-  featuredTours: [{ name: "subTitle", label: "Sub title", type: "text" }, { name: "title", label: "Title", type: "text" }],
-  gallery: [{ name: "subTitle", label: "Sub title", type: "text" }, { name: "title", label: "Title", type: "text" }],
-  counters: [{ name: "bgImage", label: "Background image", type: "image" }],
-  team: [{ name: "subTitle", label: "Sub title", type: "text" }, { name: "title", label: "Title", type: "text" }],
-  testimonials: [{ name: "subTitle", label: "Sub title", type: "text" }, { name: "title", label: "Title", type: "text" }],
-  brands: [],
-  blog: [{ name: "subTitle", label: "Sub title", type: "text" }, { name: "title", label: "Title", type: "text" }],
+  featuredTours: [
+    { name: "subTitle", label: "Sub title", type: "text" },
+    { name: "title", label: "Title", type: "text" },
+    { name: "_hint", label: "hint", type: "_hint", hint: "Tours displayed here are the ones marked as 'Featured' in the Tours section. Open Tours → edit a tour → toggle 'Is Featured' to control which appear here." },
+  ],
+  gallery: [
+    { name: "subTitle", label: "Sub title", type: "text" },
+    { name: "title", label: "Title", type: "text" },
+    { name: "_hint", label: "hint", type: "_hint", hint: "Gallery images are managed under Gallery in the sidebar." },
+  ],
+  counters: [
+    { name: "bgImage", label: "Background image", type: "image" },
+    { name: "_hint", label: "hint", type: "_hint", hint: "Counter values (years, travelers, etc.) are managed under Counters in the sidebar." },
+  ],
+  team: [
+    { name: "subTitle", label: "Sub title", type: "text" },
+    { name: "title", label: "Title", type: "text" },
+    { name: "_hint", label: "hint", type: "_hint", hint: "Team members are managed under Team in the sidebar." },
+  ],
+  testimonials: [
+    { name: "subTitle", label: "Sub title", type: "text" },
+    { name: "title", label: "Title", type: "text" },
+    { name: "_hint", label: "hint", type: "_hint", hint: "Reviews are managed under Reviews in the sidebar. Mark a review as 'Featured' to show it here." },
+  ],
+  brands: [
+    { name: "_hint", label: "hint", type: "_hint", hint: "Partner brand logos are managed under Brands in the sidebar." },
+  ],
+  blog: [
+    { name: "subTitle", label: "Sub title", type: "text" },
+    { name: "title", label: "Title", type: "text" },
+    { name: "_hint", label: "hint", type: "_hint", hint: "Blog posts are managed under Blog in the sidebar. Published posts appear here automatically." },
+  ],
 };
 
 function HeroSlidesEditor({ data, onChange }) {
@@ -107,18 +142,20 @@ function SectionRow({ section, index, total, onMove, onToggle, onSave }) {
         <div className="p-3 border-top">
           {fields === "heroSlides" ? (
             <HeroSlidesEditor data={data} onChange={setData} />
-          ) : fields.length === 0 ? (
-            <p className="text-muted mb-0">This section has no editable text — it pulls content from its collection.</p>
           ) : (
-            fields.map((f) => (
+            fields.filter((f) => f.type !== "_hint").map((f) => (
               <FieldRenderer key={f.name} field={f} value={data[f.name]} onChange={(v) => setData({ ...data, [f.name]: v })} />
             ))
           )}
-          {fields !== "heroSlides" && fields.length === 0 ? null : (
-            <button type="button" className="btn di-btn-primary btn-sm" onClick={save} disabled={saving}>
+          {/* Always render hint fields, even outside the editable list */}
+          {fields !== "heroSlides" && fields.filter((f) => f.type === "_hint").map((f) => (
+            <FieldRenderer key={f.name} field={f} value={undefined} onChange={() => {}} />
+          ))}
+          {fields === "heroSlides" || fields.filter((f) => f.type !== "_hint").length > 0 ? (
+            <button type="button" className="btn di-btn-primary btn-sm mt-2" onClick={save} disabled={saving}>
               {saving ? "Saving…" : savedMsg ? "Saved ✓" : "Save section"}
             </button>
-          )}
+          ) : null}
         </div>
       )}
     </div>

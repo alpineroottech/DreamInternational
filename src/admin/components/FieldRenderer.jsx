@@ -162,6 +162,13 @@ export default function FieldRenderer({ field, value, onChange, error }) {
     case "reference":
       control = <ReferenceField field={field} value={value} onChange={onChange} />;
       break;
+    case "_hint":
+      return (
+        <div className="alert alert-info py-2 px-3 small mb-3" role="note">
+          <Icon icon="solar:info-circle-outline" className="me-1" />
+          {field.hint}
+        </div>
+      );
     case "slug":
       control = (
         <input className={common} value={value || ""} onChange={(e) => onChange(e.target.value)} placeholder="auto-generated" />

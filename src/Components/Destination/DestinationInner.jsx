@@ -1,13 +1,28 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import DestinationCard from './DestinationCard';
-import posts from '../data/data-destination.json';
+import staticPosts from '../data/data-destination.json';
 import DestinationCardTwo from './DestinationCardTwo';
+import { useCollection, resolveAssetUrl } from '../../public-cms/hooks';
 
 function DestinationInner() {
     const [activeTab, setActiveTab] = useState('tab-grid');
     const [currentPage, setCurrentPage] = useState(1);
     const postsPerPage = 9;
+
+    const cmsDestinations = useCollection('/public/destinations');
+
+    // Normalise CMS destinations to the same shape expected by DestinationCard.
+    const posts = cmsDestinations && cmsDestinations.length
+        ? cmsDestinations.map((d) => ({
+            id: d.slug,
+            slug: d.slug,
+            title: d.name,
+            image: resolveAssetUrl(d.heroImage?.url) || '/assets/img/destination/destination_4_1.jpg',
+            price: null,
+            shortDescription: d.shortDescription,
+          }))
+        : staticPosts.map((p) => ({ ...p, slug: String(p.id), image: `/assets/img/tour/${p.image}` }));
 
     const totalPages = Math.ceil(posts.length / postsPerPage);
     const indexOfLastPost = currentPage * postsPerPage;
@@ -92,8 +107,8 @@ function DestinationInner() {
                                     {currentPosts.map((data, index) => (
                                         <div key={index} className="col-xxl-4 col-xl-6">
                                             <DestinationCard
-                                                destinationID={data.id}
-                                                destinationImage={`${data.image}`}
+                                                destinationID={data.slug || data.id}
+                                                destinationImage={data.image}
                                                 destinationTitle={data.title}
                                                 destinationPrice={data.price}
                                             />
@@ -107,8 +122,8 @@ function DestinationInner() {
                                     {currentPosts.map((data, index) => (
                                         <div key={index} className="col-12">
                                             <DestinationCardTwo
-                                                destinationID={data.id}
-                                                destinationImage={`${data.image}`}
+                                                destinationID={data.slug || data.id}
+                                                destinationImage={data.image}
                                                 destinationTitle={data.title}
                                                 destinationPrice={data.price}
                                             />
