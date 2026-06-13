@@ -12,7 +12,7 @@ const FALLBACK = [
 ];
 
 function TestimonialOne({ data = {} }) {
-  const cms = useCollection("/public/reviews", { featured: true });
+  const cms = useCollection("/public/reviews", { featured: "true" });
   const testimonials =
     cms && cms.length
       ? cms.map((r) => ({
@@ -22,6 +22,12 @@ function TestimonialOne({ data = {} }) {
           text: r.reviewText,
         }))
       : FALLBACK;
+
+  // Swiper loop mode requires at least slidesPerView * 2 slides; disable loop
+  // when there are too few items to prevent blank slide rendering.
+  const maxSlidesPerView = 3;
+  const enableLoop = testimonials.length >= maxSlidesPerView * 2;
+
   return (
     <section className="testi-area overflow-hidden space shape-mockup-wrap" id="testi-sec">
       <div className="container-fluid p-0">
@@ -34,16 +40,16 @@ function TestimonialOne({ data = {} }) {
             modules={[Pagination, Navigation]}
             pagination={{ clickable: true }}
             spaceBetween={30}
-            centeredSlides={true}
-            loop={true}
+            centeredSlides={testimonials.length > 1}
+            loop={enableLoop}
             slidesPerGroup={1}
             speed={1200}
             breakpoints={{
-              0: { slidesPerView: 1},
-              767: { slidesPerView: 2},
-              992: { slidesPerView: 2},
-              1200: { slidesPerView: 2},
-              1400: { slidesPerView: 3},
+              0: { slidesPerView: 1 },
+              767: { slidesPerView: Math.min(2, testimonials.length) },
+              992: { slidesPerView: Math.min(2, testimonials.length) },
+              1200: { slidesPerView: Math.min(2, testimonials.length) },
+              1400: { slidesPerView: Math.min(maxSlidesPerView, testimonials.length) },
             }}
             className="testiSlider1 has-shadow"
           >

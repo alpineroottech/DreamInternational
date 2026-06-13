@@ -1,5 +1,6 @@
 import React from 'react'
 import HeaderOne from '../Components/Header/HeaderOne'
+import FooterOne from '../Components/Footer/FooterOne'
 import Breadcrumb from '../Components/BreadCrumb/Breadcrumb'
 import GetInTouch from '../Components/Contact/GetInTouch'
 import BookATour from '../Components/Contact/BookATour'
@@ -17,7 +18,7 @@ function Contact() {
             <GetInTouch />
             <BookATour />
             <ContactMap />
-            <FooterFour />
+            <FooterOne />
             <ScrollToTop />
         </>
     )

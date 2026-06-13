@@ -1,5 +1,6 @@
 import React from 'react'
 import HeaderFour from '../Components/Header/HeaderFour'
+import FooterOne from '../Components/Footer/FooterOne'
 import BannerFour from '../Components/Banner/BannerFour'
 import AboutThree from '../Components/About/AboutThree'
 import SaleOne from '../Components/Sale/SaleOne'
@@ -25,7 +26,7 @@ function HomeFour() {
             <CounterThree />
             <TestimonialFour />
             <BlogFour />
-            <FooterThree />
+            <FooterOne />
             <ScrollToTop />
         </div>
     )

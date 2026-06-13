@@ -1,5 +1,6 @@
 import React from 'react'
 import HeaderOne from '../Components/Header/HeaderOne'
+import FooterOne from '../Components/Footer/FooterOne'
 import Breadcrumb from '../Components/BreadCrumb/Breadcrumb'
 import ServiceDetailsMain from '../Components/Services/ServiceDetailsMain'
 import FooterFour from '../Components/Footer/FooterFour'
@@ -13,7 +14,7 @@ function ServiceDetails() {
                 title="Service Details"
             />
             <ServiceDetailsMain />
-            <FooterFour />
+            <FooterOne />
             <ScrollToTop />
         </>
     )

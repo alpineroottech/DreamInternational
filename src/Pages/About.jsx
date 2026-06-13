@@ -1,31 +1,25 @@
 import React from 'react'
 import HeaderOne from '../Components/Header/HeaderOne'
+import FooterOne from '../Components/Footer/FooterOne'
 import Breadcrumb from '../Components/BreadCrumb/Breadcrumb'
 import AboutFour from '../Components/About/AboutFour'
-import OfferTwo from '../Components/Offer/OfferTwo'
-import ElementSection from '../Components/Elements/ElementSection'
-import TourGuideTwo from '../Components/Guide/TourGuideTwo'
+import TourGuide from '../Components/Guide/TourGuide'
 import TestimonialOne from '../Components/Testimonials/TestimonialOne'
 import BrandOne from '../Components/Brand/BrandOne'
-import GalleryFive from '../Components/Gallery/GalleryFive'
-import FooterFour from '../Components/Footer/FooterFour'
+import GalleryOne from '../Components/Gallery/GalleryOne'
 import ScrollToTop from '../Components/ScrollToTop'
 
 function About() {
     return (
         <>
             <HeaderOne />
-            <Breadcrumb
-                title="About Dream International Travel and Tours"
-            />
+            <Breadcrumb title="About Dream International Travel and Tours" />
             <AboutFour />
-            <OfferTwo />
-            <ElementSection />
-            <TourGuideTwo />
+            <TourGuide />
             <TestimonialOne />
-            <BrandOne/>
-            <GalleryFive />
-            <FooterFour />
+            <BrandOne />
+            <GalleryOne />
+            <FooterOne />
             <ScrollToTop />
         </>
     )

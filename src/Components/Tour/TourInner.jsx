@@ -1,25 +1,51 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import TourCard from './TourCard';
 import jsonPosts from '../data/data-tour.json';
 import TourCardTwo from './TourCardTwo';
-import { useCollection } from '../../public-cms/hooks';
+import { useCollection, resolveAssetUrl } from '../../public-cms/hooks';
 
 function TourInner() {
     const [activeTab, setActiveTab] = useState('tab-grid');
     const [currentPage, setCurrentPage] = useState(1);
+    const [searchParams, setSearchParams] = useSearchParams();
     const postsPerPage = 8;
 
+    // Search/filter values from URL (set by the Booking widget on the homepage)
+    const filterDestination = searchParams.get('destination') || '';
+    const filterCategory   = searchParams.get('category') || '';
+    const filterDuration   = searchParams.get('duration') || '';
+    const [localSearch, setLocalSearch] = useState(searchParams.get('q') || '');
+
     const cms = useCollection('/public/tours');
-    const posts = cms && cms.length
+    const cmsCategories = useCollection('/public/categories');
+    const cmsBlogs = useCollection('/public/blog');
+    const allPosts = cms && cms.length
         ? cms.map((t) => ({
             id: t.slug,
             slug: t.slug,
             image: t.featuredImageUrl,
             title: t.title,
             price: t.basePrice ? `$${t.basePrice}.00` : 'On request',
+            durationDays: t.durationDays,
+            categorySlug: t.categorySlug || '',
+            raw: t,
         }))
-        : jsonPosts;
+        : jsonPosts.map((p) => ({ ...p, durationDays: null, categorySlug: '', raw: p }));
+
+    // Apply filters from URL params
+    const posts = allPosts.filter((p) => {
+        if (localSearch && !p.title.toLowerCase().includes(localSearch.toLowerCase())) return false;
+        if (filterCategory && p.categorySlug && p.categorySlug !== filterCategory) return false;
+        if (filterDuration && p.durationDays) {
+            const d = p.durationDays;
+            if (filterDuration === '1-3' && d > 3) return false;
+            if (filterDuration === '4-7' && (d < 4 || d > 7)) return false;
+            if (filterDuration === '8-14' && (d < 8 || d > 14)) return false;
+            if (filterDuration === '15+' && d < 15) return false;
+        }
+        return true;
+    });
 
     const totalPages = Math.ceil(posts.length / postsPerPage);
     const indexOfLastPost = currentPage * postsPerPage;
@@ -33,11 +59,26 @@ function TourInner() {
         <section className="space">
             <div className="container shape-mockup-wrap">
                 <div className="th-sort-bar">
+                    {/* Active filter chips */}
+                    {(filterDestination || filterCategory || filterDuration) && (
+                        <div className="mb-3 d-flex flex-wrap gap-2 align-items-center">
+                            <span className="text-muted small">Filters:</span>
+                            {filterDestination && <span className="badge bg-secondary">{filterDestination} <button type="button" className="btn-close btn-close-white ms-1" style={{fontSize:'0.6rem'}} onClick={() => { const p = new URLSearchParams(searchParams); p.delete('destination'); setSearchParams(p); }} /></span>}
+                            {filterCategory && <span className="badge bg-secondary">{filterCategory} <button type="button" className="btn-close btn-close-white ms-1" style={{fontSize:'0.6rem'}} onClick={() => { const p = new URLSearchParams(searchParams); p.delete('category'); setSearchParams(p); }} /></span>}
+                            {filterDuration && <span className="badge bg-secondary">{filterDuration} days <button type="button" className="btn-close btn-close-white ms-1" style={{fontSize:'0.6rem'}} onClick={() => { const p = new URLSearchParams(searchParams); p.delete('duration'); setSearchParams(p); }} /></span>}
+                            <button type="button" className="btn btn-sm btn-outline-secondary" onClick={() => setSearchParams({})}>Clear all</button>
+                        </div>
+                    )}
                     <div className="row justify-content-between align-items-center">
                         <div className="col-md-4">
                             <div className="search-form-area">
-                                <form className="search-form">
-                                    <input type="text" placeholder="Search" />
+                                <form className="search-form" onSubmit={(e) => { e.preventDefault(); setCurrentPage(1); }}>
+                                    <input
+                                        type="text"
+                                        placeholder="Search tours…"
+                                        value={localSearch}
+                                        onChange={(e) => { setLocalSearch(e.target.value); setCurrentPage(1); }}
+                                    />
                                     <button type="submit">
                                         <i className="fa-light fa-magnifying-glass" />
                                     </button>
@@ -158,161 +199,63 @@ function TourInner() {
                     </div>
                     <div className="col-xxl-4 col-lg-5">
                         <aside className="sidebar-area">
-                            <div className="widget widget_categories  ">
-                                <h3 className="widget_title">Categories</h3>
+                            {/* Tour categories from CMS */}
+                            <div className="widget widget_categories">
+                                <h3 className="widget_title">Tour Categories</h3>
                                 <ul>
-                                    <li>
-                                        <Link to="/blog">
-                                            <img src="/assets/img/theme-img/map.svg" alt="" />
-                                            City Tour
-                                        </Link>
-                                        <span>(8)</span>
-                                    </li>
-                                    <li>
-                                        <Link to="/blog">
-                                            <img src="/assets/img/theme-img/map.svg" alt="" />
-                                            Beach Tours
-                                        </Link>
-                                        <span>(6)</span>
-                                    </li>
-                                    <li>
-                                        <Link to="/blog">
-                                            <img src="/assets/img/theme-img/map.svg" alt="" />
-                                            Wildlife Tours
-                                        </Link>
-                                        <span>(2)</span>
-                                    </li>
-                                    <li>
-                                        <Link to="/blog">
-                                            <img src="/assets/img/theme-img/map.svg" alt="" />
-                                            News &amp; Tips
-                                        </Link>
-                                        <span>(7)</span>
-                                    </li>
-                                    <li>
-                                        <Link to="/blog">
-                                            <img src="/assets/img/theme-img/map.svg" alt="" />
-                                            Adventure Tours
-                                        </Link>
-                                        <span>(9)</span>
-                                    </li>
-                                    <li>
-                                        <Link to="/blog">
-                                            <img src="/assets/img/theme-img/map.svg" alt="" />
-                                            Mountain Tours
-                                        </Link>
-                                        <span>(10)</span>
-                                    </li>
+                                    {(cmsCategories && cmsCategories.length ? cmsCategories : []).map((cat) => (
+                                        <li key={cat.slug}>
+                                            <Link
+                                                to="#"
+                                                onClick={(e) => { e.preventDefault(); const p = new URLSearchParams(searchParams); p.set('category', cat.slug); setSearchParams(p); setCurrentPage(1); }}
+                                            >
+                                                <img src="/assets/img/theme-img/map.svg" alt="" />
+                                                {cat.name}
+                                            </Link>
+                                        </li>
+                                    ))}
                                 </ul>
                             </div>
-                            <div className="widget  ">
-                                <h3 className="widget_title">Recent Posts</h3>
-                                <div className="recent-post-wrap">
-                                    <div className="recent-post">
-                                        <div className="media-img">
-                                            <Link to="/blog/1">
-                                                <img
-                                                    src="/assets/img/blog/recent-post-1-1.jpg"
-                                                    alt="Blog"
-                                                />
-                                            </Link>
-                                        </div>
-                                        <div className="media-body">
-                                            <h4 className="post-title">
-                                                <Link className="text-inherit" to="/blog/1">
-                                                    Exploring The Green Spaces Of the island maldives
-                                                </Link>
-                                            </h4>
-                                            <div className="recent-post-meta">
-                                                <Link to="/blog">
-                                                    <i className="fa-regular fa-calendar" />
-                                                    22/6/ 2025
-                                                </Link>
+                            {/* Recent blog posts from CMS */}
+                            {cmsBlogs && cmsBlogs.length > 0 && (
+                                <div className="widget">
+                                    <h3 className="widget_title">Recent Posts</h3>
+                                    <div className="recent-post-wrap">
+                                        {cmsBlogs.slice(0, 3).map((post) => (
+                                            <div className="recent-post" key={post.slug || post.id}>
+                                                <div className="media-img">
+                                                    <Link to={`/blog/${post.slug || post.id}`}>
+                                                        <img src={resolveAssetUrl(post.coverImageUrl) || '/assets/img/blog/recent-post-1-1.jpg'} alt={post.title} />
+                                                    </Link>
+                                                </div>
+                                                <div className="media-body">
+                                                    <h4 className="post-title">
+                                                        <Link className="text-inherit" to={`/blog/${post.slug || post.id}`}>{post.title}</Link>
+                                                    </h4>
+                                                    <div className="recent-post-meta">
+                                                        <Link to="/blog">
+                                                            <i className="fa-regular fa-calendar" />
+                                                            {post.publishedAt ? new Date(post.publishedAt).toLocaleDateString() : ''}
+                                                        </Link>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div className="recent-post">
-                                        <div className="media-img">
-                                            <Link to="/blog/1">
-                                                <img
-                                                    src="/assets/img/blog/recent-post-1-2.jpg"
-                                                    alt="Blog"
-                                                />
-                                            </Link>
-                                        </div>
-                                        <div className="media-body">
-                                            <h4 className="post-title">
-                                                <Link className="text-inherit" to="/blog/1">
-                                                    Harmony With Nature Of Belgium Tour and travle
-                                                </Link>
-                                            </h4>
-                                            <div className="recent-post-meta">
-                                                <Link to="/blog">
-                                                    <i className="fa-regular fa-calendar" />
-                                                    25/6/ 2025
-                                                </Link>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="recent-post">
-                                        <div className="media-img">
-                                            <Link to="/blog/1">
-                                                <img
-                                                    src="/assets/img/blog/recent-post-1-3.jpg"
-                                                    alt="Blog"
-                                                />
-                                            </Link>
-                                        </div>
-                                        <div className="media-body">
-                                            <h4 className="post-title">
-                                                <Link className="text-inherit" to="/blog/1">
-                                                    Exploring The Green Spaces Of Realar Residence
-                                                </Link>
-                                            </h4>
-                                            <div className="recent-post-meta">
-                                                <Link to="/blog">
-                                                    <i className="fa-regular fa-calendar" />
-                                                    27/6/ 2025
-                                                </Link>
-                                            </div>
-                                        </div>
+                                        ))}
                                     </div>
                                 </div>
-                            </div>
-                            <div className="widget widget_tag_cloud  ">
-                                <h3 className="widget_title">Popular Tags</h3>
-                                <div className="tagcloud">
-                                    <Link to="/blog">Tour</Link>
-                                    <Link to="/blog">Adventure</Link>
-                                    <Link to="/blog">Rent</Link>
-                                    <Link to="/blog">Innovate</Link>
-                                    <Link to="/blog">Hotel</Link>
-                                    <Link to="/blog">Modern</Link>
-                                    <Link to="/blog">Luxury</Link>
-                                    <Link to="/blog">Travel</Link>
-                                </div>
-                            </div>
+                            )}
+                            {/* Help widget */}
                             <div
                                 className="widget widget_offer"
-                                style={{background: "url(/assets/img/bg/widget_bg_1.jpg)"}}
+                                style={{ backgroundImage: "url(/assets/img/bg/widget_bg_1.jpg)", backgroundSize: "cover" }}
                             >
                                 <div className="offer-banner">
                                     <div className="offer">
-                                        <h6 className="box-title">
-                                            Need Help? We Are Here To Help You
-                                        </h6>
-                                        <div className="banner-logo">
-                                            <img src="/assets/img/logo2.svg" alt="Dream International Travel and Tours" />
-                                        </div>
+                                        <h6 className="box-title">Need Help? We Are Here To Help You</h6>
                                         <div className="offer">
-                                            <h6 className="offer-title">You Get Online support</h6>
-                                            <Link className="offter-num" to={+256214203215}>
-                                                +256 214 203 215
-                                            </Link>
+                                            <h6 className="offer-title">Get Online Support</h6>
                                         </div>
-                                        <Link to="/contact" className="th-btn style2 th-icon">
-                                            Read More
-                                        </Link>
+                                        <Link to="/contact" className="th-btn style2 th-icon">Contact Us</Link>
                                     </div>
                                 </div>
                             </div>

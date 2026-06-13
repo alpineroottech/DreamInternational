@@ -1,5 +1,6 @@
 import React from 'react'
 import HeaderOne from '../Components/Header/HeaderOne'
+import FooterOne from '../Components/Footer/FooterOne'
 import Breadcrumb from '../Components/BreadCrumb/Breadcrumb'
 import ShopInner from '../Components/Shop/ShopInner'
 import FooterFour from '../Components/Footer/FooterFour'
@@ -13,7 +14,7 @@ function Shop() {
                 title="Shops"
             />
             <ShopInner />
-            <FooterFour />
+            <FooterOne />
             <ScrollToTop />
         </>
     )

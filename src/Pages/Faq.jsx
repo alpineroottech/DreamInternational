@@ -1,5 +1,6 @@
 import React from 'react'
 import HeaderOne from '../Components/Header/HeaderOne'
+import FooterOne from '../Components/Footer/FooterOne'
 import Breadcrumb from '../Components/BreadCrumb/Breadcrumb'
 import FaqInner from '../Components/Faq/FaqInner'
 import ElementSection from '../Components/Elements/ElementSection'
@@ -17,7 +18,7 @@ function Faq() {
             <FaqInner />
             <ElementSection />
             <FaqContact />
-            <FooterFour />
+            <FooterOne />
             <ScrollToTop />
         </>
     )

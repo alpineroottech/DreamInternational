@@ -1,5 +1,6 @@
 import React from 'react'
 import HeaderOne from '../Components/Header/HeaderOne'
+import FooterOne from '../Components/Footer/FooterOne'
 import Breadcrumb from '../Components/BreadCrumb/Breadcrumb'
 import { Link } from 'react-router-dom'
 import FooterFour from '../Components/Footer/FooterFour'
@@ -39,7 +40,7 @@ function Error() {
           </div>
         </div>
       </section>
-      <FooterFour />
+      <FooterOne />
       <ScrollToTop />
     </>
   )

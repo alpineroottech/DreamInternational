@@ -1,5 +1,6 @@
 import React from 'react'
 import HeaderOne from '../Components/Header/HeaderOne'
+import FooterOne from '../Components/Footer/FooterOne'
 import Breadcrumb from '../Components/BreadCrumb/Breadcrumb'
 import PricingPlan from '../Components/Services/PricingPlan'
 import Cta from '../Components/Services/Cta'
@@ -17,7 +18,7 @@ function Pricing() {
             <PricingPlan className="space"/>
             <Cta />
             <FaqInnerTwo />
-            <FooterFour />
+            <FooterOne />
             <ScrollToTop />
         </div>
     )

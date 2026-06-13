@@ -1,23 +1,19 @@
 import React from 'react'
 import HeaderOne from '../Components/Header/HeaderOne'
+import FooterOne from '../Components/Footer/FooterOne'
 import Breadcrumb from '../Components/BreadCrumb/Breadcrumb'
 import ServiceInner from '../Components/Services/ServiceInner'
-import TourTwo from '../Components/Tour/TourTwo'
-import PricingPlan from '../Components/Services/PricingPlan'
-import FooterFour from '../Components/Footer/FooterFour'
+import TestimonialOne from '../Components/Testimonials/TestimonialOne'
 import ScrollToTop from '../Components/ScrollToTop'
 
 function Service() {
     return (
         <div>
             <HeaderOne />
-            <Breadcrumb
-                title="Services"
-            />
+            <Breadcrumb title="Our Services" />
             <ServiceInner />
-            <TourTwo />
-            <PricingPlan className="space-bottom"/>
-            <FooterFour />
+            <TestimonialOne />
+            <FooterOne />
             <ScrollToTop />
         </div>
     )

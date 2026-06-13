@@ -38,40 +38,49 @@ function DestinationOne({ data = {} }) {
     dest?.shortDescription ||
     "Nepal's lakeside city with Phewa Lake, mountain views, paragliding, and easy access to Annapurna treks.";
 
+  const thingsToDo = Array.isArray(dest?.thingsToDo) ? dest.thingsToDo : [];
+
   return (
-    <div className="position-relative overflow-hidden">
+    <section className="space" style={{ background: "var(--smoke-color, #f7f9fc)" }}>
       <div className="container">
-        <div className="title-area text-center">
+        <div className="title-area text-center mb-40">
           <span className="sub-title">{data.subTitle || "Featured Destination"}</span>
           <h2 className="sec-title">{data.title || `${name}, Nepal`}</h2>
         </div>
-        <div className="row justify-content-center">
-          <div className="col-lg-10">
-            <div className="destination-box">
-              <div className="destination-img">
-                <img src={image} alt={dest?.heroImage?.alt || name} />
-              </div>
-              <div className="destination-content p-4 p-md-5">
-                <div className="media-left">
-                  <h4 className="box-title mb-2">
-                    <Link to={`/destination/${slug}`}>{name}</Link>
-                  </h4>
-                  <span className="destination-subtitle d-block mb-3">
-                    3–5 Days | Lakeside Stay | Best Season: Mar–May, Sep–Nov
-                  </span>
-                  <p className="mb-4">{summary}</p>
-                </div>
-                <div>
-                  <Link to={`/destination/${slug}`} className="th-btn style2 th-icon">
-                    View Destination Details
-                  </Link>
-                </div>
-              </div>
+        <div className="row g-4 align-items-start">
+          <div className="col-lg-6">
+            <div className="global-img rounded overflow-hidden" style={{ height: 420 }}>
+              <img
+                src={image}
+                alt={dest?.heroImage?.alt || name}
+                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+              />
             </div>
+          </div>
+          <div className="col-lg-6">
+            <h3 className="sec-title mb-10">
+              <Link to={`/destination/${slug}`}>{name}</Link>
+            </h3>
+            <p className="mb-20" style={{ lineHeight: 1.8 }}>{summary}</p>
+            {thingsToDo.length > 0 && (
+              <>
+                <h5 className="box-title mb-10">Things to Do</h5>
+                <div className="checklist mb-20">
+                  <ul>
+                    {thingsToDo.slice(0, 5).map((item, i) => (
+                      <li key={i}>{item}</li>
+                    ))}
+                  </ul>
+                </div>
+              </>
+            )}
+            <Link to={`/destination/${slug}`} className="th-btn th-icon">
+              Explore {name}
+            </Link>
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 }
 

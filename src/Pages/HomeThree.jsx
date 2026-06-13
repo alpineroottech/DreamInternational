@@ -1,5 +1,6 @@
 import React from 'react'
 import HeaderThree from '../Components/Header/HeaderThree'
+import FooterOne from '../Components/Footer/FooterOne'
 import BannerThree from '../Components/Banner/BannerThree'
 import DestinationThree from '../Components/Destination/DestinationThree'
 import CategoryThree from '../Components/Category/CategoryThree'
@@ -31,7 +32,7 @@ function HomeThree() {
             <TestimonialThree />
             <BrandOne className="space"/>
             <BlogThree />
-            <FooterTwo />
+            <FooterOne />
             <ScrollToTop />
         </div>
     )

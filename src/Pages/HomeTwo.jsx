@@ -1,6 +1,7 @@
 import React from 'react'
 import BannerTwo from '../Components/Banner/BannerTwo'
 import HeaderTwo from '../Components/Header/HeaderTwo'
+import FooterOne from '../Components/Footer/FooterOne'
 import DestinationTwo from '../Components/Destination/DestinationTwo'
 import CategoryTwo from '../Components/Category/CategoryTwo'
 import OfferOne from '../Components/Offer/OfferOne'
@@ -31,7 +32,7 @@ function HomeTwo() {
       <BrandOne className="space-bottom"/>
       <BlogTwo />
       <ElementSection className="bg-smoke"/>
-      <FooterTwo />
+      <FooterOne />
       <ScrollToTop />
     </div>
   )

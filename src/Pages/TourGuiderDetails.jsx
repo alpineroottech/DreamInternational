@@ -1,5 +1,6 @@
 import React from 'react'
 import HeaderOne from '../Components/Header/HeaderOne'
+import FooterOne from '../Components/Footer/FooterOne'
 import Breadcrumb from '../Components/BreadCrumb/Breadcrumb'
 import TourGuiderDetailsMain from '../Components/Guide/TourGuiderDetailsMain'
 import TourGuideTwo from '../Components/Guide/TourGuideTwo'
@@ -15,7 +16,7 @@ function TourGuiderDetails() {
             />
             <TourGuiderDetailsMain />
             <TourGuideTwo />
-            <FooterFour />
+            <FooterOne />
             <ScrollToTop />
         </>
     )

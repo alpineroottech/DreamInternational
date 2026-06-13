@@ -1,5 +1,6 @@
 import React from 'react'
 import HeaderOne from '../Components/Header/HeaderOne'
+import FooterOne from '../Components/Footer/FooterOne'
 import Breadcrumb from '../Components/BreadCrumb/Breadcrumb'
 import BlogDetailsMain from '../Components/Blog/BlogDetailsMain'
 import FooterFour from '../Components/Footer/FooterFour'
@@ -13,7 +14,7 @@ function BlogDetails() {
                 title="Blog Single"
             />
             <BlogDetailsMain />
-            <FooterFour />
+            <FooterOne />
             <ScrollToTop />
         </>
     )
