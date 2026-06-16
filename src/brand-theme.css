@@ -1,0 +1,302 @@
+/*
+  ================================================================
+  Dream International Travel and Tours — Brand Theme Override
+  Colors: Blue #140ca9 | Red #ff2300 | White #ffffff
+  ================================================================
+  This file loads AFTER style.css (injected by React), so every
+  declaration here wins over the template defaults via the cascade.
+  ================================================================
+*/
+
+/* ─── 1. CSS VARIABLE OVERRIDES ─────────────────────────────── */
+:root {
+  /* Primary brand blue */
+  --theme-color:       #140ca9;
+  --primary-color:     #140ca9;
+
+  /* Dark navy — used for headings and button hover fill */
+  --title-color:       #0a074f;
+
+  /* Light backgrounds with a subtle blue tint */
+  --smoke-color:       #edeef8;
+  --smoke-color2:      #f5f5fc;
+
+  /* Border tint */
+  --th-border-color:   #d4d5ef;
+
+  /* Keep white and body-text untouched */
+  --white-color:       #ffffff;
+  --body-color:        #6e7070;
+
+  /* Red accent — referenced via brand var */
+  --brand-red:         #ff2300;
+}
+
+/* ─── 2. BUTTON HOVER FILL → red, so blue→red on hover ─────── */
+/* The :before pseudo-element sweeps in as the hover highlight.
+   Changing its background from --title-color to red creates a
+   blue-to-red hover sweep that uses both brand colors. */
+.th-btn:before {
+  background-color: var(--brand-red);
+}
+
+/* style2 / style3 / style4 variants keep consistent hover */
+.th-btn.style2:before,
+.th-btn.style3:before,
+.th-btn.style4:before {
+  background-color: var(--brand-red);
+}
+
+/* ─── 3. SUB-TITLE ACCENT → red ─────────────────────────────── */
+/* The decorative Montez-script label above section headings     */
+.sub-title {
+  color: var(--brand-red) !important;
+}
+
+/* Hero area sub-titles stay white (on dark/image backgrounds)   */
+.hero-style1 .sub-title,
+.hero-style2 .sub-title,
+.hero-style3 .sub-title,
+.breadcumb-wrapper .sub-title,
+.th-hero-wrapper .sub-title {
+  color: var(--white-color) !important;
+}
+
+/* ─── 4. HEADER TOP BAR → dark navy strip ───────────────────── */
+.header-layout1 .header-top {
+  background-color: var(--title-color);
+  border-bottom: none;
+}
+
+/* Text, icons, links in the top bar → white */
+.header-layout1 .header-top,
+.header-layout1 .header-top a,
+.header-layout1 .header-top span,
+.header-layout1 .header-top i,
+.header-layout1 .header-top li,
+.header-layout1 .header-top button {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+.header-layout1 .header-top a:hover,
+.header-layout1 .header-top button:hover {
+  color: var(--white-color) !important;
+}
+
+/* Divider in the top bar links */
+.header-layout1 .header-top .header-links ul li::before {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+/* ─── 5. MAIN MENU / NAV AREA ────────────────────────────────── */
+.header-layout1 .menu-area {
+  background: var(--white-color);
+  border-bottom: 2px solid var(--smoke-color);
+}
+
+/* Active / hover nav links → brand blue */
+.main-menu > ul > li > a:hover,
+.main-menu > ul > li.active > a,
+.main-menu > ul > li.current-menu-item > a {
+  color: var(--theme-color) !important;
+}
+
+/* Sticky header shadow */
+.sticky-wrapper.sticky .menu-area {
+  box-shadow: 0 4px 20px rgba(20, 12, 169, 0.1);
+}
+
+/* ─── 6. FOOTER ─────────────────────────────────────────────── */
+.footer-wrapper.footer-layout1 {
+  background-color: var(--title-color);
+}
+
+.footer-wrapper.footer-layout1 .newsletter-area {
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.footer-wrapper.footer-layout1 .widget_title {
+  color: var(--white-color);
+}
+
+.footer-wrapper.footer-layout1 .about-text,
+.footer-wrapper.footer-layout1 p,
+.footer-wrapper.footer-layout1 li,
+.footer-wrapper.footer-layout1 a:not(.th-btn) {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.footer-wrapper.footer-layout1 a:not(.th-btn):hover {
+  color: var(--white-color);
+}
+
+.footer-wrapper.footer-layout1 .th-social a {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.footer-wrapper.footer-layout1 .th-social a:hover {
+  background: var(--brand-red);
+  color: var(--white-color);
+}
+
+/* Copyright bar */
+.footer-wrapper.footer-layout1 .copyright-wrap {
+  background: rgba(0, 0, 0, 0.25) !important;
+  background-image: none !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.footer-wrapper.footer-layout1 .copyright-wrap,
+.footer-wrapper.footer-layout1 .copyright-wrap a {
+  color: rgba(255, 255, 255, 0.65);
+}
+
+/* ─── 7. BREADCRUMB / PAGE HERO ─────────────────────────────── */
+.breadcumb-wrapper {
+  background-color: var(--title-color);
+}
+
+/* ─── 8. SECTION BACKGROUNDS ────────────────────────────────── */
+/* Counter / CTA section that uses the theme colour bg */
+.counter-area,
+.cta-area {
+  background-color: var(--theme-color);
+}
+
+/* Smoke-bg sections */
+.bg-smoke,
+.space.bg-smoke {
+  background-color: var(--smoke-color);
+}
+
+/* ─── 9. CATEGORY CARDS ─────────────────────────────────────── */
+.category-card:hover .box-title a,
+.category-card .box-title a:hover {
+  color: var(--theme-color);
+}
+
+/* ─── 10. TOUR CARDS ────────────────────────────────────────── */
+.tour-box_price .currency {
+  color: var(--theme-color);
+}
+
+/* ─── 11. LINKS ─────────────────────────────────────────────── */
+a:not(.th-btn):not(.nav-link) {
+  color: inherit;
+}
+
+a:not(.th-btn):not(.nav-link):hover {
+  color: var(--theme-color);
+}
+
+/* ─── 12. BOOKING WIDGET ────────────────────────────────────── */
+.booking-sec {
+  background: linear-gradient(135deg, var(--title-color) 0%, #1a11c9 100%);
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
+
+.booking-form {
+  border-color: var(--theme-color);
+}
+
+.booking-sec .booking-form label,
+.booking-sec .booking-form .search-input label {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+/* ─── 13. CATEGORY AREA SPACING (kept from App.css) ─────────── */
+.category-area {
+  padding-top: 80px;
+  padding-bottom: 60px;
+}
+
+/* ─── 14. DESTINATION BOX ───────────────────────────────────── */
+.destination-box {
+  border: 2px solid var(--smoke-color);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+/* ─── 15. CHECKLIST BULLETS → brand blue ────────────────────── */
+.checklist ul li::before {
+  background-color: var(--theme-color);
+  border-color: var(--theme-color);
+}
+
+/* ─── 16. TESTIMONIAL CARD QUOTE MARK ───────────────────────── */
+.testi-card_review i {
+  color: #ffb539; /* keep star gold */
+}
+
+/* ─── 17. PAGINATION ACTIVE ─────────────────────────────────── */
+.th-pagination ul li a.active,
+.th-pagination ul li a:hover {
+  background-color: var(--theme-color);
+  border-color: var(--theme-color);
+  color: var(--white-color);
+}
+
+/* ─── 18. FORM FOCUS BORDER ─────────────────────────────────── */
+input:focus,
+textarea:focus,
+select:focus,
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--theme-color) !important;
+  box-shadow: 0 0 0 3px rgba(20, 12, 169, 0.12) !important;
+}
+
+/* ─── 19. SCROLL-TO-TOP BUTTON ───────────────────────────────── */
+.scroll-top {
+  background-color: var(--theme-color);
+}
+
+.scroll-top:hover {
+  background-color: var(--brand-red);
+}
+
+/* ─── 20. ADMIN PANEL BRAND COLORS ──────────────────────────── */
+.di-admin {
+  --di-primary:      #140ca9;
+  --di-primary-dark: #0a074f;
+  --di-bg:           #f5f5fc;
+}
+
+.di-nav a.active {
+  background: #140ca9 !important;
+}
+
+.di-nav a:hover {
+  background: #edeef8 !important;
+  color: #140ca9 !important;
+}
+
+.di-btn-primary {
+  background: #140ca9 !important;
+  border-color: #140ca9 !important;
+}
+
+.di-btn-primary:hover {
+  background: #ff2300 !important;
+  border-color: #ff2300 !important;
+}
+
+.di-stat__icon {
+  background: #edeef8 !important;
+  color: #140ca9 !important;
+}
+
+.di-auth {
+  background: linear-gradient(135deg, #0a074f, #140ca9) !important;
+}
+
+.di-tabs .nav-link.active {
+  color: #140ca9 !important;
+  border-bottom-color: #140ca9 !important;
+}
+
+.di-sidebar__brand .script {
+  color: #140ca9 !important;
+}

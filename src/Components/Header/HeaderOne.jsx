@@ -118,7 +118,7 @@ function HeaderOne() {
                                                     fontFamily: "'Montez', cursive",
                                                     fontSize: "54px",
                                                     fontWeight: 600,
-                                                    color: "#1CA8CB",
+                                                    color: "#140ca9",
                                                     letterSpacing: "0.5px"
                                                 }}
                                             >
@@ -129,7 +129,7 @@ function HeaderOne() {
                                                     fontFamily: "'Manrope', sans-serif",
                                                     fontSize: "19px",
                                                     fontWeight: 800,
-                                                    color: "#113D48",
+                                                    color: "#ff2300",
                                                     letterSpacing: "1.2px",
                                                     textTransform: "uppercase",
                                                     marginTop: "4px"

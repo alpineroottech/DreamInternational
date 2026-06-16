@@ -1,10 +1,10 @@
 /* Dream International CMS — admin styling (built on Bootstrap 5) */
 
 :root {
-  --di-primary: #1ca8cb;
-  --di-primary-dark: #113d48;
+  --di-primary: #140ca9;
+  --di-primary-dark: #0a074f;
   --di-sidebar-w: 260px;
-  --di-bg: #f4f7fb;
+  --di-bg: #f5f5fc;
 }
 
 .di-admin {
@@ -76,8 +76,8 @@
   flex-shrink: 0;
 }
 .di-nav a:hover {
-  background: #eaf7fb;
-  color: var(--di-primary-dark);
+  background: #edeef8;
+  color: var(--di-primary);
 }
 .di-nav a.active {
   background: var(--di-primary);
@@ -137,7 +137,7 @@
   display: grid;
   place-items: center;
   font-size: 26px;
-  background: #eaf7fb;
+  background: #edeef8;
   color: var(--di-primary);
 }
 
@@ -147,8 +147,8 @@
   color: #fff;
 }
 .di-btn-primary:hover {
-  background: #178cab;
-  border-color: #178cab;
+  background: #ff2300;
+  border-color: #ff2300;
   color: #fff;
 }
 
@@ -181,7 +181,7 @@
   min-height: 100vh;
   display: grid;
   place-items: center;
-  background: linear-gradient(135deg, #113d48, #1ca8cb);
+  background: linear-gradient(135deg, #0a074f, #140ca9);
   padding: 20px;
 }
 .di-auth__card {
@@ -197,7 +197,7 @@
 .di-modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(17, 61, 72, 0.5);
+  background: rgba(10, 7, 79, 0.55);
   display: grid;
   place-items: center;
   z-index: 1060;
