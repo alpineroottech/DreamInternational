@@ -246,3 +246,86 @@
   .di-main { margin-left: 0; }
   .di-sidebar-toggle { display: inline-flex; }
 }
+
+/* ─── Fix: template globally hides checkboxes + forces input height ── */
+/* The public-site style.css has:
+     input[type="checkbox"] { visibility: hidden; opacity: 0; }
+     input { height: 56px; padding: 0 25px; }
+   These rules bleed into the admin panel, hiding switches and breaking
+   form-control sizing. The .di-admin scope overrides them all. */
+
+.di-admin input[type="checkbox"] {
+  visibility: visible !important;
+  opacity: 1 !important;
+  padding: 0 !important;
+  border: 1px solid #ced4da !important;
+  height: auto !important;
+  width: auto !important;
+}
+
+/* Proper toggle-switch appearance (Bootstrap 5 form-switch) */
+.di-admin .form-switch .form-check-input {
+  width: 2.5em !important;
+  height: 1.25em !important;
+  padding: 0 !important;
+  margin-left: 0 !important;
+  border-radius: 2em !important;
+  background-color: #dee2e6 !important;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='rgba%280%2c0%2c0%2c.25%29'/%3e%3c/svg%3e") !important;
+  background-position: left center !important;
+  background-repeat: no-repeat !important;
+  border: 1px solid #ced4da !important;
+  -webkit-appearance: none !important;
+  appearance: none !important;
+  cursor: pointer !important;
+  transition: background-position .15s ease-in-out, background-color .15s ease-in-out !important;
+}
+
+.di-admin .form-switch .form-check-input:checked {
+  background-position: right center !important;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e") !important;
+  background-color: #140ca9 !important;
+  border-color: #140ca9 !important;
+}
+
+.di-admin .form-switch .form-check-input:focus {
+  box-shadow: 0 0 0 3px rgba(20, 12, 169, 0.2) !important;
+  outline: none !important;
+}
+
+/* Switch wrapper row */
+.di-switch-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+}
+
+.di-switch-wrap .form-check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  min-height: unset;
+}
+
+.di-switch-wrap .form-check-label {
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
+  line-height: 1;
+}
+
+.di-switch-label--on  { color: #140ca9; }
+.di-switch-label--off { color: #9aa6b2; }
+
+/* Fix template's height:56px on .form-control inside admin */
+.di-admin .form-control,
+.di-admin .form-select,
+.di-admin input:not([type="checkbox"]):not([type="radio"]) {
+  height: auto !important;
+  min-height: 42px !important;
+  padding: 8px 14px !important;
+}

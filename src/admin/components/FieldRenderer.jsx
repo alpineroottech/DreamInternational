@@ -123,18 +123,30 @@ export default function FieldRenderer({ field, value, onChange, error }) {
         />
       );
       break;
-    case "switch":
+    case "switch": {
+      const switchId = `di-switch-${field.name}`;
       control = (
-        <div className="form-check form-switch">
-          <input
-            className="form-check-input"
-            type="checkbox"
-            checked={!!value}
-            onChange={(e) => onChange(e.target.checked)}
-          />
+        <div className="di-switch-wrap">
+          <div className="form-check form-switch">
+            <input
+              className="form-check-input"
+              type="checkbox"
+              role="switch"
+              id={switchId}
+              checked={!!value}
+              onChange={(e) => onChange(e.target.checked)}
+            />
+            <label
+              className={`form-check-label fw-semibold di-switch-label--${value ? "on" : "off"}`}
+              htmlFor={switchId}
+            >
+              {value ? "Yes — enabled" : "No — disabled"}
+            </label>
+          </div>
         </div>
       );
       break;
+    }
     case "select":
       control = (
         <select className="form-select" value={value || ""} onChange={(e) => onChange(e.target.value)}>
