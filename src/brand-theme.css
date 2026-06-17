@@ -28,29 +28,58 @@
   --white-color:       #ffffff;
   --body-color:        #6e7070;
 
-  /* Red accent — referenced via brand var */
+  /* Red accent — use sparingly (logo tagline only) */
   --brand-red:         #ff2300;
+
+  /* Deeper blues for hovers and depth */
+  --brand-blue-dark:   #0a074f;
+  --brand-blue-mid:    #1a14c4;
+  --brand-blue-light:  #4a55d4;
 }
 
-/* ─── 2. BUTTON HOVER FILL → red, so blue→red on hover ─────── */
-/* The :before pseudo-element sweeps in as the hover highlight.
-   Changing its background from --title-color to red creates a
-   blue-to-red hover sweep that uses both brand colors. */
+/* ─── 2. BUTTON HOVER → deeper navy (cohesive blue palette) ─── */
 .th-btn:before {
-  background-color: var(--brand-red);
+  background-color: var(--brand-blue-dark);
 }
 
-/* style2 / style3 / style4 variants keep consistent hover */
 .th-btn.style2:before,
 .th-btn.style3:before,
 .th-btn.style4:before {
-  background-color: var(--brand-red);
+  background-color: var(--brand-blue-dark);
 }
 
-/* ─── 3. SUB-TITLE ACCENT → red ─────────────────────────────── */
-/* The decorative Montez-script label above section headings     */
+/* ─── 2b. HERO — left-aligned copy on desktop/tablet ─────────── */
+.hero-1 .hero-style1 {
+  text-align: left;
+  margin-left: 0;
+  margin-right: auto;
+  max-width: 760px;
+}
+
+.hero-1 .hero-style1 .btn-group {
+  justify-content: flex-start;
+}
+
+.hero-1 .hero-style1 .hero-text {
+  margin-left: 0;
+  margin-right: auto;
+}
+
+@media (max-width: 767px) {
+  .hero-1 .hero-style1 {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero-1 .hero-style1 .btn-group {
+    justify-content: center;
+  }
+}
+
+/* ─── 3. SUB-TITLE ACCENT → brand blue (not red) ────────────── */
 .sub-title {
-  color: var(--brand-red) !important;
+  color: var(--theme-color) !important;
 }
 
 /* Hero area sub-titles stay white (on dark/image backgrounds)   */
@@ -136,7 +165,7 @@
 }
 
 .footer-wrapper.footer-layout1 .th-social a:hover {
-  background: var(--brand-red);
+  background: var(--brand-blue-mid);
   color: var(--white-color);
 }
 
@@ -254,7 +283,7 @@ select:focus,
 }
 
 .scroll-top:hover {
-  background-color: var(--brand-red);
+  background-color: var(--brand-blue-dark);
 }
 
 /* ─── 20. ADMIN PANEL BRAND COLORS ──────────────────────────── */
@@ -279,8 +308,8 @@ select:focus,
 }
 
 .di-btn-primary:hover {
-  background: #ff2300 !important;
-  border-color: #ff2300 !important;
+  background: var(--brand-blue-dark) !important;
+  border-color: var(--brand-blue-dark) !important;
 }
 
 .di-stat__icon {

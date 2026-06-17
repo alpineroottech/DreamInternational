@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import NiceSelect from './NiceSelect';
 import MobileMenu from './MobileMenu';
-import LoginForm from './LoginForm';
 import { useSettings } from '../../public-cms/hooks';
 
 const DEFAULT_NAV = [
@@ -19,15 +17,8 @@ const DEFAULT_NAV = [
 function HeaderOne() {
     const settings = useSettings();
     const nav = Array.isArray(settings.headerNav) && settings.headerNav.length ? settings.headerNav : DEFAULT_NAV;
-    const languageOptions = [
-        { value: "language", label: "Language" },
-        { value: "CNY", label: "CNY" },
-        { value: "EUR", label: "EUR" },
-        { value: "AUD", label: "AUD" },
-    ];
     const [isSticky, setIsSticky] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-    const [isLoginFormOpen, setIsLoginFormOpen] = useState(false);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -67,10 +58,6 @@ function HeaderOne() {
                             </div>
                             <div className="col-auto">
                                 <div className="header-right">
-                                    <div className="currency-menu">
-                                        <NiceSelect options={languageOptions} defaultValue="Language" />
-                                    </div>
-
                                     <div className="header-links">
                                         <ul>
                                             <li className="d-none d-md-inline-block">
@@ -78,15 +65,6 @@ function HeaderOne() {
                                             </li>
                                             <li className="d-none d-md-inline-block">
                                                 <Link to="/contact">Support</Link>
-                                            </li>
-                                            <li>
-                                                <button
-                                                    type="button"
-                                                    onClick={() => setIsLoginFormOpen(true)}
-                                                >
-                                                    Sign In / Register
-                                                    <i className="fa-regular fa-user" />
-                                                </button>
                                             </li>
                                         </ul>
                                     </div>
@@ -129,7 +107,7 @@ function HeaderOne() {
                                                     fontFamily: "'Manrope', sans-serif",
                                                     fontSize: "19px",
                                                     fontWeight: 800,
-                                                    color: "#ff2300",
+                                                    color: "#0a074f",
                                                     letterSpacing: "1.2px",
                                                     textTransform: "uppercase",
                                                     marginTop: "4px"
@@ -185,7 +163,6 @@ function HeaderOne() {
                 </div>
             </header>
             <MobileMenu isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} />
-            <LoginForm isOpen={isLoginFormOpen} onClose={() => setIsLoginFormOpen(false)} />
         </>
 
     )
