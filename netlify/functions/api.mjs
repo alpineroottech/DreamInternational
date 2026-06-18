@@ -1,3 +1,4 @@
+import "@prisma/client";
 import serverless from "serverless-http";
 import { app } from "../../server/src/app.js";
 

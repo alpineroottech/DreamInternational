@@ -15,7 +15,12 @@
 [functions]
   node_bundler = "esbuild"
   external_node_modules = ["@prisma/client", ".prisma"]
-  included_files = ["node_modules/.prisma/**", "node_modules/@prisma/client/**"]
+  included_files = [
+    "node_modules/.prisma/**",
+    "node_modules/@prisma/**",
+    "netlify/functions/node_modules/.prisma/**",
+    "netlify/functions/node_modules/@prisma/**"
+  ]
 
 [functions."api"]
   timeout = 26

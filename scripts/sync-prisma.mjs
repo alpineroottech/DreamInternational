@@ -9,16 +9,28 @@ import { fileURLToPath } from "node:url";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const fromPrisma = path.join(root, "server/node_modules/.prisma");
 const fromClient = path.join(root, "server/node_modules/@prisma/client");
-const toPrisma = path.join(root, "node_modules/.prisma");
-const toClient = path.join(root, "node_modules/@prisma/client");
 
 if (!existsSync(fromPrisma) || !existsSync(fromClient)) {
   console.error("Prisma client not found in server/node_modules. Run prisma generate in server/ first.");
   process.exit(1);
 }
 
-mkdirSync(path.dirname(toPrisma), { recursive: true });
-mkdirSync(path.dirname(toClient), { recursive: true });
-cpSync(fromPrisma, toPrisma, { recursive: true });
-cpSync(fromClient, toClient, { recursive: true });
-console.log("Synced Prisma client to root node_modules for Netlify functions.");
+const targets = [
+  ["server/node_modules/.prisma", "node_modules/.prisma"],
+  ["server/node_modules/@prisma/client", "node_modules/@prisma/client"],
+  ["server/node_modules/.prisma", "netlify/functions/node_modules/.prisma"],
+  ["server/node_modules/@prisma/client", "netlify/functions/node_modules/@prisma/client"],
+];
+
+for (const [fromRel, toRel] of targets) {
+  const from = path.join(root, fromRel);
+  const to = path.join(root, toRel);
+  if (!existsSync(from)) {
+    console.error(`Missing ${fromRel}. Run prisma generate in server/ first.`);
+    process.exit(1);
+  }
+  mkdirSync(path.dirname(to), { recursive: true });
+  cpSync(from, to, { recursive: true });
+}
+
+console.log("Synced Prisma client for Netlify functions.");
