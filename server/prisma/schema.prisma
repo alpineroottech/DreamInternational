@@ -1,16 +1,14 @@
 // Dream International Travel and Tours — CMS data model
 //
-// NOTE: This uses SQLite for zero-setup local development.
-// For production: change `provider` to "postgresql" and point DATABASE_URL at Neon.
-// Because SQLite has no native enum/array types, enums are stored as String
-// (validated by Zod in the API) and list/structured fields use Json.
+// PostgreSQL (Neon) for production/Vercel. Set DATABASE_URL in server/.env locally.
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
