@@ -22,7 +22,7 @@
     "@neondatabase/serverless",
     "ws"
   ]
-  included_files = ["server/node_modules/**"]
+  included_files = ["node_modules/@prisma/**", "node_modules/.prisma/**"]
 
 [functions."api"]
   timeout = 26
