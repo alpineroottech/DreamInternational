@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@prisma/client": "^6.2.1",
     "@iconify/react": "^6.0.2",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
@@ -34,7 +35,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "netlify-build": "npm run build:api && npm run build:web",
-    "build:api": "cd server && npm install && npx prisma generate && npx prisma migrate deploy",
+    "build:api": "cd server && npm install && npx prisma generate && npx prisma migrate deploy && cd .. && node scripts/sync-prisma.mjs",
     "build:web": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",

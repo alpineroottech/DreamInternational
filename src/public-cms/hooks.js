@@ -6,6 +6,10 @@ export const API_ORIGIN = baseURL.replace(/\/api$/, "");
 
 export const publicApi = axios.create({ baseURL });
 
+function isPlainObject(value) {
+  return value !== null && typeof value === "object" && !Array.isArray(value);
+}
+
 export function resolveAssetUrl(url) {
   if (!url) return "";
   if (url.startsWith("http") || url.startsWith("/assets") || url.startsWith("data:")) return url;
@@ -22,7 +26,7 @@ export function useCollection(path, params) {
     let active = true;
     publicApi
       .get(path, { params })
-      .then((r) => active && setData(Array.isArray(r.data) ? r.data : r.data))
+      .then((r) => active && setData(Array.isArray(r.data) ? r.data : null))
       .catch(() => active && setData(null));
     return () => {
       active = false;
@@ -45,7 +49,7 @@ export function useSettings() {
     let active = true;
     if (!settingsPromise) {
       settingsPromise = publicApi.get("/public/settings").then((r) => {
-        settingsCache = r.data || {};
+        settingsCache = isPlainObject(r.data) ? r.data : {};
         return settingsCache;
       });
     }
@@ -56,7 +60,7 @@ export function useSettings() {
       active = false;
     };
   }, []);
-  return settings || {};
+  return isPlainObject(settings) ? settings : {};
 }
 
 // Home page sections: returns { byKey, order } where order is enabled keys sorted.
@@ -68,6 +72,10 @@ export function useHomeSections() {
       .get("/public/sections", { params: { page: "home" } })
       .then((r) => {
         if (!active) return;
+        if (!Array.isArray(r.data)) {
+          setState({ byKey: {}, order: null });
+          return;
+        }
         const byKey = {};
         const sorted = [...r.data].sort((a, b) => a.order - b.order);
         sorted.forEach((s) => {
