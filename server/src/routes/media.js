@@ -2,10 +2,9 @@ import { Router } from "express";
 import multer from "multer";
 import path from "node:path";
 import fs from "node:fs";
-import { fileURLToPath } from "node:url";
 import prisma from "../lib/prisma.js";
 import { verifyJwt, requireRole } from "../middleware/auth.js";
-import { isServerlessHost } from "../lib/runtime.js";
+import { isServerlessHost, moduleDir } from "../lib/runtime.js";
 import {
   deleteImageFromSupabase,
   isSupabaseConfigured,
@@ -13,7 +12,7 @@ import {
   uploadImageToSupabase,
 } from "../lib/supabaseStorage.js";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const __dirname = moduleDir(import.meta.url, "server/src/routes");
 const UPLOAD_DIR = path.resolve(__dirname, "../../uploads");
 const isServerless = isServerlessHost();
 const useRemoteStorage = isSupabaseConfigured();

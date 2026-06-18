@@ -4,7 +4,6 @@ import helmet from "helmet";
 import cookieParser from "cookie-parser";
 import rateLimit from "express-rate-limit";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
 
 import authRoutes from "./routes/auth.js";
 import { publicDestinations, adminDestinations } from "./routes/destinations.js";
@@ -13,9 +12,9 @@ import { publicSections, adminSections } from "./routes/sections.js";
 import { publicInquiries, adminInquiries } from "./routes/inquiries.js";
 import mediaRoutes from "./routes/media.js";
 import { registerResources } from "./resources.js";
-import { isServerlessHost, normalizeOrigin } from "./lib/runtime.js";
+import { isServerlessHost, normalizeOrigin, moduleDir } from "./lib/runtime.js";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const __dirname = moduleDir(import.meta.url);
 const isServerless = isServerlessHost();
 const isProduction = process.env.NODE_ENV === "production";
 
