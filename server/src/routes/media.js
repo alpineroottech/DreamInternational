@@ -6,10 +6,11 @@ import { fileURLToPath } from "node:url";
 import { v2 as cloudinary } from "cloudinary";
 import prisma from "../lib/prisma.js";
 import { verifyJwt, requireRole } from "../middleware/auth.js";
+import { isServerlessHost } from "../lib/runtime.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const UPLOAD_DIR = path.resolve(__dirname, "../../uploads");
-const isVercel = Boolean(process.env.VERCEL);
+const isServerless = isServerlessHost();
 
 const cloudinaryConfigured = Boolean(
   process.env.CLOUDINARY_CLOUD_NAME &&
@@ -26,7 +27,7 @@ if (cloudinaryConfigured) {
   });
 }
 
-if (!isVercel) {
+if (!isServerless) {
   fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 }
 
@@ -47,7 +48,7 @@ const diskStorage = multer.diskStorage({
 const memoryStorage = multer.memoryStorage();
 
 const upload = multer({
-  storage: isVercel || cloudinaryConfigured ? memoryStorage : diskStorage,
+  storage: isServerless || cloudinaryConfigured ? memoryStorage : diskStorage,
   limits: { fileSize: 8 * 1024 * 1024 },
   fileFilter: (_req, file, cb) => {
     if (/^image\//.test(file.mimetype)) cb(null, true);
@@ -93,10 +94,11 @@ router.post("/upload", upload.single("file"), async (req, res) => {
     let url;
     let fileName = req.file.originalname;
 
-    if (isVercel || cloudinaryConfigured) {
+    if (isServerless || cloudinaryConfigured) {
       if (!cloudinaryConfigured) {
         return res.status(503).json({
-          error: "Image uploads require Cloudinary. Set CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET in Vercel.",
+          error:
+            "Image uploads require Cloudinary on Netlify. Set CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET in your site environment variables.",
         });
       }
       const result = await uploadToCloudinary(req.file.buffer, req.file.originalname);
@@ -125,7 +127,7 @@ router.delete("/:id", async (req, res) => {
   const asset = await prisma.mediaAsset.findUnique({ where: { id: req.params.id } });
   if (!asset) return res.status(404).json({ error: "Asset not found" });
 
-  if (asset.url?.startsWith("/uploads/") && !isVercel) {
+  if (asset.url?.startsWith("/uploads/") && !isServerless) {
     const fp = path.join(UPLOAD_DIR, path.basename(asset.url));
     fs.promises.unlink(fp).catch(() => {});
   }

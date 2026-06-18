@@ -13,20 +13,30 @@ import { publicSections, adminSections } from "./routes/sections.js";
 import { publicInquiries, adminInquiries } from "./routes/inquiries.js";
 import mediaRoutes from "./routes/media.js";
 import { registerResources } from "./resources.js";
+import { isServerlessHost, normalizeOrigin } from "./lib/runtime.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const isVercel = Boolean(process.env.VERCEL);
+const isServerless = isServerlessHost();
 const isProduction = process.env.NODE_ENV === "production";
 
 function buildAllowedOrigins() {
   const origins = new Set();
-  if (process.env.CLIENT_ORIGIN) origins.add(process.env.CLIENT_ORIGIN.replace(/\/$/, ""));
-  if (process.env.VERCEL_URL) origins.add(`https://${process.env.VERCEL_URL}`);
-  if (process.env.VERCEL_BRANCH_URL) origins.add(`https://${process.env.VERCEL_BRANCH_URL}`);
-  // Local CRA dev server
+  const add = (url) => {
+    const n = normalizeOrigin(url);
+    if (n) origins.add(n);
+  };
+
+  add(process.env.CLIENT_ORIGIN);
+  add(process.env.URL);
+  add(process.env.DEPLOY_PRIME_URL);
+  add(process.env.DEPLOY_URL);
+  add(process.env.VERCEL_URL && `https://${process.env.VERCEL_URL}`);
+  add(process.env.VERCEL_BRANCH_URL && `https://${process.env.VERCEL_BRANCH_URL}`);
+
   if (!isProduction) {
     origins.add("http://localhost:3000");
     origins.add("http://127.0.0.1:3000");
+    origins.add("http://localhost:8888");
   }
   return [...origins];
 }
@@ -39,9 +49,9 @@ app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
 app.use(
   cors({
     origin(origin, callback) {
-      // Same-origin / server-to-server requests have no Origin header.
       if (!origin) return callback(null, true);
-      if (allowedOrigins.includes(origin.replace(/\/$/, ""))) return callback(null, true);
+      const normalized = normalizeOrigin(origin);
+      if (normalized && allowedOrigins.includes(normalized)) return callback(null, true);
       return callback(new Error("Not allowed by CORS"));
     },
     credentials: true,
@@ -55,13 +65,17 @@ app.use(
   rateLimit({ windowMs: 15 * 60 * 1000, max: 1000, standardHeaders: true, legacyHeaders: false })
 );
 
-// Local disk uploads (dev only — Vercel uses Cloudinary in media routes).
-if (!isVercel) {
+if (!isServerless) {
   app.use("/uploads", express.static(path.resolve(__dirname, "../uploads")));
 }
 
 app.get("/api/health", (_req, res) =>
-  res.json({ ok: true, service: "dream-cms", env: isProduction ? "production" : "development" })
+  res.json({
+    ok: true,
+    service: "dream-cms",
+    env: isProduction ? "production" : "development",
+    host: isServerless ? "serverless" : "node",
+  })
 );
 
 app.use("/api/auth", authRoutes);

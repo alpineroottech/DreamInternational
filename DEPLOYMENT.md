@@ -1,6 +1,6 @@
-# Deploying Dream International on Vercel + Neon
+# Deploying Dream International on Netlify + Neon
 
-Everything runs on **one Vercel project**: the React site, `/admin` CMS UI, and `/api` backend.
+Everything runs on **one Netlify site**: the React site, `/admin` CMS UI, and `/api` backend.
 
 ## Architecture
 
@@ -8,10 +8,10 @@ Everything runs on **one Vercel project**: the React site, `/admin` CMS UI, and 
 |-----|------|
 | `yoursite.com/` | Public website |
 | `yoursite.com/admin` | CMS admin panel |
-| `yoursite.com/api/*` | Express API (serverless) |
+| `yoursite.com/api/*` | Express API (Netlify Function) |
 
 Database: **Neon PostgreSQL** (free tier)  
-Image uploads on Vercel: **Cloudinary** (free tier)
+Image uploads: **Cloudinary** (free tier — required on Netlify for CMS uploads)
 
 ---
 
@@ -19,7 +19,9 @@ Image uploads on Vercel: **Cloudinary** (free tier)
 
 1. Create account at [neon.tech](https://neon.tech)
 2. Create a project → copy the **PostgreSQL connection string**
-3. It looks like: `postgresql://user:pass@ep-xxx.region.aws.neon.tech/neondb?sslmode=require`
+3. Format: `postgresql://user:pass@ep-xxx.region.aws.neon.tech/neondb?sslmode=require`
+
+**Never commit or share this string.** Set it only in Netlify environment variables.
 
 ---
 
@@ -30,17 +32,19 @@ Image uploads on Vercel: **Cloudinary** (free tier)
 
 ---
 
-## Step 3 — Vercel project
+## Step 3 — Netlify site
 
-1. Go to [vercel.com](https://vercel.com) → **Add New Project**
-2. Import GitHub repo: `alpineroottech/DreamInternational`
-3. Framework: **Create React App** (auto-detected)
-4. Root directory: `.` (default)
-5. `vercel.json` in the repo sets build/install commands automatically
+1. Go to [netlify.com](https://netlify.com) → **Add new site** → **Import an existing project**
+2. Connect GitHub → select `alpineroottech/DreamInternational`
+3. Branch: `master`
+4. Netlify reads `netlify.toml` automatically:
+   - **Build command:** `npm run netlify-build`
+   - **Publish directory:** `build`
+   - **Functions:** `netlify/functions`
 
-### Environment variables (Vercel → Settings → Environment Variables)
+### Environment variables (Site settings → Environment variables)
 
-Set for **Production**, **Preview**, and **Development**:
+Add these for **Production** (and **Deploy previews** if you want):
 
 | Variable | Value |
 |----------|--------|
@@ -52,7 +56,7 @@ Set for **Production**, **Preview**, and **Development**:
 | `CLOUDINARY_API_SECRET` | From Cloudinary dashboard |
 | `CLOUDINARY_FOLDER` | `dream-international` (optional) |
 | `SEED_ADMIN_EMAIL` | Your admin email |
-| `SEED_ADMIN_PASSWORD` | Strong password (first deploy only) |
+| `SEED_ADMIN_PASSWORD` | Strong password |
 | `SEED_ADMIN_NAME` | Admin display name |
 | `NODE_ENV` | `production` |
 
@@ -62,13 +66,13 @@ After you add a custom domain, also set:
 |----------|--------|
 | `CLIENT_ORIGIN` | `https://yourdomain.com` |
 
-6. Click **Deploy**
+5. Click **Deploy site**
 
-On first deploy, the build runs `prisma migrate deploy` (creates tables) and `npm run build`.
+On first deploy, the build runs `prisma migrate deploy` (creates tables) and builds the React app.
 
 ### Seed the database (first time only)
 
-After first successful deploy, run seed once from your machine:
+After the first successful deploy, run seed once from your machine:
 
 ```bash
 cd server
@@ -78,18 +82,16 @@ npm install
 npx prisma db seed
 ```
 
-Or use Vercel CLI: `vercel env pull` then run seed locally against Neon.
-
-Default seed login (if you use defaults): see `server/.env.example` — **change the password immediately after first login**.
+**Change the admin password immediately after first login.**
 
 ---
 
 ## Step 4 — Verify
 
-1. Open `https://your-project.vercel.app`
-2. Check API: `https://your-project.vercel.app/api/health` → `{"ok":true,...}`
-3. Admin: `https://your-project.vercel.app/admin`
-4. Log in, edit homepage content, confirm changes appear on the site
+1. Open `https://your-site.netlify.app`
+2. API health: `https://your-site.netlify.app/api/health` → `{"ok":true,...}`
+3. Admin: `https://your-site.netlify.app/admin`
+4. Log in, edit content, confirm the homepage updates
 
 ---
 
@@ -98,7 +100,7 @@ Default seed login (if you use defaults): see `server/.env.example` — **change
 ```bash
 # Terminal 1 — API
 cd server
-cp .env.example .env   # fill in Neon DATABASE_URL
+cp .env.example .env   # Neon DATABASE_URL + secrets
 npm install
 npx prisma generate
 npx prisma migrate deploy
@@ -108,9 +110,18 @@ npm run dev
 # Terminal 2 — frontend
 cd ..
 npm install
-# Optional: .env with REACT_APP_API_URL=http://localhost:4000/api
 npm start
 ```
+
+### Optional: Netlify Dev (proxies /api locally)
+
+```bash
+npm install -g netlify-cli
+netlify login
+netlify dev
+```
+
+Runs the site at `http://localhost:8888` with functions proxied like production.
 
 ---
 
@@ -118,17 +129,17 @@ npm start
 
 - Repo: `https://github.com/alpineroottech/DreamInternational`
 - Branch: `master`
-- Push to `master` → Vercel auto-redeploys
+- Push to `master` → Netlify auto-redeploys
 
 ---
 
 ## Security notes
 
-- `JWT_SECRET` is required in production (app refuses weak/missing secrets)
+- `JWT_SECRET` is required in production
 - Admin routes require JWT + role checks
 - HTML content is sanitized on write and render
 - Rate limiting on login and inquiries
-- Never commit `.env` files (already in `.gitignore`)
+- Never commit `.env` files
 
 ---
 
@@ -136,8 +147,9 @@ npm start
 
 | Issue | Fix |
 |-------|-----|
-| Build fails on `migrate deploy` | Ensure `DATABASE_URL` is set in Vercel env |
-| `/admin` shows blank page | Hard refresh; check browser console |
-| API 403 CORS | Set `CLIENT_ORIGIN` to your exact site URL |
+| Build fails on `migrate deploy` | Set `DATABASE_URL` in Netlify env vars |
+| `/admin` blank or 404 | Hard refresh; confirm SPA redirect in `netlify.toml` |
+| API 403 CORS | Set `CLIENT_ORIGIN` to your exact Netlify URL |
 | Image upload fails | Set all three `CLOUDINARY_*` variables |
-| Cold start slow | Normal on Vercel free tier after idle time |
+| Function timeout | Large uploads may hit 26s limit — use images under 8 MB |
+| Cold start slow | Normal on Netlify free tier after idle time |
