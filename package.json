@@ -36,7 +36,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "netlify-build": "npm run build:api && npm run build:web",
-    "build:api": "cd server && npm install && npx prisma generate && npx prisma migrate deploy && cd .. && node scripts/sync-prisma.mjs",
+    "build:api": "cd server && npm install && npx prisma generate && npx prisma migrate deploy && cd ../netlify/functions && npm install --legacy-peer-deps && cd ../.. && node scripts/sync-prisma.mjs",
     "build:web": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
