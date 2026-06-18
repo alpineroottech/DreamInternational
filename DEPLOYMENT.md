@@ -330,7 +330,8 @@ Netlify **automatically rebuilds** within a few minutes.
 
 | Problem | What to do |
 |---------|------------|
-| Build fails: `DATABASE_URL` | Add/fix in Netlify → Environment variables → Redeploy |
+| Build fails: migration syntax error / `﻿` | Migration file had a BOM — pull latest `master`, then clear failed migration (see below) |
+| Build fails: `P3018` migration failed | Run `npx prisma migrate resolve --rolled-back 20260617000000_init_postgresql` in `server/` with your Neon `DATABASE_URL`, then redeploy |
 | `/admin` shows blank page | Hard refresh (Ctrl+F5); check browser console |
 | Login fails | Re-run `npx prisma db seed` with correct `DATABASE_URL` |
 | Upload fails | Check all 3 `SUPABASE_*` vars; bucket must be **public** |

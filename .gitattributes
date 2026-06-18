@@ -1,0 +1,2 @@
+# Prevent UTF-8 BOM in SQL migrations (breaks PostgreSQL on Netlify)
+*.sql text eol=lf working-tree-encoding=UTF-8
