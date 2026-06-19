@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Icon } from "@iconify/react";
 import api from "../api/client";
 import { resolveAssetUrl } from "../utils";
+import { uploadMediaFile } from "../lib/mediaUpload";
 
 // Modal gallery for selecting or uploading an image; calls onSelect(url).
 export function MediaPickerModal({ onSelect, onClose }) {
@@ -27,15 +28,13 @@ export function MediaPickerModal({ onSelect, onClose }) {
   const upload = async (file) => {
     if (!file) return;
     setUploading(true);
-    const fd = new FormData();
-    fd.append("file", file);
     try {
-      const { data } = await api.post("/admin/media/upload", fd, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      const data = await uploadMediaFile(file);
       setItems((prev) => [data, ...prev]);
       onSelect(data.url);
       onClose();
+    } catch {
+      /* picker has no error banner — parent can add later */
     } finally {
       setUploading(false);
     }

@@ -14,6 +14,7 @@ import {
 
 const __dirname = moduleDir(import.meta.url, "server/src/routes");
 const UPLOAD_DIR = path.resolve(__dirname, "../../uploads");
+const MAX_BULK_FILES = 30;
 
 function storageMode() {
   return {
@@ -38,60 +39,108 @@ const upload = multer({
 const router = Router();
 router.use(verifyJwt, requireRole("SUPER_ADMIN", "ADMIN"));
 
+// Multer errors (file too large, wrong type)
+function handleUploadError(err, req, res, next) {
+  if (err?.code === "LIMIT_FILE_SIZE") {
+    return res.status(400).json({ error: "Each image must be 8 MB or smaller." });
+  }
+  if (err?.code === "LIMIT_FILE_COUNT") {
+    return res.status(400).json({ error: `You can upload up to ${MAX_BULK_FILES} images at once.` });
+  }
+  if (err?.message === "Only image uploads are allowed") {
+    return res.status(400).json({ error: err.message });
+  }
+  return next(err);
+}
+
 router.get("/", async (_req, res) => {
   const items = await prisma.mediaAsset.findMany({ orderBy: { createdAt: "desc" } });
   res.json(items);
 });
 
-router.post("/upload", upload.single("file"), async (req, res) => {
-  if (!req.file) return res.status(400).json({ error: "No file uploaded" });
-
+async function saveUploadedFile(file, altText) {
   const { isServerless, useRemoteStorage } = storageMode();
 
-  try {
-    let url;
-    let fileName = req.file.originalname;
-    let publicId = null;
+  let url;
+  let fileName = file.originalname;
+  let publicId = null;
 
-    if (useRemoteStorage) {
-      const result = await uploadImageToSupabase(req.file.buffer, req.file.originalname, req.file.mimetype);
-      url = result.url;
-      publicId = result.publicId;
-      fileName = path.basename(result.publicId);
-    } else if (isServerless) {
-      return res.status(503).json({
-        error:
-          "Image uploads require Supabase Storage on Netlify. Set SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, and SUPABASE_STORAGE_BUCKET in environment variables.",
-      });
-    } else {
-      if (!fs.existsSync(UPLOAD_DIR)) fs.mkdirSync(UPLOAD_DIR, { recursive: true });
-      const ext = path.extname(req.file.originalname);
-      const base = path
-        .basename(req.file.originalname, ext)
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/-+/g, "-")
-        .slice(0, 40);
-      const diskName = `${Date.now()}-${base || "image"}${ext}`;
-      fs.writeFileSync(path.join(UPLOAD_DIR, diskName), req.file.buffer);
-      url = `/uploads/${diskName}`;
-      fileName = diskName;
+  if (useRemoteStorage) {
+    const result = await uploadImageToSupabase(file.buffer, file.originalname, file.mimetype);
+    url = result.url;
+    publicId = result.publicId;
+    fileName = path.basename(result.publicId);
+  } else if (isServerless) {
+    const err = new Error(
+      "Image uploads require Supabase Storage on Netlify. Set SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, and SUPABASE_STORAGE_BUCKET in environment variables."
+    );
+    err.status = 503;
+    throw err;
+  } else {
+    if (!fs.existsSync(UPLOAD_DIR)) fs.mkdirSync(UPLOAD_DIR, { recursive: true });
+    const ext = path.extname(file.originalname);
+    const base = path
+      .basename(file.originalname, ext)
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/-+/g, "-")
+      .slice(0, 40);
+    const diskName = `${Date.now()}-${base || "image"}${ext}`;
+    fs.writeFileSync(path.join(UPLOAD_DIR, diskName), file.buffer);
+    url = `/uploads/${diskName}`;
+    fileName = diskName;
+  }
+
+  return prisma.mediaAsset.create({
+    data: {
+      url,
+      publicId,
+      fileName,
+      mimeType: file.mimetype,
+      altText: altText || null,
+    },
+  });
+}
+
+router.post("/upload", (req, res, next) => {
+  upload.single("file")(req, res, async (err) => {
+    if (err) return handleUploadError(err, req, res, next);
+    if (!req.file) return res.status(400).json({ error: "No file uploaded" });
+    try {
+      const asset = await saveUploadedFile(req.file, req.body.altText);
+      res.status(201).json(asset);
+    } catch (e) {
+      console.error(e);
+      res.status(e.status || 500).json({ error: e.message || "Upload failed" });
+    }
+  });
+});
+
+router.post("/upload-bulk", (req, res, next) => {
+  upload.array("files", MAX_BULK_FILES)(req, res, async (err) => {
+    if (err) return handleUploadError(err, req, res, next);
+    const files = req.files || [];
+    if (!files.length) return res.status(400).json({ error: "No files uploaded" });
+
+    const succeeded = [];
+    const failed = [];
+
+    for (const file of files) {
+      try {
+        // eslint-disable-next-line no-await-in-loop
+        const asset = await saveUploadedFile(file, req.body.altText);
+        succeeded.push(asset);
+      } catch (e) {
+        failed.push({ fileName: file.originalname, error: e.message || "Upload failed" });
+      }
     }
 
-    const asset = await prisma.mediaAsset.create({
-      data: {
-        url,
-        publicId,
-        fileName,
-        mimeType: req.file.mimetype,
-        altText: req.body.altText || null,
-      },
+    res.status(failed.length && !succeeded.length ? 500 : 201).json({
+      succeeded,
+      failed,
+      total: files.length,
     });
-    res.status(201).json(asset);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: err.message || "Upload failed" });
-  }
+  });
 });
 
 router.delete("/:id", async (req, res) => {
