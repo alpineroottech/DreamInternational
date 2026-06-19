@@ -13,6 +13,7 @@ import { publicInquiries, adminInquiries } from "./routes/inquiries.js";
 import mediaRoutes from "./routes/media.js";
 import { registerResources } from "./resources.js";
 import { isServerlessHost, normalizeOrigin, moduleDir } from "./lib/runtime.js";
+import { isSupabaseConfigured } from "./lib/supabaseStorage.js";
 
 const __dirname = moduleDir(import.meta.url);
 const isServerless = isServerlessHost();
@@ -74,6 +75,10 @@ app.get("/api/health", (_req, res) =>
     service: "dream-cms",
     env: isProduction ? "production" : "development",
     host: isServerless ? "serverless" : "node",
+    storage: {
+      supabase: isSupabaseConfigured(),
+      mode: isSupabaseConfigured() ? "supabase" : isServerless ? "unconfigured" : "local",
+    },
   })
 );
 

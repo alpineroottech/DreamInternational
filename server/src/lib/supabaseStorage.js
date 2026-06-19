@@ -1,7 +1,7 @@
 import path from "node:path";
-import { createClient } from "@supabase/supabase-js";
+import { StorageClient } from "@supabase/storage-js";
 
-let client;
+let storage;
 
 export function isSupabaseConfigured() {
   return Boolean(
@@ -11,16 +11,19 @@ export function isSupabaseConfigured() {
   );
 }
 
-function getSupabase() {
-  if (!client) {
+function getStorage() {
+  if (!storage) {
     if (!isSupabaseConfigured()) {
       throw new Error("Supabase storage is not configured");
     }
-    client = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY, {
-      auth: { persistSession: false, autoRefreshToken: false },
+    const url = process.env.SUPABASE_URL.replace(/\/$/, "");
+    const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    storage = new StorageClient(`${url}/storage/v1`, {
+      apikey: key,
+      Authorization: `Bearer ${key}`,
     });
   }
-  return client;
+  return storage;
 }
 
 function safeFileName(originalname) {
@@ -44,8 +47,8 @@ export async function uploadImageToSupabase(buffer, originalname, mimetype) {
   const fileName = safeFileName(originalname);
   const objectPath = folder ? `${folder}/${fileName}` : fileName;
 
-  const supabase = getSupabase();
-  const { error } = await supabase.storage.from(bucket).upload(objectPath, buffer, {
+  const client = getStorage();
+  const { error } = await client.from(bucket).upload(objectPath, buffer, {
     contentType: mimetype,
     upsert: false,
     cacheControl: "3600",
@@ -53,7 +56,7 @@ export async function uploadImageToSupabase(buffer, originalname, mimetype) {
 
   if (error) throw error;
 
-  const { data } = supabase.storage.from(bucket).getPublicUrl(objectPath);
+  const { data } = client.from(bucket).getPublicUrl(objectPath);
   return { url: data.publicUrl, publicId: objectPath };
 }
 
@@ -61,8 +64,7 @@ export async function uploadImageToSupabase(buffer, originalname, mimetype) {
 export async function deleteImageFromSupabase(objectPath) {
   if (!objectPath) return;
   const bucket = process.env.SUPABASE_STORAGE_BUCKET;
-  const supabase = getSupabase();
-  const { error } = await supabase.storage.from(bucket).remove([objectPath]);
+  const { error } = await getStorage().from(bucket).remove([objectPath]);
   if (error) throw error;
 }
 

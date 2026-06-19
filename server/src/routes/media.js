@@ -14,29 +14,20 @@ import {
 
 const __dirname = moduleDir(import.meta.url, "server/src/routes");
 const UPLOAD_DIR = path.resolve(__dirname, "../../uploads");
-const isServerless = isServerlessHost();
-const useRemoteStorage = isSupabaseConfigured();
 
-if (!isServerless && !useRemoteStorage) {
+function storageMode() {
+  return {
+    isServerless: isServerlessHost(),
+    useRemoteStorage: isSupabaseConfigured(),
+  };
+}
+
+if (!isServerlessHost() && !isSupabaseConfigured()) {
   fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 }
 
-const diskStorage = multer.diskStorage({
-  destination: (_req, _file, cb) => cb(null, UPLOAD_DIR),
-  filename: (_req, file, cb) => {
-    const ext = path.extname(file.originalname);
-    const base = path
-      .basename(file.originalname, ext)
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/-+/g, "-")
-      .slice(0, 40);
-    cb(null, `${Date.now()}-${base}${ext}`);
-  },
-});
-
 const upload = multer({
-  storage: useRemoteStorage || isServerless ? multer.memoryStorage() : diskStorage,
+  storage: multer.memoryStorage(),
   limits: { fileSize: 8 * 1024 * 1024 },
   fileFilter: (_req, file, cb) => {
     if (/^image\//.test(file.mimetype)) cb(null, true);
@@ -55,6 +46,8 @@ router.get("/", async (_req, res) => {
 router.post("/upload", upload.single("file"), async (req, res) => {
   if (!req.file) return res.status(400).json({ error: "No file uploaded" });
 
+  const { isServerless, useRemoteStorage } = storageMode();
+
   try {
     let url;
     let fileName = req.file.originalname;
@@ -71,7 +64,18 @@ router.post("/upload", upload.single("file"), async (req, res) => {
           "Image uploads require Supabase Storage on Netlify. Set SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, and SUPABASE_STORAGE_BUCKET in environment variables.",
       });
     } else {
-      url = `/uploads/${req.file.filename}`;
+      if (!fs.existsSync(UPLOAD_DIR)) fs.mkdirSync(UPLOAD_DIR, { recursive: true });
+      const ext = path.extname(req.file.originalname);
+      const base = path
+        .basename(req.file.originalname, ext)
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/-+/g, "-")
+        .slice(0, 40);
+      const diskName = `${Date.now()}-${base || "image"}${ext}`;
+      fs.writeFileSync(path.join(UPLOAD_DIR, diskName), req.file.buffer);
+      url = `/uploads/${diskName}`;
+      fileName = diskName;
     }
 
     const asset = await prisma.mediaAsset.create({
@@ -93,6 +97,8 @@ router.post("/upload", upload.single("file"), async (req, res) => {
 router.delete("/:id", async (req, res) => {
   const asset = await prisma.mediaAsset.findUnique({ where: { id: req.params.id } });
   if (!asset) return res.status(404).json({ error: "Asset not found" });
+
+  const { isServerless, useRemoteStorage } = storageMode();
 
   if (asset.publicId && useRemoteStorage) {
     try {
