@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { Icon } from "@iconify/react";
 import api from "../api/client";
+import { MediaInput } from "../components/MediaPicker";
 
 function slugify(text) {
   return String(text || "")
@@ -22,6 +23,8 @@ const EMPTY = {
   bestTimeToVisit: "",
   gettingThere: "",
   tips: "",
+  price: "",
+  basePrice: "",
   thingsToDo: [],
   status: "DRAFT",
   isFeatured: false,
@@ -30,7 +33,7 @@ const EMPTY = {
   ogImageUrl: "",
 };
 
-const TABS = ["Basic", "Content", "Things To Do", "SEO"];
+const TABS = ["Basic", "Pricing", "Content", "Things To Do", "SEO"];
 
 export default function DestinationEdit() {
   const { id } = useParams();
@@ -89,6 +92,7 @@ export default function DestinationEdit() {
     setMessage("");
     const payload = {
       ...form,
+      basePrice: form.basePrice === "" || form.basePrice == null ? null : Number(form.basePrice),
       thingsToDo: form.thingsToDo.filter((t) => t && t.trim()),
     };
     try {
@@ -192,13 +196,8 @@ export default function DestinationEdit() {
                 />
               </div>
               <div className="col-md-8">
-                <label className="form-label fw-semibold">Hero image URL</label>
-                <input
-                  className="form-control"
-                  value={form.heroImageUrl || ""}
-                  onChange={(e) => set("heroImageUrl", e.target.value)}
-                  placeholder="/assets/img/hero/R.jpg or https://…"
-                />
+                <label className="form-label fw-semibold">Hero image</label>
+                <MediaInput value={form.heroImageUrl || ""} onChange={(url) => set("heroImageUrl", url)} />
               </div>
               <div className="col-md-4">
                 <label className="form-label fw-semibold">Hero image alt</label>
@@ -231,6 +230,34 @@ export default function DestinationEdit() {
                   />
                 </div>
               )}
+            </div>
+          )}
+
+          {activeTab === "Pricing" && (
+            <div className="row g-3">
+              <div className="col-md-6">
+                <label className="form-label fw-semibold">Price (display text)</label>
+                <input
+                  className="form-control"
+                  value={form.price || ""}
+                  onChange={(e) => set("price", e.target.value)}
+                  placeholder='e.g. "From $450 per person"'
+                />
+                <div className="form-text">Shown on destination cards and detail pages.</div>
+              </div>
+              <div className="col-md-6">
+                <label className="form-label fw-semibold">Base price (USD, optional)</label>
+                <input
+                  type="number"
+                  min="0"
+                  step="1"
+                  className="form-control"
+                  value={form.basePrice ?? ""}
+                  onChange={(e) => set("basePrice", e.target.value)}
+                  placeholder="450"
+                />
+                <div className="form-text">Used for sorting; leave blank if not applicable.</div>
+              </div>
             </div>
           )}
 

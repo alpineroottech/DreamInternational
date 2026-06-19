@@ -24,6 +24,8 @@ function toPublic(d) {
     gettingThere: d.gettingThere,
     tips: d.tips,
     thingsToDo: d.thingsToDo || [],
+    price: d.price,
+    basePrice: d.basePrice,
     isFeatured: d.isFeatured,
     seo: {
       title: d.seoTitle || d.name,
@@ -68,6 +70,8 @@ const DestinationSchema = z.object({
   gettingThere: z.string().optional().nullable(),
   tips: z.string().optional().nullable(),
   thingsToDo: z.array(z.string()).optional().nullable(),
+  price: z.string().optional().nullable(),
+  basePrice: z.number().optional().nullable(),
   status: z.enum(["DRAFT", "PUBLISHED", "ARCHIVED"]).optional(),
   isFeatured: z.boolean().optional(),
   seoTitle: z.string().max(70).optional().nullable(),

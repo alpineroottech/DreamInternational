@@ -53,6 +53,8 @@ model Destination {
   gettingThere     String?  // HTML
   tips             String?  // HTML
   thingsToDo       Json?    // string[]
+  price            String?  // display text e.g. "From $450 per person"
+  basePrice        Float?   // optional numeric price for sorting
   status           String   @default("DRAFT") // DRAFT | PUBLISHED | ARCHIVED
   isFeatured       Boolean  @default(false)
   seoTitle         String?

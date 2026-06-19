@@ -62,7 +62,7 @@ export default function MediaLibrary() {
       <div className="d-flex flex-wrap gap-2 align-items-center justify-content-between mb-4">
         <div>
           <h4 className="fw-bold mb-1">Media Library</h4>
-          <p className="text-muted mb-0">Upload and manage images. (Local storage in dev; Cloudinary in production.)</p>
+          <p className="text-muted mb-0">Upload images to Supabase Storage (production) or local disk (dev).</p>
         </div>
         <div>
           <input

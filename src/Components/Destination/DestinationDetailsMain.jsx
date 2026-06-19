@@ -56,7 +56,7 @@ function DestinationDetailsMain() {
         gettingThere: cms?.gettingThere || null,
         tips: cms?.tips || null,
         thingsToDo: cms?.thingsToDo || [],
-        price: destinationPost?.price || "On request",
+        price: cms?.price || destinationPost?.price || "On request",
     };
 
     const openModal = (imageSrc, event) => {

@@ -19,7 +19,7 @@ function DestinationInner() {
             slug: d.slug,
             title: d.name,
             image: resolveAssetUrl(d.heroImage?.url) || '/assets/img/destination/destination_4_1.jpg',
-            price: null,
+            price: d.price || (d.basePrice != null ? `From $${d.basePrice}` : null),
             shortDescription: d.shortDescription,
           }))
         : staticPosts.map((p) => ({ ...p, slug: String(p.id), image: `/assets/img/tour/${p.image}` }));
