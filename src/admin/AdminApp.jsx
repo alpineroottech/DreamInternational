@@ -14,6 +14,7 @@ import Navigation from "./pages/Navigation";
 import Inquiries from "./pages/Inquiries";
 import Settings from "./pages/Settings";
 import MediaLibrary from "./pages/MediaLibrary";
+import TicketingPages from "./pages/TicketingPages";
 import { RESOURCE_CONFIG } from "./resourceConfig";
 import "./admin.css";
 
@@ -37,6 +38,7 @@ export default function AdminApp() {
         <Route path="inquiries" element={<Protected><Inquiries /></Protected>} />
         <Route path="media" element={<Protected><MediaLibrary /></Protected>} />
         <Route path="settings" element={<Protected><Settings /></Protected>} />
+        <Route path="ticketing-pages" element={<Protected><TicketingPages /></Protected>} />
 
         {/* Destinations keeps its bespoke editor */}
         <Route path="destinations" element={<Protected><DestinationsList /></Protected>} />

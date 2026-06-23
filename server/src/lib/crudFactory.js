@@ -24,6 +24,7 @@ export function buildResource(config) {
     publicOrderBy,
     adminOrderBy = { updatedAt: "desc" },
     publicBaseWhere = {},
+    filterQueryFields = [],
     roles = DEFAULT_ROLES,
   } = config;
 
@@ -38,6 +39,10 @@ export function buildResource(config) {
     if (hasStatus) where.status = "PUBLISHED";
     else if (hasVisibility) where.isVisible = true;
     if (req.query.featured === "true") where.isFeatured = true;
+    for (const field of filterQueryFields) {
+      const val = req.query[field];
+      if (val !== undefined && val !== "") where[field] = String(val);
+    }
     return where;
   };
 

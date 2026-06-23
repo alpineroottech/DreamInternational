@@ -105,3 +105,35 @@ export function useSection(page, key) {
   }, [page, key]);
   return data;
 }
+
+export function useSlugItem(path, slug) {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(Boolean(slug));
+  const [notFound, setNotFound] = useState(false);
+
+  useEffect(() => {
+    if (!slug) {
+      setData(null);
+      setLoading(false);
+      setNotFound(false);
+      return undefined;
+    }
+    let active = true;
+    setLoading(true);
+    setNotFound(false);
+    publicApi
+      .get(`${path}/${slug}`)
+      .then((r) => {
+        if (!active) return;
+        setData(r.data);
+        setNotFound(false);
+      })
+      .catch(() => active && (setData(null), setNotFound(true)))
+      .finally(() => active && setLoading(false));
+    return () => {
+      active = false;
+    };
+  }, [path, slug]);
+
+  return { data, loading, notFound };
+}

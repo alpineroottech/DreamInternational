@@ -178,6 +178,32 @@ const ReviewSchema = z.object({
   isVisible: bool,
 });
 
+const FlightRouteSchema = z.object({
+  title: z.string().min(1),
+  slug,
+  ticketType: z.enum(["domestic", "international"]),
+  fromCity: z.string().min(1),
+  toCity: z.string().min(1),
+  fromAirport: str,
+  toAirport: str,
+  airline: str,
+  flightDuration: str,
+  frequency: str,
+  priceFrom: z.number().optional().nullable(),
+  priceDisplay: str,
+  shortDescription: str,
+  description: str,
+  imageUrl: str,
+  imageAlt: str,
+  highlights: strArr,
+  baggageInfo: str,
+  bookingNotes: str,
+  status,
+  isFeatured: bool,
+  order: int,
+  ...seo,
+});
+
 const byOrder = [{ order: "asc" }, { createdAt: "desc" }];
 
 // Each entry maps an API path to its resource config.
@@ -194,6 +220,14 @@ export const RESOURCES = {
   counters: { modelName: "counter", schema: CounterSchema, hasStatus: false, hasVisibility: true, hasSlug: false, publicOrderBy: byOrder },
   faqs: { modelName: "faq", schema: FaqSchema, hasStatus: false, hasVisibility: true, hasSlug: false, htmlFields: ["answer"], publicOrderBy: byOrder },
   reviews: { modelName: "review", schema: ReviewSchema, hasStatus: false, hasVisibility: true, hasSlug: false, publicOrderBy: [{ isFeatured: "desc" }, { createdAt: "desc" }] },
+  "flight-routes": {
+    modelName: "flightRoute",
+    schema: FlightRouteSchema,
+    slugFrom: "title",
+    htmlFields: ["description", "bookingNotes"],
+    filterQueryFields: ["ticketType"],
+    publicOrderBy: [{ isFeatured: "desc" }, { order: "asc" }, { updatedAt: "desc" }],
+  },
 };
 
 // Mounts /api/public/:name and /api/admin/:name for every resource.

@@ -370,6 +370,72 @@ export const RESOURCE_CONFIG = {
     ],
   },
 
+  flightRoutes: {
+    label: "Flight Routes",
+    singular: "Flight route",
+    apiPath: "flight-routes",
+    titleField: "title",
+    icon: "solar:airplane-outline",
+    hasSlug: true,
+    listColumns: [
+      { key: "title", label: "Route" },
+      { key: "ticketType", label: "Type" },
+      { key: "fromCity", label: "From" },
+      { key: "toCity", label: "To" },
+      statusCol,
+      featuredCol,
+    ],
+    tabs: [
+      {
+        name: "Basic",
+        fields: [
+          { name: "title", label: "Title", type: "text", required: true },
+          { name: "slug", label: "Slug", type: "slug" },
+          {
+            name: "ticketType",
+            label: "Ticket type",
+            type: "select",
+            required: true,
+            options: [
+              { value: "domestic", label: "Domestic" },
+              { value: "international", label: "International" },
+            ],
+          },
+          { name: "shortDescription", label: "Short description", type: "textarea" },
+          { name: "status", label: "Status", type: "select", options: STATUS_OPTS },
+          { name: "isFeatured", label: "Featured", type: "switch" },
+          { name: "order", label: "Order", type: "number" },
+        ],
+      },
+      {
+        name: "Route details",
+        fields: [
+          { name: "fromCity", label: "From city", type: "text", required: true },
+          { name: "toCity", label: "To city", type: "text", required: true },
+          { name: "fromAirport", label: "From airport (code)", type: "text" },
+          { name: "toAirport", label: "To airport (code)", type: "text" },
+          { name: "airline", label: "Airline(s)", type: "text" },
+          { name: "flightDuration", label: "Flight duration", type: "text" },
+          { name: "frequency", label: "Frequency", type: "text" },
+          { name: "priceFrom", label: "Price from (USD)", type: "number" },
+          { name: "priceDisplay", label: "Price display text", type: "text" },
+          { name: "highlights", label: "Highlights", type: "stringList" },
+          { name: "baggageInfo", label: "Baggage info", type: "textarea" },
+          { name: "bookingNotes", label: "Booking notes", type: "richtext" },
+        ],
+      },
+      { name: "Content", fields: [{ name: "description", label: "Full description", type: "richtext" }] },
+      {
+        name: "Media",
+        fields: [
+          { name: "imageUrl", label: "Route image", type: "image" },
+          { name: "imageAlt", label: "Image alt text", type: "text" },
+        ],
+      },
+      seoTab,
+    ],
+  },
+
   reviews: {
     label: "Testimonials",
     singular: "Testimonial",
@@ -403,6 +469,7 @@ export const RESOURCE_ORDER = [
   "destinations",
   "activities",
   "services",
+  "flightRoutes",
   "resorts",
   "team",
   "blog",

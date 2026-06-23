@@ -13,6 +13,8 @@ const NAV = [
   { to: "/admin/destinations", label: "Destinations", icon: "solar:map-point-outline" },
   { to: "/admin/activities", label: "Activities", icon: "solar:running-2-outline" },
   { to: "/admin/services", label: "Services", icon: "solar:case-round-outline" },
+  { to: "/admin/flightRoutes", label: "Flight Routes", icon: "solar:airplane-outline" },
+  { to: "/admin/ticketing-pages", label: "Ticketing Pages", icon: "solar:ticket-outline" },
   { to: "/admin/resorts", label: "Resorts", icon: "solar:bedside-table-3-outline" },
   { to: "/admin/team", label: "Team / Guides", icon: "solar:users-group-rounded-outline" },
   { to: "/admin/blog", label: "Blog", icon: "solar:document-text-outline" },

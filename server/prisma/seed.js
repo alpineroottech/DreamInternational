@@ -1,8 +1,16 @@
 import "dotenv/config";
 import { PrismaClient } from "@prisma/client";
+import { PrismaNeon } from "@prisma/adapter-neon";
+import { neonConfig } from "@neondatabase/serverless";
+import ws from "ws";
 import bcrypt from "bcryptjs";
 
-const prisma = new PrismaClient();
+if (typeof globalThis.WebSocket === "undefined") {
+  neonConfig.webSocketConstructor = ws;
+}
+
+const adapter = new PrismaNeon({ connectionString: process.env.DATABASE_URL });
+const prisma = new PrismaClient({ adapter });
 const now = () => new Date();
 
 // Create rows only when a collection is still empty (idempotent re-seeding).
@@ -55,6 +63,14 @@ async function main() {
         { label: "Destinations", url: "/destination" },
         { label: "Activities", url: "/activities" },
         { label: "Services", url: "/service" },
+        {
+          label: "Ticketing",
+          url: "#",
+          children: [
+            { label: "Domestic Flights", url: "/ticketing/domestic" },
+            { label: "International Flights", url: "/ticketing/international" },
+          ],
+        },
         { label: "Blog", url: "/blog" },
         { label: "Contact", url: "/contact" },
       ]),
@@ -89,6 +105,32 @@ async function main() {
       update: {},
       create: { key, value: v, type: t },
     });
+  }
+
+  // Ensure Ticketing appears in saved header navigation (existing installs).
+  const headerNavRow = await prisma.setting.findUnique({ where: { key: "headerNav" } });
+  if (headerNavRow?.type === "json") {
+    let nav = [];
+    try {
+      nav = JSON.parse(headerNavRow.value);
+    } catch {
+      nav = [];
+    }
+    const hasTicketing = Array.isArray(nav) && nav.some(
+      (item) =>
+        item.label === "Ticketing" ||
+        item.children?.some((child) => child.url?.startsWith("/ticketing"))
+    );
+    if (Array.isArray(nav) && nav.length && !hasTicketing) {
+      const ticketing = JSON.parse(settings.headerNav.v).find((item) => item.label === "Ticketing");
+      const blogIdx = nav.findIndex((item) => item.label === "Blog" || item.url === "/blog");
+      const insertAt = blogIdx >= 0 ? blogIdx : nav.length;
+      const nextNav = [...nav.slice(0, insertAt), ticketing, ...nav.slice(insertAt)];
+      await prisma.setting.update({
+        where: { key: "headerNav" },
+        data: { value: JSON.stringify(nextNav) },
+      });
+    }
   }
 
   // ---------- Featured destination: Pokhara ----------
@@ -390,6 +432,58 @@ async function main() {
     },
   ]);
 
+  // ---------- Flight routes (ticketing) ----------
+  const domesticRoutes = [
+    ["Kathmandu to Pokhara", "kathmandu-to-pokhara", "Kathmandu", "Pokhara", "KTM", "PKR", "Buddha Air / Yeti", "25 min", "Multiple daily", 95, "/assets/img/destination/destination_4_1.jpg", true],
+    ["Kathmandu to Lukla", "kathmandu-to-lukla", "Kathmandu", "Lukla", "KTM", "LUA", "Tara / Summit", "35 min", "Weather dependent", 180, "/assets/img/tour/tour_4_1.jpg", true],
+    ["Kathmandu to Bharatpur", "kathmandu-to-bharatpur", "Kathmandu", "Bharatpur", "KTM", "BHR", "Buddha Air", "20 min", "Daily", 85, "/assets/img/destination/destination_4_3.jpg", false],
+    ["Kathmandu to Nepalgunj", "kathmandu-to-nepalgunj", "Kathmandu", "Nepalgunj", "KTM", "KEP", "Buddha Air", "55 min", "Daily", 120, "/assets/img/destination/destination_4_4.jpg", false],
+    ["Kathmandu to Bhairahawa", "kathmandu-to-bhairahawa", "Kathmandu", "Bhairahawa", "KTM", "BWA", "Buddha Air", "30 min", "Daily", 90, "/assets/img/destination/destination_4_5.jpg", false],
+    ["Kathmandu to Biratnagar", "kathmandu-to-biratnagar", "Kathmandu", "Biratnagar", "KTM", "BIR", "Yeti Airlines", "40 min", "Daily", 105, "/assets/img/destination/destination_4_6.jpg", false],
+  ];
+  const internationalRoutes = [
+    ["Kathmandu to Delhi", "kathmandu-to-delhi", "Kathmandu", "Delhi", "KTM", "DEL", "Nepal Airlines / Air India", "1h 45m", "Daily", 220, "/assets/img/destination/destination_4_2.jpg", true],
+    ["Kathmandu to Dubai", "kathmandu-to-dubai", "Kathmandu", "Dubai", "KTM", "DXB", "Flydubai / Emirates", "4h 30m", "Daily", 380, "/assets/img/bg/breadcumb-bg.jpg", true],
+    ["Kathmandu to Doha", "kathmandu-to-doha", "Kathmandu", "Doha", "KTM", "DOH", "Qatar Airways", "4h 15m", "Daily", 420, "/assets/img/hero/Hero2.jpg", true],
+    ["Kathmandu to Bangkok", "kathmandu-to-bangkok", "Kathmandu", "Bangkok", "KTM", "BKK", "Thai / Nepal Airlines", "3h 10m", "Daily", 310, "/assets/img/tour/tour_4_2.jpg", false],
+    ["Kathmandu to Kuala Lumpur", "kathmandu-to-kuala-lumpur", "Kathmandu", "Kuala Lumpur", "KTM", "KUL", "AirAsia / Malindo", "4h 40m", "4x weekly", 290, "/assets/img/tour/tour_4_3.jpg", false],
+    ["Kathmandu to Singapore", "kathmandu-to-singapore", "Kathmandu", "Singapore", "KTM", "SIN", "Singapore Airlines", "5h", "Daily", 450, "/assets/img/tour/tour_4_4.jpg", false],
+  ];
+
+  const makeRoute = ([title, slug, fromCity, toCity, fromAirport, toAirport, airline, flightDuration, frequency, priceFrom, imageUrl, isFeatured], ticketType, order) => ({
+    title,
+    slug,
+    ticketType,
+    fromCity,
+    toCity,
+    fromAirport,
+    toAirport,
+    airline,
+    flightDuration,
+    frequency,
+    priceFrom,
+    priceDisplay: `From $${priceFrom}`,
+    shortDescription: `Book ${fromCity} to ${toCity} flights with competitive fares and local support.`,
+    description: `<p>Secure your seat on the <strong>${title}</strong> route with Dream International. We compare fares across partner airlines and help with date changes, baggage, and group bookings.</p>`,
+    imageUrl,
+    imageAlt: title,
+    highlights: ["Instant fare quote", "Date change assistance", "Group & trekker fares", "Airport transfer add-ons"],
+    baggageInfo: "Standard 15–20 kg checked baggage on most sectors; exact allowance varies by airline and fare class.",
+    bookingNotes: "<p>Fares are indicative and subject to availability. Passport required for international sectors. Lukla flights are weather-dependent.</p>",
+    status: "PUBLISHED",
+    isFeatured,
+    order,
+    publishedAt: now(),
+  });
+
+  await seedIfEmpty(
+    prisma.flightRoute,
+    [
+      ...domesticRoutes.map((row, i) => makeRoute(row, "domestic", i)),
+      ...internationalRoutes.map((row, i) => makeRoute(row, "international", i)),
+    ]
+  );
+
   // ---------- Homepage sections (page builder) ----------
   const sections = [
     {
@@ -464,6 +558,44 @@ async function main() {
         title: "About Dream International Travel and Tours",
         text: "<p>Dream International Travel and Tours is a Kathmandu-based travel company offering trekking, cultural tours, jungle safaris, and custom journeys across Nepal.</p>",
         image: "/assets/img/normal/about_11_1.jpg",
+      },
+    },
+  });
+
+  // ---------- Ticketing page content ----------
+  await prisma.section.upsert({
+    where: { page_key: { page: "ticketing-domestic", key: "page" } },
+    update: {},
+    create: {
+      page: "ticketing-domestic",
+      key: "page",
+      label: "Domestic Ticketing Page",
+      order: 0,
+      enabled: true,
+      data: {
+        subTitle: "Domestic Flights",
+        title: "Nepal Domestic Air Tickets",
+        intro: "Book flights across Nepal with competitive fares on major routes — Pokhara, Lukla, Bharatpur, and more.",
+        heroImage: "/assets/img/hero/Hero2.jpg",
+        trustBadges: ["Licensed Travel Agency", "Instant Confirmation", "24/7 Support"],
+      },
+    },
+  });
+  await prisma.section.upsert({
+    where: { page_key: { page: "ticketing-international", key: "page" } },
+    update: {},
+    create: {
+      page: "ticketing-international",
+      key: "page",
+      label: "International Ticketing Page",
+      order: 0,
+      enabled: true,
+      data: {
+        subTitle: "International Flights",
+        title: "International Air Tickets from Nepal",
+        intro: "Fly from Kathmandu to Delhi, Dubai, Doha, Bangkok, and other global hubs with trusted airline partners.",
+        heroImage: "/assets/img/bg/breadcumb-bg.jpg",
+        trustBadges: ["Best Fare Search", "Multi-airline Options", "Visa & Travel Support"],
       },
     },
   });

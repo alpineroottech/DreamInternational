@@ -350,6 +350,39 @@ model Faq {
   updatedAt DateTime @updatedAt
 }
 
+model FlightRoute {
+  id               String    @id @default(cuid())
+  slug             String    @unique
+  title            String
+  ticketType       String    // domestic | international
+  fromCity         String
+  toCity           String
+  fromAirport      String?
+  toAirport        String?
+  airline          String?
+  flightDuration   String?
+  frequency        String?
+  priceFrom        Float?
+  priceDisplay     String?
+  shortDescription String?
+  description      String?
+  imageUrl         String?
+  imageAlt         String?
+  highlights       Json?
+  baggageInfo      String?
+  bookingNotes     String?
+  status           String    @default("DRAFT")
+  isFeatured       Boolean   @default(false)
+  order            Int       @default(0)
+  seoTitle         String?
+  seoDescription   String?
+  ogImageUrl       String?
+  canonicalUrl     String?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  publishedAt      DateTime?
+}
+
 // Flexible page-section store powering the landing page builder and
 // editable per-page content blocks (hero, about, CTA, headings, etc.).
 model Section {

@@ -31,6 +31,9 @@ import Blog from './Blog'
 import BlogDetails from './BlogDetails'
 import Contact from './Contact'
 import AdminApp from '../admin/AdminApp'
+import TicketingDomestic from './TicketingDomestic'
+import TicketingInternational from './TicketingInternational'
+import { TicketingDomesticDetail, TicketingInternationalDetail } from './TicketingRouteDetail'
 function RouterPage() {
   return (
     <div>
@@ -66,6 +69,10 @@ function RouterPage() {
           <Route path="/blog" element={<Blog />}></Route>
           <Route path="/blog/:id" element={<BlogDetails />}></Route>
           <Route path="/contact" element={<Contact />}></Route>
+          <Route path="/ticketing/domestic" element={<TicketingDomestic />}></Route>
+          <Route path="/ticketing/international" element={<TicketingInternational />}></Route>
+          <Route path="/ticketing/domestic/:slug" element={<TicketingDomesticDetail />}></Route>
+          <Route path="/ticketing/international/:slug" element={<TicketingInternationalDetail />}></Route>
           <Route path="/admin/*" element={<AdminApp />}></Route>
         </Routes>
       </Router>

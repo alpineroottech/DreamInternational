@@ -10,13 +10,38 @@ const DEFAULT_NAV = [
     { label: "Destinations", url: "/destination" },
     { label: "Activities", url: "/activities" },
     { label: "Services", url: "/service" },
+    {
+        label: "Ticketing",
+        url: "#",
+        children: [
+            { label: "Domestic Flights", url: "/ticketing/domestic" },
+            { label: "International Flights", url: "/ticketing/international" },
+        ],
+    },
     { label: "Blog", url: "/blog" },
     { label: "Contact", url: "/contact" },
 ];
 
+const TICKETING_NAV = DEFAULT_NAV.find((item) => item.label === "Ticketing");
+
+function withTicketingNav(items) {
+    if (!Array.isArray(items) || !items.length) return DEFAULT_NAV;
+    const hasTicketing = items.some(
+        (item) =>
+            item.label === "Ticketing" ||
+            item.children?.some((child) => child.url?.startsWith("/ticketing"))
+    );
+    if (hasTicketing) return items;
+    const blogIdx = items.findIndex((item) => item.label === "Blog" || item.url === "/blog");
+    const insertAt = blogIdx >= 0 ? blogIdx : items.length;
+    return [...items.slice(0, insertAt), TICKETING_NAV, ...items.slice(insertAt)];
+}
+
 function HeaderOne() {
     const settings = useSettings();
-    const nav = Array.isArray(settings.headerNav) && settings.headerNav.length ? settings.headerNav : DEFAULT_NAV;
+    const nav = withTicketingNav(
+        Array.isArray(settings.headerNav) && settings.headerNav.length ? settings.headerNav : DEFAULT_NAV
+    );
     const [isSticky, setIsSticky] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -162,7 +187,7 @@ function HeaderOne() {
                     </div>
                 </div>
             </header>
-            <MobileMenu isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} />
+            <MobileMenu isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} nav={nav} />
         </>
 
     )
