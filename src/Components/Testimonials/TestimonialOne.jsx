@@ -1,14 +1,14 @@
 import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination } from "swiper/modules";
+import { Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 import { useCollection, resolveAssetUrl } from "../../public-cms/hooks";
 
 const FALLBACK = [
-  { name: "Maria Doe", designation: "Traveller", image: "/assets/img/testimonial/testi_1_1.jpg", text: "An unforgettable trip — superbly organised from start to finish." },
-  { name: "Andrew Simon", designation: "Traveller", image: "/assets/img/testimonial/testi_1_2.jpg", text: "Knowledgeable guides and seamless logistics. Highly recommended." },
-  { name: "Alex Jordan", designation: "Traveller", image: "/assets/img/testimonial/testi_1_1.jpg", text: "Great value and a wonderful experience across Nepal." },
+  { name: "Maria Doe", designation: "Traveller", image: "/assets/img/testimonial/testi_1_1.jpg", text: "An unforgettable trip — superbly organised from start to finish.", rating: 5 },
+  { name: "Andrew Simon", designation: "Traveller", image: "/assets/img/testimonial/testi_1_2.jpg", text: "Knowledgeable guides and seamless logistics. Highly recommended.", rating: 5 },
+  { name: "Alex Jordan", designation: "Traveller", image: "/assets/img/testimonial/testi_1_1.jpg", text: "Great value and a wonderful experience across Nepal.", rating: 5 },
 ];
 
 function TestimonialOne({ data = {} }) {
@@ -20,76 +20,72 @@ function TestimonialOne({ data = {} }) {
           designation: r.reviewerCountry || "Traveller",
           image: resolveAssetUrl(r.reviewerPhoto) || "/assets/img/testimonial/testi_1_1.jpg",
           text: r.reviewText,
+          rating: r.rating || 5,
         }))
       : FALLBACK;
 
-  // Swiper loop mode requires at least slidesPerView * 2 slides; disable loop
-  // when there are too few items to prevent blank slide rendering.
-  const maxSlidesPerView = 3;
-  const enableLoop = testimonials.length >= maxSlidesPerView * 2;
+  const useCarousel = testimonials.length > 3;
 
   return (
-    <section className="testi-area overflow-hidden space shape-mockup-wrap" id="testi-sec">
-      <div className="container-fluid p-0">
-        <div className="title-area mb-20 text-center">
-          <span className="sub-title">{data.subTitle || "Testimonial"}</span>
+    <section className="di-testimonials space" id="testi-sec">
+      <div className="container">
+        <div className="title-area text-center mb-40">
+          <span className="sub-title">{data.subTitle || "Testimonials"}</span>
           <h2 className="sec-title">{data.title || "What Clients Say About Us"}</h2>
         </div>
-        <div className="slider-area">
+
+        {useCarousel ? (
           <Swiper
-            modules={[Pagination, Navigation]}
+            modules={[Pagination, Autoplay]}
             pagination={{ clickable: true }}
-            spaceBetween={30}
-            centeredSlides={testimonials.length > 1}
-            loop={enableLoop}
-            slidesPerGroup={1}
-            speed={1200}
+            autoplay={{ delay: 5000, disableOnInteraction: false }}
+            spaceBetween={24}
+            slidesPerView={1}
             breakpoints={{
-              0: { slidesPerView: 1 },
-              767: { slidesPerView: Math.min(2, testimonials.length) },
-              992: { slidesPerView: Math.min(2, testimonials.length) },
-              1200: { slidesPerView: Math.min(2, testimonials.length) },
-              1400: { slidesPerView: Math.min(maxSlidesPerView, testimonials.length) },
+              768: { slidesPerView: 2 },
+              1200: { slidesPerView: 3 },
             }}
-            className="testiSlider1 has-shadow"
+            className="di-testimonials__slider"
           >
             {testimonials.map((item, index) => (
-              <SwiperSlide key={index}>
-                <div className="testi-card">
-                  <div className="testi-card_wrapper">
-                    <div className="testi-card_profile">
-                      <div className="testi-card_avater">
-                        <img src={item.image} alt="testimonial" />
-                      </div>
-                      <div className="media-body">
-                        <h3 className="box-title">{item.name}</h3>
-                        <span className="testi-card_desig">{item.designation}</span>
-                      </div>
-                    </div>
-                    <div className="testi-card_review">
-                      {[...Array(5)].map((_, i) => (
-                        <i key={i} className="fa-solid fa-star" />
-                      ))}
-                    </div>
-                  </div>
-                  <p className="testi-card_text">{item.text}</p>
-                  <div className="testi-card-quote">
-                    <img src="/assets/img/icon/testi-quote.svg" alt="img" />
-                  </div>
-                </div>
+              <SwiperSlide key={`${item.name}-${index}`}>
+                <TestimonialTile item={item} />
               </SwiperSlide>
             ))}
           </Swiper>
-          <div className="slider-pagination" />
-        </div>
-      </div>
-      <div className="shape-mockup d-none d-xl-block" style={{bottom:"-2%", right:"0%"}}>
-        <img src="/assets/img/shape/line2.png" alt="shape" />
-      </div>
-      <div className="shape-mockup movingX d-none d-xl-block" style={{top:"30%", left:"5%"}}>
-        <img src="/assets/img/shape/shape_7.png" alt="shape" />
+        ) : (
+          <div className="di-testimonials__grid">
+            {testimonials.map((item, index) => (
+              <TestimonialTile key={`${item.name}-${index}`} item={item} />
+            ))}
+          </div>
+        )}
       </div>
     </section>
+  );
+}
+
+function TestimonialTile({ item }) {
+  const stars = Math.min(5, Math.max(1, Number(item.rating) || 5));
+  return (
+    <article className="di-testimonial-card">
+      <div className="di-testimonial-card__quote" aria-hidden="true">
+        <i className="fa-solid fa-quote-left" />
+      </div>
+      <p className="di-testimonial-card__text">{item.text}</p>
+      <div className="di-testimonial-card__stars">
+        {[...Array(stars)].map((_, i) => (
+          <i key={i} className="fa-solid fa-star" />
+        ))}
+      </div>
+      <div className="di-testimonial-card__profile">
+        <img src={item.image} alt={item.name} />
+        <div>
+          <h3 className="di-testimonial-card__name">{item.name}</h3>
+          <span className="di-testimonial-card__role">{item.designation}</span>
+        </div>
+      </div>
+    </article>
   );
 }
 

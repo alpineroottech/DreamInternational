@@ -52,7 +52,9 @@ const SECTION_FIELDS = {
     { name: "_hint", label: "hint", type: "_hint", hint: "Reviews are managed under Reviews in the sidebar. Mark a review as 'Featured' to show it here." },
   ],
   brands: [
-    { name: "_hint", label: "hint", type: "_hint", hint: "Partner brand logos are managed under Brands in the sidebar." },
+    { name: "subTitle", label: "Sub title", type: "text" },
+    { name: "title", label: "Title", type: "text" },
+    { name: "_hint", label: "hint", type: "_hint", hint: "Partner logos are managed under Partner Brands in the sidebar." },
   ],
   blog: [
     { name: "subTitle", label: "Sub title", type: "text" },

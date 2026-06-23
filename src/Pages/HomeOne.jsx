@@ -33,7 +33,7 @@ const SECTION_COMPONENTS = {
 
 const DEFAULT_ORDER = [
     "hero", "categories", "featuredDestination", "about", "featuredTours",
-    "gallery", "counters", "team", "testimonials", "brands", "blog",
+    "gallery", "counters", "testimonials", "brands", "blog",
 ];
 
 function HomeOne() {

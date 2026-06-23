@@ -25,6 +25,15 @@ const FALLBACK_SLIDES = [
     },
 ];
 
+function HeroCta({ to, label, className }) {
+    return (
+        <Link to={to} className={`th-btn th-icon-plane ${className}`}>
+            {label}
+            <i className="fa-regular fa-plane" aria-hidden="true" />
+        </Link>
+    );
+}
+
 function BannerOne({ data = {} }) {
     const swiperRef = useRef(null);
     const slides = Array.isArray(data.slides) && data.slides.length ? data.slides : FALLBACK_SLIDES;
@@ -86,14 +95,17 @@ function BannerOne({ data = {} }) {
                                     )}
                                     <div className="btn-group" data-ani="slideinup" data-ani-delay="0.6s">
                                         {slide.primaryCta?.label && (
-                                            <Link to={slide.primaryCta.url || "/tour"} className="th-btn th-icon">
-                                                {slide.primaryCta.label}
-                                            </Link>
+                                            <HeroCta
+                                                to={slide.primaryCta.url || "/tour"}
+                                                label={slide.primaryCta.label}
+                                            />
                                         )}
                                         {slide.secondaryCta?.label && (
-                                            <Link to={slide.secondaryCta.url || "/contact"} className="th-btn style2 th-icon">
-                                                {slide.secondaryCta.label}
-                                            </Link>
+                                            <HeroCta
+                                                to={slide.secondaryCta.url || "/contact"}
+                                                label={slide.secondaryCta.label}
+                                                className="style2"
+                                            />
                                         )}
                                     </div>
                                 </div>

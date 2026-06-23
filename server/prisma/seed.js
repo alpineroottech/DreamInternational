@@ -529,19 +529,26 @@ async function main() {
     { key: "featuredTours", label: "Featured Tours", order: 4, data: { subTitle: "Popular Packages", title: "Featured Tours" } },
     { key: "gallery", label: "Gallery", order: 5, data: { subTitle: "Our Gallery", title: "Moments From the Trail" } },
     { key: "counters", label: "Stats / Counters", order: 6, data: { bgImage: "/assets/img/bg/cta_bg_2.jpg" } },
-    { key: "team", label: "Team / Guides", order: 7, data: { subTitle: "Our Team", title: "Meet Your Guides" } },
+    { key: "team", label: "Team / Guides", order: 7, data: { subTitle: "Our Team", title: "Meet Your Guides" }, enabled: false },
     { key: "testimonials", label: "Testimonials", order: 8, data: { subTitle: "Testimonials", title: "What Travelers Say" } },
-    { key: "brands", label: "Partner Brands", order: 9, data: {} },
+    { key: "brands", label: "Partner Brands", order: 9, data: { subTitle: "Our Partners", title: "Affiliated Partners" } },
     { key: "blog", label: "Blog Teaser", order: 10, data: { subTitle: "Our Blog", title: "News & Articles" } },
   ];
   for (const s of sections) {
+    const { enabled = true, ...rest } = s;
     // eslint-disable-next-line no-await-in-loop
     await prisma.section.upsert({
-      where: { page_key: { page: "home", key: s.key } },
+      where: { page_key: { page: "home", key: rest.key } },
       update: {},
-      create: { page: "home", key: s.key, label: s.label, order: s.order, enabled: true, data: s.data },
+      create: { page: "home", ...rest, enabled },
     });
   }
+
+  // Hide guides section on existing homepages.
+  await prisma.section.updateMany({
+    where: { page: "home", key: "team" },
+    data: { enabled: false },
+  });
 
   // ---------- About page content ----------
   await prisma.section.upsert({
