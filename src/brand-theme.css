@@ -405,6 +405,33 @@ select:focus,
   background: #140ca9;
 }
 
+/* ─── 23. HOMEPAGE RESPONSIVE POLISH ─────────────────────────── */
+@media (max-width: 1199px) {
+  .about-area .img-box1 .img2,
+  .about-area .img-box1 .img3 {
+    display: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .about-area .img-box1 .img1 img {
+    width: 100%;
+    max-height: 360px;
+    object-fit: cover;
+    border-radius: 16px;
+  }
+
+  .about-area .title-area .sec-title {
+    font-size: 1.8rem;
+    line-height: 1.25;
+  }
+
+  .category-area,
+  .tour-area {
+    background-position: center !important;
+  }
+}
+
 .di-auth {
   background: linear-gradient(135deg, #0a074f, #140ca9) !important;
 }

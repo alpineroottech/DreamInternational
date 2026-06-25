@@ -15,6 +15,7 @@ export default function ResourceEditor({ resource: resourceProp }) {
   const isNew = !id;
 
   const allFields = useMemo(() => cfg.tabs.flatMap((t) => t.fields), [cfg]);
+  const hasStatusField = useMemo(() => allFields.some((f) => f.name === "status"), [allFields]);
 
   const [form, setForm] = useState({});
   const [activeTab, setActiveTab] = useState(cfg.tabs[0].name);
@@ -56,22 +57,25 @@ export default function ResourceEditor({ resource: resourceProp }) {
     });
   };
 
-  const save = async (e) => {
-    e.preventDefault();
+  const save = async (e, statusOverride) => {
+    e?.preventDefault?.();
     setSaving(true);
     setError("");
     setFieldErrors({});
     setMessage("");
     try {
+      const payload = statusOverride ? { ...form, status: statusOverride } : form;
       let saved;
       if (isNew) {
-        ({ data: saved } = await api.post(`/admin/${cfg.apiPath}`, form));
+        ({ data: saved } = await api.post(`/admin/${cfg.apiPath}`, payload));
         navigate(`/admin/${resource}/${saved.id}/edit`, { replace: true });
       } else {
-        ({ data: saved } = await api.patch(`/admin/${cfg.apiPath}/${id}`, form));
+        ({ data: saved } = await api.patch(`/admin/${cfg.apiPath}/${id}`, payload));
         setForm(saved);
       }
-      setMessage("Saved successfully.");
+      if (statusOverride === "PUBLISHED") setMessage("Published successfully.");
+      else if (statusOverride === "DRAFT") setMessage("Saved as draft.");
+      else setMessage("Saved successfully.");
     } catch (err) {
       const res = err?.response?.data;
       if (res?.fieldErrors) setFieldErrors(res.fieldErrors);
@@ -94,9 +98,22 @@ export default function ResourceEditor({ resource: resourceProp }) {
           </Link>
           <h4 className="fw-bold mb-0 mt-1">{title}</h4>
         </div>
-        <button type="submit" className="btn di-btn-primary" disabled={saving}>
-          {saving ? "Saving…" : "Save"}
-        </button>
+        <div className="d-flex gap-2">
+          {hasStatusField ? (
+            <>
+              <button type="button" className="btn btn-outline-secondary" disabled={saving} onClick={(e) => save(e, "DRAFT")}>
+                {saving ? "Saving…" : "Save Draft"}
+              </button>
+              <button type="button" className="btn di-btn-primary" disabled={saving} onClick={(e) => save(e, "PUBLISHED")}>
+                {saving ? "Saving…" : "Publish"}
+              </button>
+            </>
+          ) : (
+            <button type="submit" className="btn di-btn-primary" disabled={saving}>
+              {saving ? "Saving…" : "Save Changes"}
+            </button>
+          )}
+        </div>
       </div>
 
       {error && <div className="alert alert-danger py-2">{error}</div>}
@@ -134,6 +151,22 @@ export default function ResourceEditor({ resource: resourceProp }) {
               ))
             )}
         </div>
+      </div>
+      <div className="d-flex justify-content-end gap-2 mt-3">
+        {hasStatusField ? (
+          <>
+            <button type="button" className="btn btn-outline-secondary" disabled={saving} onClick={(e) => save(e, "DRAFT")}>
+              {saving ? "Saving…" : "Save Draft"}
+            </button>
+            <button type="button" className="btn di-btn-primary" disabled={saving} onClick={(e) => save(e, "PUBLISHED")}>
+              {saving ? "Saving…" : "Publish"}
+            </button>
+          </>
+        ) : (
+          <button type="submit" className="btn di-btn-primary" disabled={saving}>
+            {saving ? "Saving…" : "Save Changes"}
+          </button>
+        )}
       </div>
       <input type="hidden" value={allFields.length} readOnly />
     </form>

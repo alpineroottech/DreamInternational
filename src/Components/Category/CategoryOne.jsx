@@ -73,10 +73,12 @@ const CategoryOne = ({ data = {} }) => {
     return () => cancelAnimationFrame(raf);
   }, []);
 
+  const bgImage = resolveAssetUrl(data.bgImage) || "/assets/img/bg/category_bg_1.png";
+
   return (
     <section
       className="category-area bg-top-center"
-      style={{ backgroundImage: "url(/assets/img/bg/category_bg_1.png)", backgroundRepeat: "no-repeat" }}
+      style={{ backgroundImage: `url(${bgImage})`, backgroundRepeat: "no-repeat" }}
     >
       <div className="container th-container">
         <div className="title-area text-center">

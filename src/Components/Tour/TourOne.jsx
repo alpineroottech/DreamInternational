@@ -16,12 +16,13 @@ const FALLBACK = [
 function TourOne({ data = {} }) {
   const cms = useCollection('/public/tours', { featured: true });
   const tours = cms && cms.length ? cms : FALLBACK;
+  const bgImage = resolveAssetUrl(data.bgImage) || '/assets/img/bg/tour_bg_1.jpg';
 
   return (
     <section
       className="tour-area position-relative bg-top-center overflow-hidden space bg-no-repeat"
       id="service-sec"
-      style={{ backgroundImage: 'url(/assets/img/bg/tour_bg_1.jpg)' }}
+      style={{ backgroundImage: `url(${bgImage})` }}
     >
       <div className="container">
         <div className="row">

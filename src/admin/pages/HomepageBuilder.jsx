@@ -11,6 +11,7 @@ const SECTION_FIELDS = {
   categories: [
     { name: "subTitle", label: "Sub title", type: "text" },
     { name: "title", label: "Title", type: "text" },
+    { name: "bgImage", label: "Background image", type: "image" },
     { name: "_hint", label: "hint", type: "_hint", hint: "Items are managed under Tour Categories in the sidebar." },
   ],
   featuredDestination: [
@@ -23,13 +24,20 @@ const SECTION_FIELDS = {
     { name: "subTitle", label: "Sub title", type: "text" },
     { name: "title", label: "Title", type: "text" },
     { name: "text", label: "Text", type: "richtext" },
-    { name: "image", label: "Image", type: "image" },
-    { name: "points", label: "Bullet points", type: "stringList" },
-    { name: "experienceYears", label: "Years of experience", type: "number" },
+    { name: "image", label: "Primary image", type: "image" },
+    { name: "image2", label: "Secondary image", type: "image" },
+    { name: "image3", label: "Tertiary image", type: "image" },
+    { name: "featureOneTitle", label: "Feature one title", type: "text" },
+    { name: "featureOneText", label: "Feature one text", type: "textarea" },
+    { name: "featureTwoTitle", label: "Feature two title", type: "text" },
+    { name: "featureTwoText", label: "Feature two text", type: "textarea" },
+    { name: "ctaLabel", label: "CTA label", type: "text" },
+    { name: "ctaUrl", label: "CTA URL", type: "text" },
   ],
   featuredTours: [
     { name: "subTitle", label: "Sub title", type: "text" },
     { name: "title", label: "Title", type: "text" },
+    { name: "bgImage", label: "Background image", type: "image" },
     { name: "_hint", label: "hint", type: "_hint", hint: "Tours displayed here are the ones marked as 'Featured' in the Tours section. Open Tours → edit a tour → toggle 'Is Featured' to control which appear here." },
   ],
   gallery: [
@@ -155,7 +163,7 @@ function SectionRow({ section, index, total, onMove, onToggle, onSave }) {
           ))}
           {fields === "heroSlides" || fields.filter((f) => f.type !== "_hint").length > 0 ? (
             <button type="button" className="btn di-btn-primary btn-sm mt-2" onClick={save} disabled={saving}>
-              {saving ? "Saving…" : savedMsg ? "Saved ✓" : "Save section"}
+              {saving ? "Saving…" : savedMsg ? "Saved ✓" : "Save Changes"}
             </button>
           ) : null}
         </div>

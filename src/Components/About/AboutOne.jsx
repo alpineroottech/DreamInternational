@@ -5,6 +5,14 @@ import SafeHtml from '../../public-cms/SafeHtml'
 
 function AboutOne({ data = {} }) {
     const aboutImg = resolveAssetUrl(data.image);
+    const image2 = resolveAssetUrl(data.image2) || "/assets/img/normal/lake.jpg";
+    const image3 = resolveAssetUrl(data.image3) || "/assets/img/normal/boudha.jpg";
+    const ctaLabel = data.ctaLabel || "Learn More";
+    const ctaUrl = data.ctaUrl || "/about";
+    const featureOneTitle = data.featureOneTitle || "Custom Itineraries";
+    const featureOneText = data.featureOneText || "Tailor-made tours designed around your travel style, timeline, and comfort preference.";
+    const featureTwoTitle = data.featureTwoTitle || "Licensed Local Guides";
+    const featureTwoText = data.featureTwoText || "Explore with knowledgeable, safety-focused guides who know Nepal deeply.";
     return (
         <div
             className="about-area position-relative overflow-hidden space"
@@ -18,10 +26,10 @@ function AboutOne({ data = {} }) {
                                 <img src={aboutImg || "/assets/img/normal/temple.webp"} alt="About" />
                             </div>
                             <div className="img2">
-                                <img src="/assets/img/normal/lake.jpg" alt="About" />
+                                <img src={image2} alt="About" />
                             </div>
                             <div className="img3">
-                                <img src="/assets/img/normal/boudha.jpg" alt="About" />
+                                <img src={image3} alt="About" />
                             </div>
                         </div>
                     </div>
@@ -48,11 +56,8 @@ function AboutOne({ data = {} }) {
                                         <img src="/assets/img/icon/map3.svg" alt="" />
                                     </div>
                                     <div className="about-item_centent">
-                                        <h5 className="box-title">Custom Itineraries</h5>
-                                        <p className="about-item_text">
-                                            Tailor-made tours designed around your travel style,
-                                            timeline, and comfort preference.
-                                        </p>
+                                        <h5 className="box-title">{featureOneTitle}</h5>
+                                        <p className="about-item_text">{featureOneText}</p>
                                     </div>
                                 </div>
                                 <div className="about-item">
@@ -60,17 +65,14 @@ function AboutOne({ data = {} }) {
                                         <img src="/assets/img/icon/guide.svg" alt="" />
                                     </div>
                                     <div className="about-item_centent">
-                                        <h5 className="box-title">Licensed Local Guides</h5>
-                                        <p className="about-item_text">
-                                            Explore with knowledgeable, safety-focused guides who
-                                            know Nepal deeply.
-                                        </p>
+                                        <h5 className="box-title">{featureTwoTitle}</h5>
+                                        <p className="about-item_text">{featureTwoText}</p>
                                     </div>
                                 </div>
                             </div>
                             <div className="mt-35">
-                                <Link to="/about" className="th-btn style3 th-icon">
-                                    Learn More
+                                <Link to={ctaUrl} className="th-btn style3 th-icon">
+                                    {ctaLabel}
                                 </Link>
                             </div>
                         </div>
