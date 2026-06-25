@@ -60,7 +60,12 @@ export const RESOURCE_CONFIG = {
           { name: "priceExcludes", label: "Price excludes", type: "stringList" },
         ],
       },
-      { name: "Content", fields: [{ name: "description", label: "Full description", type: "richtext" }] },
+      {
+        name: "Content",
+        fields: [
+          { name: "description", label: "Full description", type: "richtext" },
+        ],
+      },
       {
         name: "Media",
         fields: [
@@ -89,10 +94,23 @@ export const RESOURCE_CONFIG = {
           { name: "title", label: "Title", type: "text", required: true },
           { name: "slug", label: "Slug", type: "slug" },
           { name: "shortDescription", label: "Short description", type: "textarea" },
-          { name: "price", label: "Price (display text)", type: "text" },
+          { name: "price", label: "Price (display text, e.g. $45 per person)", type: "text" },
+          { name: "location", label: "Location", type: "text" },
           { name: "order", label: "Order", type: "number" },
           { name: "status", label: "Status", type: "select", options: STATUS_OPTS },
           { name: "isFeatured", label: "Featured", type: "switch" },
+        ],
+      },
+      {
+        name: "Details",
+        fields: [
+          { name: "duration", label: "Duration (e.g. Full day, 8h)", type: "text" },
+          { name: "groupSize", label: "Group size (e.g. 2–12 people)", type: "text" },
+          { name: "difficulty", label: "Difficulty", type: "select", options: ["EASY", "MODERATE", "STRENUOUS"].map(v => ({ value: v, label: v })) },
+          { name: "highlights", label: "Highlights", type: "stringList" },
+          { name: "amenities", label: "What's included", type: "stringList" },
+          { name: "priceIncludes", label: "Price includes", type: "stringList" },
+          { name: "priceExcludes", label: "Price excludes", type: "stringList" },
         ],
       },
       { name: "Content", fields: [{ name: "description", label: "Description", type: "richtext" }] },

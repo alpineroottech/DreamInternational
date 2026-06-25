@@ -73,13 +73,8 @@ const CategoryOne = ({ data = {} }) => {
     return () => cancelAnimationFrame(raf);
   }, []);
 
-  const bgImage = resolveAssetUrl(data.bgImage) || "/assets/img/bg/category_bg_1.png";
-
   return (
-    <section
-      className="category-area bg-top-center"
-      style={{ backgroundImage: `url(${bgImage})`, backgroundRepeat: "no-repeat" }}
-    >
+    <section className="category-area bg-top-center">
       <div className="container th-container">
         <div className="title-area text-center">
           <span className="sub-title">{data.subTitle || "Wonderful Place For You"}</span>
@@ -115,9 +110,11 @@ const CategoryOne = ({ data = {} }) => {
                   <img src={category.imgSrc} alt={category.title} loading="lazy" />
                 </div>
                 <h3 className="box-title">
-                  <Link to="/tour">{category.title}</Link>
+                  <Link to={category.slug ? `/tour?category=${category.slug}` : "/tour"}>
+                    {category.title}
+                  </Link>
                 </h3>
-                <Link className="line-btn" to="/tour">
+                <Link className="line-btn" to={category.slug ? `/tour?category=${category.slug}` : "/tour"}>
                   See more
                 </Link>
               </div>

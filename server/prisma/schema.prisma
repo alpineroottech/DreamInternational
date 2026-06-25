@@ -224,6 +224,14 @@ model Activity {
   shortDescription String?
   description      String?  // HTML
   price            String?
+  duration         String?  // e.g. "Full day (8h)", "Half day (4h)"
+  groupSize        String?  // e.g. "2-12 people"
+  difficulty       String?  // EASY | MODERATE | STRENUOUS
+  location         String?
+  highlights       Json?    // string[]
+  priceIncludes    Json?    // string[]
+  priceExcludes    Json?    // string[]
+  amenities        Json?    // string[] (what's provided)
   imageUrl         String?
   imageAlt         String?
   galleryImages    Json?    // [{ url, alt }]

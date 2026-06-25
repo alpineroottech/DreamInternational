@@ -13,13 +13,17 @@ function TourInner() {
 
     // Search/filter values from URL (set by the Booking widget on the homepage)
     const filterDestination = searchParams.get('destination') || '';
-    const filterCategory   = searchParams.get('category') || '';
     const filterDuration   = searchParams.get('duration') || '';
     const [localSearch, setLocalSearch] = useState(searchParams.get('q') || '');
 
     const cms = useCollection('/public/tours');
     const cmsCategories = useCollection('/public/categories');
     const cmsBlogs = useCollection('/public/blog');
+
+    // Support multiple category filters via comma-separated query param
+    const filterCategoriesRaw = searchParams.get('category') || '';
+    const selectedCategories = filterCategoriesRaw ? filterCategoriesRaw.split(',').filter(Boolean) : [];
+
     const allPosts = cms && cms.length
         ? cms.map((t) => ({
             id: t.slug,
@@ -28,15 +32,18 @@ function TourInner() {
             title: t.title,
             price: t.basePrice ? `$${t.basePrice}.00` : 'On request',
             durationDays: t.durationDays,
-            categorySlug: t.categorySlug || '',
+            categorySlug: t.category?.slug || t.categorySlug || '',
+            categoryName: t.category?.name || '',
             raw: t,
         }))
-        : jsonPosts.map((p) => ({ ...p, durationDays: null, categorySlug: '', raw: p }));
+        : jsonPosts.map((p) => ({ ...p, durationDays: null, categorySlug: '', categoryName: '', raw: p }));
 
     // Apply filters from URL params
     const posts = allPosts.filter((p) => {
         if (localSearch && !p.title.toLowerCase().includes(localSearch.toLowerCase())) return false;
-        if (filterCategory && p.categorySlug && p.categorySlug !== filterCategory) return false;
+        if (selectedCategories.length > 0) {
+            if (!p.categorySlug || !selectedCategories.includes(p.categorySlug)) return false;
+        }
         if (filterDuration && p.durationDays) {
             const d = p.durationDays;
             if (filterDuration === '1-3' && d > 3) return false;
@@ -46,6 +53,17 @@ function TourInner() {
         }
         return true;
     });
+
+    const toggleCategory = (slug) => {
+        const updated = selectedCategories.includes(slug)
+            ? selectedCategories.filter(s => s !== slug)
+            : [...selectedCategories, slug];
+        const p = new URLSearchParams(searchParams);
+        if (updated.length) p.set('category', updated.join(','));
+        else p.delete('category');
+        setSearchParams(p);
+        setCurrentPage(1);
+    };
 
     const totalPages = Math.ceil(posts.length / postsPerPage);
     const indexOfLastPost = currentPage * postsPerPage;
@@ -59,14 +77,35 @@ function TourInner() {
         <section className="space">
             <div className="container shape-mockup-wrap">
                 <div className="th-sort-bar">
-                    {/* Active filter chips */}
-                    {(filterDestination || filterCategory || filterDuration) && (
+                    {/* Category filter pills */}
+                    {cmsCategories && cmsCategories.length > 0 && (
+                        <div className="mb-4">
+                            <div className="d-flex flex-wrap gap-2 align-items-center">
+                                <span className="text-muted small me-1">Filter:</span>
+                                {cmsCategories.map((cat) => (
+                                    <button
+                                        key={cat.slug}
+                                        type="button"
+                                        className={`di-category-filter-btn${selectedCategories.includes(cat.slug) ? ' active' : ''}`}
+                                        onClick={() => toggleCategory(cat.slug)}
+                                    >
+                                        {cat.name}
+                                    </button>
+                                ))}
+                                {selectedCategories.length > 0 && (
+                                    <button type="button" className="di-category-filter-btn di-category-filter-btn--clear" onClick={() => { const p = new URLSearchParams(searchParams); p.delete('category'); setSearchParams(p); setCurrentPage(1); }}>
+                                        Clear filters ×
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+                    )}
+                    {/* Active filter summary */}
+                    {(filterDestination || filterDuration) && (
                         <div className="mb-3 d-flex flex-wrap gap-2 align-items-center">
-                            <span className="text-muted small">Filters:</span>
+                            <span className="text-muted small">Active:</span>
                             {filterDestination && <span className="badge bg-secondary">{filterDestination} <button type="button" className="btn-close btn-close-white ms-1" style={{fontSize:'0.6rem'}} onClick={() => { const p = new URLSearchParams(searchParams); p.delete('destination'); setSearchParams(p); }} /></span>}
-                            {filterCategory && <span className="badge bg-secondary">{filterCategory} <button type="button" className="btn-close btn-close-white ms-1" style={{fontSize:'0.6rem'}} onClick={() => { const p = new URLSearchParams(searchParams); p.delete('category'); setSearchParams(p); }} /></span>}
                             {filterDuration && <span className="badge bg-secondary">{filterDuration} days <button type="button" className="btn-close btn-close-white ms-1" style={{fontSize:'0.6rem'}} onClick={() => { const p = new URLSearchParams(searchParams); p.delete('duration'); setSearchParams(p); }} /></span>}
-                            <button type="button" className="btn btn-sm btn-outline-secondary" onClick={() => setSearchParams({})}>Clear all</button>
                         </div>
                     )}
                     <div className="row justify-content-between align-items-center">
@@ -150,6 +189,8 @@ function TourInner() {
                                                 tourImage={`${data.image}`}
                                                 tourTitle={data.title}
                                                 tourPrice={data.price}
+                                                tourDuration={data.durationDays}
+                                                tourCategory={data.categoryName}
                                                 tourLink={data.slug ? `/tour-details?slug=${data.slug}` : undefined}
                                             />
                                         </div>

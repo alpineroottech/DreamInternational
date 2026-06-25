@@ -11,7 +11,6 @@ const SECTION_FIELDS = {
   categories: [
     { name: "subTitle", label: "Sub title", type: "text" },
     { name: "title", label: "Title", type: "text" },
-    { name: "bgImage", label: "Background image", type: "image" },
     { name: "_hint", label: "hint", type: "_hint", hint: "Items are managed under Tour Categories in the sidebar." },
   ],
   featuredDestination: [
@@ -37,7 +36,6 @@ const SECTION_FIELDS = {
   featuredTours: [
     { name: "subTitle", label: "Sub title", type: "text" },
     { name: "title", label: "Title", type: "text" },
-    { name: "bgImage", label: "Background image", type: "image" },
     { name: "_hint", label: "hint", type: "_hint", hint: "Tours displayed here are the ones marked as 'Featured' in the Tours section. Open Tours → edit a tour → toggle 'Is Featured' to control which appear here." },
   ],
   gallery: [

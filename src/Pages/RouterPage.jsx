@@ -51,6 +51,7 @@ function RouterPage() {
           <Route path="/service/:id" element={<ServiceDetails />} />
           <Route path="/activities" element={<Activities />}></Route>
           <Route path="/activities-details" element={<ActivitiesDetails />}></Route>
+          <Route path="/activities/:slug" element={<ActivitiesDetails />}></Route>
           <Route path="/shop" element={<Shop />}></Route>
           <Route path="/shop/:id" element={<ShopDetails />}></Route>
           <Route path="/cart" element={<Cart />}></Route>

@@ -52,6 +52,14 @@ const ActivitySchema = z.object({
   shortDescription: str,
   description: str,
   price: str,
+  duration: str,
+  groupSize: str,
+  difficulty: str,
+  location: str,
+  highlights: strArr,
+  priceIncludes: strArr,
+  priceExcludes: strArr,
+  amenities: strArr,
   imageUrl: str,
   imageAlt: str,
   galleryImages: imgArr,
@@ -208,7 +216,33 @@ const byOrder = [{ order: "asc" }, { createdAt: "desc" }];
 
 // Each entry maps an API path to its resource config.
 export const RESOURCES = {
-  tours: { modelName: "tour", schema: TourSchema, slugFrom: "title", htmlFields: ["description"], publicOrderBy: [{ isFeatured: "desc" }, { updatedAt: "desc" }] },
+  tours: {
+    modelName: "tour",
+    schema: TourSchema,
+    slugFrom: "title",
+    htmlFields: ["description"],
+    publicOrderBy: [{ isFeatured: "desc" }, { updatedAt: "desc" }],
+    publicInclude: {
+      category: true,
+      itineraryDays: { orderBy: { dayNumber: "asc" } },
+    },
+    adminInclude: {
+      category: true,
+      itineraryDays: { orderBy: { dayNumber: "asc" } },
+    },
+    publicShape: (t) => ({
+      ...t,
+      itinerary: (t.itineraryDays || []).map((d) => ({
+        title: d.title,
+        description: d.description,
+        activities: d.notes ? d.notes.split("\n").filter(Boolean) : [],
+        startLocation: d.startLocation,
+        endLocation: d.endLocation,
+        altitudeM: d.altitudeM,
+        distanceKm: d.distanceKm,
+      })),
+    }),
+  },
   activities: { modelName: "activity", schema: ActivitySchema, slugFrom: "title", htmlFields: ["description"], publicOrderBy: byOrder },
   services: { modelName: "service", schema: ServiceSchema, slugFrom: "title", htmlFields: ["description"], publicOrderBy: byOrder },
   team: { modelName: "teamMember", schema: TeamSchema, slugFrom: "name", htmlFields: ["bio"], publicOrderBy: byOrder },

@@ -405,31 +405,158 @@ select:focus,
   background: #140ca9;
 }
 
-/* ─── 23. HOMEPAGE RESPONSIVE POLISH ─────────────────────────── */
-@media (max-width: 1199px) {
-  .about-area .img-box1 .img2,
-  .about-area .img-box1 .img3 {
-    display: none;
+/* ─── 23. ABOUT SECTION — clean responsive collage ──────────── */
+.di-about-imgs {
+  display: flex;
+  gap: 14px;
+  align-items: stretch;
+  max-width: 520px;
+  width: 100%;
+}
+
+.di-about-imgs__primary {
+  width: 58%;
+  height: 420px;
+  object-fit: cover;
+  border-radius: 20px;
+  flex-shrink: 0;
+}
+
+.di-about-imgs__secondary-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  flex: 1;
+}
+
+.di-about-imgs__secondary-wrap img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 16px;
+}
+
+@media (max-width: 991px) {
+  .di-about-imgs {
+    max-width: 100%;
+  }
+  .di-about-imgs__primary {
+    height: 300px;
+  }
+  .di-about-imgs__secondary-wrap img {
+    height: 140px;
   }
 }
 
-@media (max-width: 767px) {
-  .about-area .img-box1 .img1 img {
+@media (max-width: 575px) {
+  .di-about-imgs__secondary-wrap {
+    display: none;
+  }
+  .di-about-imgs__primary {
     width: 100%;
-    max-height: 360px;
-    object-fit: cover;
-    border-radius: 16px;
+    height: 260px;
   }
+}
 
-  .about-area .title-area .sec-title {
-    font-size: 1.8rem;
-    line-height: 1.25;
-  }
+/* ─── 24. ALTERNATING SECTION BACKGROUNDS ────────────────────── */
+/* Every section that sits directly in the homepage gets alternating colors.
+   We target key section wrappers explicitly so only homepage sections alternate. */
+.category-area { background: #88beda !important; }
+.tour-area       { background: #ffffff !important; background-image: none !important; }
+.about-area      { background: #88beda !important; }
+.tour-offer-area { background: #ffffff !important; }
+.gallery-area    { background: #88beda !important; }
+.counter-area    { background: #ffffff !important; }
+.di-testimonials { background: #88beda !important; }
+.brand-area      { background: #ffffff !important; }
+.blog-area       { background: #88beda !important; }
 
+/* Ensure counter section doesn't get the theme-color override */
+.counter-area,
+.cta-area {
+  background-color: #ffffff !important;
+  background-image: none !important;
+}
+
+/* Sub-title stays readable on teal background */
+.category-area .sub-title,
+.about-area .sub-title,
+.gallery-area .sub-title,
+.di-testimonials .sub-title,
+.blog-area .sub-title {
+  color: var(--title-color) !important;
+}
+
+/* Homepage responsive */
+@media (max-width: 767px) {
   .category-area,
   .tour-area {
     background-position: center !important;
   }
+}
+
+/* ─── 25. TOUR CATEGORY TAGS & FILTER BUTTONS ───────────────── */
+.di-tour-tag {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  background: rgba(20, 12, 169, 0.88);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 4px;
+  text-decoration: none;
+  z-index: 2;
+  pointer-events: auto;
+  transition: background 0.2s;
+}
+
+.di-tour-tag:hover {
+  background: var(--theme-color, #140ca9);
+  color: #fff;
+}
+
+.tour-box_img { position: relative; }
+
+/* Category filter pills on the tours listing page */
+.di-category-filter-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 16px;
+  border-radius: 100px;
+  border: 1.5px solid #c8d8e8;
+  background: #fff;
+  color: #444;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  text-transform: capitalize;
+}
+
+.di-category-filter-btn:hover {
+  border-color: #140ca9;
+  color: #140ca9;
+}
+
+.di-category-filter-btn.active {
+  background: #140ca9;
+  border-color: #140ca9;
+  color: #fff;
+}
+
+.di-category-filter-btn--clear {
+  border-color: #d00;
+  color: #d00;
+}
+
+.di-category-filter-btn--clear:hover {
+  background: #d00;
+  color: #fff;
+  border-color: #d00;
 }
 
 .di-auth {

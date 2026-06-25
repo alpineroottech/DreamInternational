@@ -26,6 +26,8 @@ export function buildResource(config) {
     publicBaseWhere = {},
     filterQueryFields = [],
     roles = DEFAULT_ROLES,
+    publicInclude = undefined,
+    adminInclude = undefined,
   } = config;
 
   const model = prisma[modelName];
@@ -52,6 +54,7 @@ export function buildResource(config) {
       const items = await model.findMany({
         where: publicWhere(req),
         orderBy: publicOrderBy || adminOrderBy,
+        ...(publicInclude ? { include: publicInclude } : {}),
       });
       res.json(items.map(publicShape));
     } catch (e) {
@@ -62,7 +65,10 @@ export function buildResource(config) {
   if (hasSlug) {
     publicRouter.get("/:slug", async (req, res, next) => {
       try {
-        const row = await model.findUnique({ where: { slug: req.params.slug } });
+        const row = await model.findUnique({
+          where: { slug: req.params.slug },
+          ...(publicInclude ? { include: publicInclude } : {}),
+        });
         if (!row || (hasStatus && row.status !== "PUBLISHED")) {
           return res.status(404).json({ error: "Not found" });
         }
@@ -78,7 +84,10 @@ export function buildResource(config) {
 
   adminRouter.get("/", async (_req, res, next) => {
     try {
-      res.json(await model.findMany({ orderBy: adminOrderBy }));
+      res.json(await model.findMany({
+        orderBy: adminOrderBy,
+        ...(adminInclude ? { include: adminInclude } : {}),
+      }));
     } catch (e) {
       next(e);
     }
@@ -86,7 +95,10 @@ export function buildResource(config) {
 
   adminRouter.get("/:id", async (req, res, next) => {
     try {
-      const row = await model.findUnique({ where: { id: req.params.id } });
+      const row = await model.findUnique({
+        where: { id: req.params.id },
+        ...(adminInclude ? { include: adminInclude } : {}),
+      });
       if (!row) return res.status(404).json({ error: "Not found" });
       res.json(row);
     } catch (e) {

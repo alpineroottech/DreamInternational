@@ -16,14 +16,9 @@ const FALLBACK = [
 function TourOne({ data = {} }) {
   const cms = useCollection('/public/tours', { featured: true });
   const tours = cms && cms.length ? cms : FALLBACK;
-  const bgImage = resolveAssetUrl(data.bgImage) || '/assets/img/bg/tour_bg_1.jpg';
 
   return (
-    <section
-      className="tour-area position-relative bg-top-center overflow-hidden space bg-no-repeat"
-      id="service-sec"
-      style={{ backgroundImage: `url(${bgImage})` }}
-    >
+    <section className="tour-area position-relative overflow-hidden space" id="service-sec">
       <div className="container">
         <div className="row">
           <div className="col-lg-6 offset-lg-3">
@@ -50,31 +45,41 @@ function TourOne({ data = {} }) {
           >
             {tours.map((tour) => {
               const to = `/tour-details?slug=${tour.slug}`;
+              const catName = tour.category?.name;
+              const catSlug = tour.category?.slug;
               return (
                 <SwiperSlide key={tour.slug || tour.id}>
                   <div className="tour-box th-ani gsap-cursor">
                     <div className="tour-box_img global-img">
                       <img src={resolveAssetUrl(tour.featuredImageUrl) || '/assets/img/tour/tour_box_1.jpg'} alt={tour.title} />
+                      {catName && (
+                        <Link
+                          to={catSlug ? `/tour?category=${catSlug}` : '/tour'}
+                          className="di-tour-tag"
+                        >
+                          {catName}
+                        </Link>
+                      )}
                     </div>
                     <div className="tour-content">
                       <h3 className="box-title">
                         <Link to={to}>{tour.title}</Link>
                       </h3>
                       <div className="tour-rating">
-                        <div className="star-rating" role="img" aria-label="Rated 5.00 out of 5">
-                          <span style={{ width: '100%' }}>Rated <strong className="rating">5.00</strong> out of 5</span>
+                        <div className="star-rating" role="img" aria-label="Rated 4.8 out of 5">
+                          <span style={{ width: '96%' }}>Rated <strong className="rating">4.8</strong> out of 5</span>
                         </div>
                       </div>
                       <h4 className="tour-box_price">
-                        <span className="currency">{tour.basePrice ? `$${tour.basePrice}.00` : 'On request'}</span>
-                        {tour.basePrice ? '/Person' : ''}
+                        <span className="currency">{tour.basePrice ? `$${tour.basePrice}` : 'On request'}</span>
+                        {tour.basePrice ? <span style={{ fontWeight: 400, fontSize: '0.85em' }}>/Person</span> : ''}
                       </h4>
                       <div className="tour-action">
                         <span>
                           <i className="fa-light fa-clock" />
-                          {tour.durationDays ? `${tour.durationDays} Days` : 'Flexible'}
+                          {tour.durationDays ? ` ${tour.durationDays} Days` : ' Flexible'}
                         </span>
-                        <Link to="/contact" className="th-btn style4 th-icon">Book Now</Link>
+                        <Link to={to} className="th-btn style4 th-icon">View Details</Link>
                       </div>
                     </div>
                   </div>

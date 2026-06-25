@@ -2,8 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom';
 import { resolveAssetUrl } from '../../public-cms/hooks';
 
-function TourCard(props) {
-    const { tourImage, tourTitle, tourPrice, tourLink } = props;
+function TourCard({ tourImage, tourTitle, tourPrice, tourLink, tourDuration, tourCategory }) {
     const src = tourImage && (tourImage.startsWith('/') || tourImage.startsWith('http'))
         ? resolveAssetUrl(tourImage)
         : `/assets/img/tour/${tourImage}`;
@@ -11,47 +10,43 @@ function TourCard(props) {
     return (
         <div className="tour-box th-ani">
             <div className="tour-box_img global-img">
-                <img src={src} alt={tourTitle || ''} />
+                <Link to={link}>
+                    <img src={src} alt={tourTitle || 'Tour'} />
+                </Link>
+                {tourCategory && (
+                    <span className="di-tour-tag">{tourCategory}</span>
+                )}
             </div>
             <div className="tour-content">
                 <h3 className="box-title">
-                    <Link to={link}>{tourTitle ? tourTitle : 'Greece Tour Package'}</Link>
+                    <Link to={link}>{tourTitle || 'Nepal Tour Package'}</Link>
                 </h3>
                 <div className="tour-rating">
-                    <div
-                        className="star-rating"
-                        role="img"
-                        aria-label="Rated 5.00 out of 5"
-                    >
-                        <span style={{ width: "100%" }}>
-                            Rated
-                            <strong className="rating">5.00</strong> out of 5
-                            based on <span className="rating">4.8</span>(4.8
-                            Rating)
+                    <div className="star-rating" role="img" aria-label="Rated 4.8 out of 5">
+                        <span style={{ width: "96%" }}>
+                            Rated <strong className="rating">4.8</strong> out of 5
                         </span>
                     </div>
-                    <Link
-                        to={link}
-                        className="woocommerce-review-link"
-                    >
-                        (<span className="count">4.8</span>
-                        Rating)
+                    <Link to={link} className="woocommerce-review-link">
+                        (<span className="count">4.8</span> Rating)
                     </Link>
                 </div>
                 <h4 className="tour-box_price">
-                    <span className="currency">{tourPrice ? tourPrice : '$980.00'}</span>/Person
+                    <span className="currency">{tourPrice || 'On request'}</span>
+                    {tourPrice && tourPrice !== 'On request' && <span style={{ fontWeight: 400, fontSize: '0.85em' }}>/Person</span>}
                 </h4>
                 <div className="tour-action">
                     <span>
-                        <i className="fa-light fa-clock" />7 Days
+                        <i className="fa-light fa-clock" />
+                        {tourDuration ? ` ${tourDuration} Days` : ' Custom'}
                     </span>
                     <Link to={link} className="th-btn style4">
-                        Detail View
+                        View Details
                     </Link>
                 </div>
             </div>
         </div>
-    )
+    );
 }
 
-export default TourCard
+export default TourCard;
