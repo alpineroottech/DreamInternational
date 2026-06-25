@@ -10,6 +10,7 @@ import { publicDestinations, adminDestinations } from "./routes/destinations.js"
 import { publicSettings, adminSettings } from "./routes/settings.js";
 import { publicSections, adminSections } from "./routes/sections.js";
 import { publicInquiries, adminInquiries } from "./routes/inquiries.js";
+import { publicFlightInquiries, adminFlightInquiries } from "./routes/flightInquiries.js";
 import mediaRoutes from "./routes/media.js";
 import { registerResources } from "./resources.js";
 import { isServerlessHost, normalizeOrigin, moduleDir } from "./lib/runtime.js";
@@ -91,6 +92,8 @@ app.use("/api/admin/destinations", adminDestinations);
 app.use("/api/admin/settings", adminSettings);
 app.use("/api/admin/sections", adminSections);
 app.use("/api/admin/inquiries", adminInquiries);
+app.use("/api/public/flight-inquiries", publicFlightInquiries);
+app.use("/api/admin/flight-inquiries", adminFlightInquiries);
 app.use("/api/admin/media", mediaRoutes);
 
 registerResources(app);

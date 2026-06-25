@@ -1,0 +1,20 @@
+CREATE TABLE IF NOT EXISTS "FlightInquiry" (
+  "id"            TEXT NOT NULL DEFAULT gen_random_uuid(),
+  "ticketType"    TEXT NOT NULL DEFAULT 'domestic',
+  "fromCity"      TEXT NOT NULL,
+  "toCity"        TEXT NOT NULL,
+  "travelDate"    TEXT,
+  "returnDate"    TEXT,
+  "passengers"    INTEGER NOT NULL DEFAULT 1,
+  "cabinClass"    TEXT NOT NULL DEFAULT 'Economy',
+  "name"          TEXT NOT NULL,
+  "email"         TEXT NOT NULL,
+  "phone"         TEXT,
+  "nationality"   TEXT,
+  "message"       TEXT,
+  "status"        TEXT NOT NULL DEFAULT 'NEW',
+  "internalNotes" TEXT,
+  "createdAt"     TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "updatedAt"     TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT "FlightInquiry_pkey" PRIMARY KEY ("id")
+);

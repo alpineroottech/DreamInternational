@@ -391,6 +391,26 @@ model FlightRoute {
   publishedAt      DateTime?
 }
 
+model FlightInquiry {
+  id              String   @id @default(cuid())
+  ticketType      String   @default("domestic") // domestic | international
+  fromCity        String
+  toCity          String
+  travelDate      String?
+  returnDate      String?
+  passengers      Int      @default(1)
+  cabinClass      String   @default("Economy") // Economy | Business | First
+  name            String
+  email           String
+  phone           String?
+  nationality     String?
+  message         String?
+  status          String   @default("NEW") // NEW | IN_PROGRESS | RESPONDED | CLOSED
+  internalNotes   String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
 // Flexible page-section store powering the landing page builder and
 // editable per-page content blocks (hero, about, CTA, headings, etc.).
 model Section {

@@ -2,6 +2,7 @@ import React, { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useCollection, useSection, resolveAssetUrl } from "../../public-cms/hooks";
 import TicketingRouteCard from "./TicketingRouteCard";
+import FlightBookingForm from "./FlightBookingForm";
 import "./ticketing.css";
 
 const DEFAULTS = {
@@ -134,14 +135,21 @@ export default function TicketingListing({ ticketType, pageKey, breadcrumbTitle,
         </div>
       </section>
 
-      <section className="ticketing-cta space-bottom">
+      {/* Booking enquiry form */}
+      <section className="space-bottom" id="enquiry-form">
         <div className="container">
-          <div className="ticketing-cta__box">
-            <div>
-              <h3>Need group fares or flexible dates?</h3>
-              <p>Our ticketing team can search multiple airlines and share the best options for your travel dates.</p>
+          <div className="row justify-content-center">
+            <div className="col-lg-8">
+              <div className="text-center mb-4">
+                <span className="sub-title style1">Quick Enquiry</span>
+                <h2 className="sec-title">Request a Flight Quote</h2>
+                <p className="sec-text">
+                  Fill in the details below and our ticketing team will respond within 24 hours
+                  with the best available fares.
+                </p>
+              </div>
+              <FlightBookingForm ticketType={ticketType} />
             </div>
-            <Link to="/contact" className="th-btn style3 th-icon">Get Flight Quote</Link>
           </div>
         </div>
       </section>

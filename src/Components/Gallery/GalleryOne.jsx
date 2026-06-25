@@ -19,7 +19,7 @@ function GalleryOne({ data = {} }) {
     const closeModal = () => setIsModalOpen(false);
 
     return (
-        <div className="gallery-area">
+        <div className="gallery-area space">
             <div className="container th-container shape-mockup-wrap">
                 <div className="title-area text-center">
                     <span className="sub-title">{data.subTitle || 'Make Your Tour More Pleasure'}</span>

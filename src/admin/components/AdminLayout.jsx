@@ -25,6 +25,7 @@ const NAV = [
   { to: "/admin/brands", label: "Partner Brands", icon: "solar:ribbon-outline" },
   { section: "Engagement" },
   { to: "/admin/inquiries", label: "Inquiries", icon: "solar:inbox-outline" },
+  { to: "/admin/flight-inquiries", label: "Flight Inquiries", icon: "solar:plane-2-outline" },
   { to: "/admin/media", label: "Media Library", icon: "solar:gallery-outline" },
   { section: "Configuration" },
   { to: "/admin/navigation", label: "Navigation", icon: "solar:hamburger-menu-outline" },

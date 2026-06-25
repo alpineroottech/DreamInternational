@@ -2,6 +2,7 @@ import React from "react";
 import { Link, useParams } from "react-router-dom";
 import { useSlugItem, resolveAssetUrl, useSettings } from "../../public-cms/hooks";
 import SafeHtml from "../../public-cms/SafeHtml";
+import FlightBookingForm from "./FlightBookingForm";
 import "./ticketing.css";
 
 export default function TicketingRouteDetailMain({ ticketType, listingLabel, listingUrl }) {
@@ -35,9 +36,6 @@ export default function TicketingRouteDetailMain({ ticketType, listingLabel, lis
   const image = resolveAssetUrl(route.imageUrl) || "/assets/img/destination/destination_4_2.jpg";
   const price = route.priceDisplay || (route.priceFrom ? `From $${route.priceFrom}` : "On request");
   const highlights = Array.isArray(route.highlights) ? route.highlights : [];
-  const contactUrl = `/contact?subject=Flight%20enquiry&message=${encodeURIComponent(
-    `Hi, I would like a quote for ${route.title} (${route.fromCity} to ${route.toCity}).`
-  )}`;
   const whatsapp = settings.whatsappNumber || settings.contactPhone;
 
   return (
@@ -106,7 +104,6 @@ export default function TicketingRouteDetailMain({ ticketType, listingLabel, lis
                 {route.frequency && <li><span>Frequency</span><strong>{route.frequency}</strong></li>}
                 <li><span>Type</span><strong>{ticketType === "domestic" ? "Domestic" : "International"}</strong></li>
               </ul>
-              <Link to={contactUrl} className="th-btn style3 th-icon w-100">Book / Enquire</Link>
               {whatsapp && (
                 <a
                   href={`https://wa.me/${String(whatsapp).replace(/\D/g, "")}?text=${encodeURIComponent(`Hello, I need a quote for ${route.title}.`)}`}
@@ -114,13 +111,21 @@ export default function TicketingRouteDetailMain({ ticketType, listingLabel, lis
                   target="_blank"
                   rel="noreferrer"
                 >
-                  WhatsApp Us
+                  <i className="fa-brands fa-whatsapp me-2" />WhatsApp Us
                 </a>
               )}
               <Link to={listingUrl} className="ticketing-back-link mt-4 d-inline-block">
                 ← Back to {listingLabel}
               </Link>
             </aside>
+
+            {/* Inline booking form */}
+            <div className="mt-4">
+              <FlightBookingForm
+                ticketType={ticketType}
+                routeTitle={route.title}
+              />
+            </div>
           </div>
         </div>
       </div>

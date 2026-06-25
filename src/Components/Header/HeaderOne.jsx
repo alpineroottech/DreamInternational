@@ -116,35 +116,17 @@ function HeaderOne() {
                                             }}
                                             aria-label="Dream International Travel and Tours"
                                         >
-                                            <span
-                                                style={{
-                                                    fontFamily: "'Montez', cursive",
-                                                    fontSize: "54px",
-                                                    fontWeight: 600,
-                                                    color: "#140ca9",
-                                                    letterSpacing: "0.5px"
-                                                }}
-                                            >
+                                            <span className="di-logo-main">
                                                 Dream International
                                             </span>
-                                            <span
-                                                style={{
-                                                    fontFamily: "'Manrope', sans-serif",
-                                                    fontSize: "19px",
-                                                    fontWeight: 800,
-                                                    color: "#0a074f",
-                                                    letterSpacing: "1.2px",
-                                                    textTransform: "uppercase",
-                                                    marginTop: "4px"
-                                                }}
-                                            >
+                                            <span className="di-logo-sub">
                                                 Travel and Tours
                                             </span>
                                         </Link>
                                     </div>
                                 </div>
-                                <div className="col-auto me-xl-auto">
-                                    <nav className="main-menu d-none d-xl-inline-block">
+                                <div className="col-auto me-xxl-auto">
+                                    <nav className="main-menu d-none d-xxl-inline-block">
                                         <ul>
                                             {nav.map((item, i) => (
                                                 <li key={i} className={item.children?.length ? "menu-item-has-children" : ""}>
@@ -164,13 +146,13 @@ function HeaderOne() {
                                     </nav>
                                     <button
                                         type="button"
-                                        className="th-menu-toggle d-block d-xl-none"
+                                        className="th-menu-toggle d-block d-xxl-none"
                                         onClick={() => setIsMobileMenuOpen(true)}
                                     >
                                         <i className="far fa-bars" />
                                     </button>
                                 </div>
-                                <div className="col-auto d-none d-xl-block">
+                                <div className="col-auto d-none d-xxl-block">
                                     <div className="header-button">
                                         <Link to="/contact" className="th-btn style3 th-icon">
                                             Book Now

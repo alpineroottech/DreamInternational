@@ -37,18 +37,77 @@
   --brand-blue-light:  #4a55d4;
 }
 
-/* ─── 2. BUTTON HOVER → deeper navy (cohesive blue palette) ─── */
+/* ─── 2. BUTTON HOVER — keep text white on ALL button variants ── */
+/* The template's slide-fill uses :before for the hover background. We keep
+   the fill color but force the text to stay white so it's always readable. */
 .th-btn:before {
-  background-color: var(--brand-blue-dark);
+  background-color: var(--brand-blue-mid, #1a14c4);
 }
 
 .th-btn.style2:before,
 .th-btn.style3:before,
 .th-btn.style4:before {
-  background-color: var(--brand-blue-dark);
+  background-color: var(--brand-blue-mid, #1a14c4);
 }
 
-/* ─── 2b. HERO — left-aligned copy on desktop/tablet ─────────── */
+/* Ensure label text stays white regardless of hover-fill */
+.th-btn,
+.th-btn:hover,
+.th-btn:focus,
+.th-btn.style2,
+.th-btn.style2:hover,
+.th-btn.style3,
+.th-btn.style3:hover,
+.th-btn.style4,
+.th-btn.style4:hover {
+  color: #ffffff !important;
+}
+
+/* Specific fix: hero CTA buttons */
+.banner-btn .th-btn,
+.banner-btn .th-btn:hover,
+.hero-style1 .th-btn,
+.hero-style1 .th-btn:hover,
+.btn-group .th-btn,
+.btn-group .th-btn:hover {
+  color: #ffffff !important;
+}
+
+/* ─── 2b. BUTTON ALIGNMENT — center icon + text in all buttons ── */
+.th-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.th-btn.w-100 {
+  width: 100%;
+  justify-content: center;
+}
+
+/* ─── 2c. LOGO — responsive font sizes ───────────────────────── */
+.di-logo-main {
+  font-family: 'Montez', cursive;
+  font-size: clamp(28px, 3.5vw, 48px);
+  font-weight: 600;
+  color: #140ca9;
+  letter-spacing: 0.5px;
+  line-height: 1;
+}
+
+.di-logo-sub {
+  font-family: 'Manrope', sans-serif;
+  font-size: clamp(10px, 1.1vw, 17px);
+  font-weight: 800;
+  color: #0a074f;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+/* ─── 2d. HERO — left-aligned copy on desktop/tablet ─────────── */
 .hero-1 .hero-style1 {
   text-align: left;
   margin-left: 0;
