@@ -104,6 +104,11 @@ function MobileMenu({ isOpen, onClose, nav = [] }) {
                             );
                         })}
                     </ul>
+                    <div className="mobile-menu-cta mt-4 px-3">
+                        <Link to="/contact" className="th-btn style3 w-100 di-header-book-btn" onClick={onClose}>
+                            Book Now
+                        </Link>
+                    </div>
                 </div>
             </div>
         </div>

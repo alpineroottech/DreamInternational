@@ -72,7 +72,6 @@ async function main() {
           ],
         },
         { label: "Blog", url: "/blog" },
-        { label: "Contact", url: "/contact" },
       ]),
     },
     footerColumns: {
@@ -121,15 +120,31 @@ async function main() {
         item.label === "Ticketing" ||
         item.children?.some((child) => child.url?.startsWith("/ticketing"))
     );
+    let nextNav = nav;
     if (Array.isArray(nav) && nav.length && !hasTicketing) {
       const ticketing = JSON.parse(settings.headerNav.v).find((item) => item.label === "Ticketing");
       const blogIdx = nav.findIndex((item) => item.label === "Blog" || item.url === "/blog");
       const insertAt = blogIdx >= 0 ? blogIdx : nav.length;
-      const nextNav = [...nav.slice(0, insertAt), ticketing, ...nav.slice(insertAt)];
-      await prisma.setting.update({
-        where: { key: "headerNav" },
-        data: { value: JSON.stringify(nextNav) },
-      });
+      nextNav = [...nav.slice(0, insertAt), ticketing, ...nav.slice(insertAt)];
+    }
+    // Remove Contact from nav — Book Now CTA covers it.
+    if (Array.isArray(nextNav) && nextNav.length) {
+      const withoutContact = nextNav.filter(
+        (item) =>
+          item.children?.length ||
+          !((item.url || "").replace(/\/$/, "") === "/contact" || (item.label || "").toLowerCase() === "contact")
+      );
+      if (withoutContact.length !== nextNav.length) {
+        await prisma.setting.update({
+          where: { key: "headerNav" },
+          data: { value: JSON.stringify(withoutContact) },
+        });
+      } else if (nextNav !== nav) {
+        await prisma.setting.update({
+          where: { key: "headerNav" },
+          data: { value: JSON.stringify(nextNav) },
+        });
+      }
     }
   }
 

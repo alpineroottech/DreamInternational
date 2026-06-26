@@ -19,7 +19,6 @@ const DEFAULT_NAV = [
         ],
     },
     { label: "Blog", url: "/blog" },
-    { label: "Contact", url: "/contact" },
 ];
 
 const TICKETING_NAV = DEFAULT_NAV.find((item) => item.label === "Ticketing");
@@ -37,9 +36,19 @@ function withTicketingNav(items) {
     return [...items.slice(0, insertAt), TICKETING_NAV, ...items.slice(insertAt)];
 }
 
+/** Contact is handled by the Book Now CTA — keep it out of the main nav. */
+function navForHeader(items) {
+    return withTicketingNav(items).filter((item) => {
+        if (item.children?.length) return true;
+        const url = (item.url || "").replace(/\/$/, "");
+        const label = (item.label || "").toLowerCase();
+        return !(url === "/contact" || label === "contact");
+    });
+}
+
 function HeaderOne() {
     const settings = useSettings();
-    const nav = withTicketingNav(
+    const nav = navForHeader(
         Array.isArray(settings.headerNav) && settings.headerNav.length ? settings.headerNav : DEFAULT_NAV
     );
     const [isSticky, setIsSticky] = useState(false);
@@ -47,22 +56,14 @@ function HeaderOne() {
 
     useEffect(() => {
         const handleScroll = () => {
-            if (window.scrollY > 500) {
-                setIsSticky(true);
-            } else {
-                setIsSticky(false);
-            }
+            setIsSticky(window.scrollY > 500);
         };
-
         window.addEventListener("scroll", handleScroll);
-        return () => {
-            window.removeEventListener("scroll", handleScroll);
-        };
+        return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
     return (
         <>
-            {/*============================== Header Area ==============================*/}
             <header className="th-header header-layout1">
                 <div className="header-top">
                     <div className="container th-container">
@@ -71,7 +72,7 @@ function HeaderOne() {
                                 <div className="header-links">
                                     <ul>
                                         <li className="d-none d-xl-inline-block">
-                                            <i className="fa-sharp fa-regular  fa-location-dot" />
+                                            <i className="fa-sharp fa-regular fa-location-dot" />
                                             <span>{settings.address || "Kathmandu, Nepal"}</span>
                                         </li>
                                         <li className="d-none d-xl-inline-block">
@@ -99,80 +100,69 @@ function HeaderOne() {
                     </div>
                 </div>
                 <div className={`sticky-wrapper ${isSticky ? "sticky" : ""}`}>
-                    {/* Main Menu Area */}
                     <div className="menu-area">
                         <div className="container th-container">
-                            <div className="row align-items-center justify-content-between">
-                                <div className="col-auto">
-                                    <div className="header-logo">
-                                        <Link
-                                            to="/"
-                                            style={{
-                                                display: "inline-flex",
-                                                flexDirection: "column",
-                                                lineHeight: 1,
-                                                textDecoration: "none",
-                                                whiteSpace: "nowrap"
-                                            }}
-                                            aria-label="Dream International Travel and Tours"
-                                        >
-                                            <span className="di-logo-main">
-                                                Dream International
-                                            </span>
-                                            <span className="di-logo-sub">
-                                                Travel and Tours
-                                            </span>
+                            <div className="di-header-bar">
+                                <div className="di-header-bar__logo">
+                                    <Link
+                                        to="/"
+                                        className="di-header-logo-link"
+                                        aria-label="Dream International Travel and Tours"
+                                    >
+                                        <span className="di-logo-main">Dream International</span>
+                                        <span className="di-logo-sub">Travel and Tours</span>
+                                    </Link>
+                                </div>
+
+                                <nav className="main-menu di-header-bar__nav d-none d-xl-block">
+                                    <ul>
+                                        {nav.map((item, i) => (
+                                            <li key={i} className={item.children?.length ? "menu-item-has-children" : ""}>
+                                                <Link to={item.url || "#"}>{item.label}</Link>
+                                                {item.children?.length > 0 && (
+                                                    <ul className="sub-menu">
+                                                        {item.children.map((child, ci) => (
+                                                            <li key={ci}>
+                                                                <Link to={child.url || "#"}>{child.label}</Link>
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                )}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </nav>
+
+                                <div className="di-header-bar__actions">
+                                    <div className="header-button d-none d-xl-block">
+                                        <Link to="/contact" className="th-btn style3 di-header-book-btn">
+                                            Book Now
                                         </Link>
                                     </div>
-                                </div>
-                                <div className="col-auto me-xxl-auto">
-                                    <nav className="main-menu d-none d-xxl-inline-block">
-                                        <ul>
-                                            {nav.map((item, i) => (
-                                                <li key={i} className={item.children?.length ? "menu-item-has-children" : ""}>
-                                                    <Link to={item.url || "#"}>{item.label}</Link>
-                                                    {item.children?.length > 0 && (
-                                                        <ul className="sub-menu">
-                                                            {item.children.map((child, ci) => (
-                                                                <li key={ci}>
-                                                                    <Link to={child.url || "#"}>{child.label}</Link>
-                                                                </li>
-                                                            ))}
-                                                        </ul>
-                                                    )}
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </nav>
                                     <button
                                         type="button"
-                                        className="th-menu-toggle d-block d-xxl-none"
+                                        className="th-menu-toggle d-block d-xl-none"
                                         onClick={() => setIsMobileMenuOpen(true)}
+                                        aria-label="Open menu"
                                     >
                                         <i className="far fa-bars" />
                                     </button>
                                 </div>
-                                <div className="col-auto d-none d-xxl-block">
-                                    <div className="header-button">
-                                        <Link to="/contact" className="th-btn style3 th-icon">
-                                            Book Now
-                                        </Link>
-                                    </div>
-                                </div>
                             </div>
                         </div>
-                        <div className="logo-bg bg-mask"
+                        <div
+                            className="logo-bg bg-mask"
                             style={{
                                 WebkitMaskImage: "url(/assets/img/logo_bg_mask.png)",
-                                maskImage: "url()"
-                            }} />
+                                maskImage: "url()",
+                            }}
+                        />
                     </div>
                 </div>
             </header>
             <MobileMenu isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} nav={nav} />
         </>
-
-    )
+    );
 }
 
-export default HeaderOne
+export default HeaderOne;
