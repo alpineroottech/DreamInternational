@@ -57,7 +57,7 @@ export default function TicketingListing({ ticketType, pageKey, breadcrumbTitle,
             <h1>{hero.title}</h1>
             <p>{hero.intro}</p>
             <div className="ticketing-hero__actions">
-              <Link to="/contact" className="th-btn style3 th-icon">Request a Quote</Link>
+              <Link to="#enquiry-form" className="th-btn th-btn-accent">Request a Quote</Link>
               {siblingUrl && (
                 <Link to={siblingUrl} className="th-btn style2 th-icon">{siblingLabel}</Link>
               )}

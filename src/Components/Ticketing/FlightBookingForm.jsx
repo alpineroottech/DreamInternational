@@ -265,7 +265,7 @@ export default function FlightBookingForm({ ticketType = "domestic", routeTitle 
 
       <button
         type="submit"
-        className="th-btn style3 th-icon w-100"
+        className="th-btn th-btn-accent w-100"
         disabled={loading}
       >
         {loading

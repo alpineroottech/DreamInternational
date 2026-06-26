@@ -104,7 +104,7 @@ function BannerOne({ data = {} }) {
                                             <HeroCta
                                                 to={slide.secondaryCta.url || "/contact"}
                                                 label={slide.secondaryCta.label}
-                                                className="style2"
+                                                className="th-btn-accent"
                                             />
                                         )}
                                     </div>

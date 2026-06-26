@@ -268,7 +268,7 @@ function TourDetailsMain() {
                                 </ul>
                                 <Link
                                     to={`/contact?subject=Booking+enquiry&message=I+would+like+to+book+${encodeURIComponent(tour.title)}`}
-                                    className="th-btn style3 th-icon w-100 text-center d-block"
+                                    className="th-btn th-btn-accent w-100 text-center d-block"
                                 >
                                     Book This Tour
                                 </Link>

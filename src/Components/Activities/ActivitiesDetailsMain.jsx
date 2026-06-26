@@ -219,7 +219,7 @@ function ActivitiesDetailsMain() {
                                 <p className="text-white opacity-75 small mb-4">per person</p>
                                 <Link
                                     to={`/contact?subject=Activity+enquiry&message=${encodeURIComponent(`I'd like to enquire about: ${activity.title}`)}`}
-                                    className="th-btn style3 th-icon w-100 text-center d-block"
+                                    className="th-btn th-btn-accent w-100 text-center d-block"
                                 >
                                     Book This Activity
                                 </Link>

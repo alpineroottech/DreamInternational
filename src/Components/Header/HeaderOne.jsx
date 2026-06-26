@@ -135,7 +135,7 @@ function HeaderOne() {
 
                                 <div className="di-header-bar__actions">
                                     <div className="header-button d-none d-xl-block">
-                                        <Link to="/contact" className="th-btn style3 di-header-book-btn">
+                                        <Link to="/contact" className="th-btn th-btn-accent di-header-book-btn">
                                             Book Now
                                         </Link>
                                     </div>

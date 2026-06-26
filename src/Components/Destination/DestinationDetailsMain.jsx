@@ -159,7 +159,7 @@ function DestinationDetailsMain() {
                                 )}
                                 <Link
                                     to={`/contact?subject=Destination+enquiry&message=${encodeURIComponent(`I'd like more info about: ${dest.name}`)}`}
-                                    className="th-btn style3 th-icon w-100 text-center d-block"
+                                    className="th-btn th-btn-accent w-100 text-center d-block"
                                 >
                                     Plan My Trip
                                 </Link>

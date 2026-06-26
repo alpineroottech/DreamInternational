@@ -28,7 +28,7 @@
   --white-color:       #ffffff;
   --body-color:        #6e7070;
 
-  /* Red accent — use sparingly (logo tagline only) */
+  /* Red accent — use sparingly on key CTAs */
   --brand-red:         #ff2300;
 
   /* Deeper blues for hovers and depth */
@@ -115,26 +115,25 @@
   margin-top: 2px;
 }
 
-/* ─── 2e. HEADER BAR — single-row flex layout (no Bootstrap wrap) ─ */
+/* ─── 2e. HEADER BAR — centered nav, balanced spacing ─────────── */
 .di-header-bar {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) auto minmax(180px, 1fr);
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  flex-wrap: nowrap;
+  gap: 24px;
   width: 100%;
   min-height: 72px;
 }
 
 .di-header-bar__logo {
-  flex: 0 0 auto;
-  max-width: 210px;
+  justify-self: start;
+  max-width: 240px;
 }
 
 .di-header-bar__nav {
-  flex: 1 1 auto;
-  min-width: 0;
-  overflow: visible;
+  justify-self: center;
+  width: auto;
+  flex: none;
 }
 
 .di-header-bar__nav.main-menu > ul {
@@ -143,28 +142,30 @@
   justify-content: center;
   align-items: center;
   white-space: nowrap;
+  gap: 0;
 }
 
 .header-layout1 .di-header-bar__nav.main-menu > ul > li {
-  margin: 0 8px;
+  margin: 0 14px;
   flex-shrink: 0;
 }
 
 .header-layout1 .di-header-bar__nav.main-menu > ul > li > a {
-  padding: 22px 0;
-  font-size: 15px;
+  padding: 24px 0;
+  font-size: 16px;
+  letter-spacing: 0.01em;
 }
 
 .di-header-bar__actions {
-  flex: 0 0 auto;
+  justify-self: end;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
 .header-layout1 .di-header-bar .header-button .th-btn {
   margin-left: 0;
-  padding: 11px 22px;
+  padding: 12px 26px;
   white-space: nowrap;
 }
 
@@ -175,28 +176,49 @@
 
 @media (max-width: 1599px) {
   .header-layout1 .di-header-bar__nav.main-menu > ul > li {
-    margin: 0 5px;
+    margin: 0 10px;
   }
   .header-layout1 .di-header-bar__nav.main-menu > ul > li > a {
-    font-size: 14px;
-    padding: 20px 0;
-  }
-  .di-header-bar__logo {
-    max-width: 190px;
+    font-size: 15px;
+    padding: 22px 0;
   }
 }
 
 @media (max-width: 1299px) {
   .header-layout1 .di-header-bar__nav.main-menu > ul > li > a {
-    font-size: 13px;
+    font-size: 14px;
   }
   .header-layout1 .di-header-bar .header-button .th-btn {
-    padding: 10px 18px;
+    padding: 10px 20px;
     font-size: 14px;
   }
 }
 
-/* ─── 2d. HERO — left-aligned copy on desktop/tablet ─────────── */
+/* ─── 2f. RED ACCENT BUTTON (key CTAs only) ───────────────────── */
+.th-btn.th-btn-accent {
+  background-color: var(--brand-red);
+  border: 1px solid var(--brand-red);
+  color: #ffffff !important;
+}
+
+.th-btn.th-btn-accent:before {
+  background-color: #c41a00;
+}
+
+.th-btn.th-btn-accent:hover,
+.th-btn.th-btn-accent:focus {
+  color: #ffffff !important;
+}
+
+/* Hero: primary blue + secondary red */
+.hero-1 .btn-group .th-btn:not(.th-btn-accent) {
+  background-color: var(--theme-color);
+}
+
+.hero-1 .btn-group .th-btn.th-btn-accent {
+  background-color: var(--brand-red);
+  border-color: var(--brand-red);
+}
 .hero-1 .hero-style1 {
   text-align: left;
   margin-left: 0;
@@ -396,10 +418,20 @@ a:not(.th-btn):not(.nav-link):hover {
   overflow: hidden;
 }
 
-/* ─── 15. CHECKLIST BULLETS → brand blue ────────────────────── */
-.checklist ul li::before {
-  background-color: var(--theme-color);
-  border-color: var(--theme-color);
+/* ─── 15. CHECKLIST BULLETS — clean, no filled background ───── */
+.checklist ul li::before,
+.checklist li::before,
+.checklist.style2 li::before,
+.checklist.style4 ul li::before,
+.checklist.style5 ul li::before,
+.destination-checklist .checklist li::before,
+.activities-checklist .checklist li::before,
+.why-content .checklist li::before,
+.page-content .checklist li::before {
+  background-color: transparent !important;
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
 /* ─── 16. TESTIMONIAL CARD QUOTE MARK ───────────────────────── */
