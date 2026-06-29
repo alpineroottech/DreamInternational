@@ -26,10 +26,11 @@ export default function TicketingListing({ ticketType, pageKey, breadcrumbTitle,
   const section = useSection(pageKey, "page");
   const cms = useCollection("/public/flight-routes", { ticketType });
   const defaults = DEFAULTS[ticketType];
-  const hero = { ...defaults, ...(section || {}) };
+  const hero = { ...defaults, ...(section !== undefined && section ? section : {}) };
   const [query, setQuery] = useState("");
 
   const routes = useMemo(() => {
+    if (cms === undefined) return [];
     const list = Array.isArray(cms) ? cms : [];
     if (!query.trim()) return list;
     const q = query.toLowerCase();

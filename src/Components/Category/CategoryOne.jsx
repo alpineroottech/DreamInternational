@@ -4,7 +4,7 @@ import { Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 import { Link } from "react-router-dom";
-import { useCollection, resolveAssetUrl } from "../../public-cms/hooks";
+import { useCollection, resolveAssetUrl, resolveCmsList } from "../../public-cms/hooks";
 
 const FALLBACK = [
   { id: 1, title: "Cruises", imgSrc: "/assets/img/category/category_1_1.jpg" },
@@ -18,10 +18,18 @@ const CategoryOne = ({ data = {} }) => {
   const swiperRef = useRef(null);
   const cms = useCollection("/public/categories");
 
-  const categories =
-    cms && cms.length
-      ? cms.map((c) => ({ id: c.slug, title: c.name, imgSrc: resolveAssetUrl(c.imageUrl) || "/assets/img/category/category_1_1.jpg", slug: c.slug }))
-      : FALLBACK;
+  const { loading, items: categories } = resolveCmsList(
+    cms,
+    FALLBACK.map((c) => ({ ...c, slug: undefined }))
+  );
+  const displayCategories = cms && cms.length
+    ? cms.map((c) => ({
+        id: c.slug,
+        title: c.name,
+        imgSrc: resolveAssetUrl(c.imageUrl) || "/assets/img/category/category_1_1.jpg",
+        slug: c.slug,
+      }))
+    : categories;
 
   useEffect(() => {
     if (!swiperRef.current) return;
@@ -71,7 +79,9 @@ const CategoryOne = ({ data = {} }) => {
     raf();
 
     return () => cancelAnimationFrame(raf);
-  }, []);
+  }, [displayCategories.length]);
+
+  if (loading) return null;
 
   return (
     <section className="category-area bg-top-center">
@@ -103,7 +113,7 @@ const CategoryOne = ({ data = {} }) => {
           }} // ✅ Defined renderBullet inside pagination
           className="th-slider has-shadow categorySlider"
         >
-          {categories.map((category) => (
+          {displayCategories.map((category) => (
             <SwiperSlide key={category.id}>
               <div className="category-card single">
                 <div className="box-img global-img">

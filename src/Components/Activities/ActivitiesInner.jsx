@@ -16,6 +16,17 @@ function ActivitiesInner() {
     const postsPerPage = 8;
 
     const cms = useCollection('/public/activities');
+
+    if (cms === undefined) {
+        return (
+            <section className="space">
+                <div className="container text-center py-5">
+                    <p className="mb-0">Loading activities…</p>
+                </div>
+            </section>
+        );
+    }
+
     const posts = cms && cms.length
         ? cms.map((a) => ({ id: a.slug, slug: a.slug, image: a.imageUrl, title: a.title, price: a.price || 'On request' }))
         : jsonPosts;

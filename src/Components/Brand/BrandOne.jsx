@@ -3,7 +3,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
 import "swiper/css";
 import { Link } from "react-router-dom";
-import { useCollection, resolveAssetUrl } from "../../public-cms/hooks";
+import { useCollection, resolveAssetUrl, resolveCmsList } from "../../public-cms/hooks";
 
 const FALLBACK = [
   "brand_1_1.svg", "brand_1_2.svg", "brand_1_3.svg", "brand_1_4.svg",
@@ -12,7 +12,8 @@ const FALLBACK = [
 
 function BrandOne({ className, data = {} }) {
   const cms = useCollection("/public/brands");
-  const brands = cms && cms.length ? cms : FALLBACK;
+  const { loading, items: brands } = resolveCmsList(cms, FALLBACK);
+  if (loading) return null;
   return (
     <div className={`brand-area overflow-hidden ${className || ""}`}>
       <div className="container th-container">

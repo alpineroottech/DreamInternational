@@ -5,6 +5,17 @@ import { useCollection } from '../../public-cms/hooks';
 
 function ServiceInner() {
     const cms = useCollection('/public/services');
+
+    if (cms === undefined) {
+        return (
+            <section className="position-relative overflow-hidden space" id="destination-sec">
+                <div className="container text-center py-5">
+                    <p className="mb-0">Loading services…</p>
+                </div>
+            </section>
+        );
+    }
+
     const posts = cms && cms.length
         ? cms.map((s) => ({ id: s.slug, image: s.iconUrl || s.imageUrl, title: s.title, item: s.shortDescription || '' }))
         : jsonPosts;

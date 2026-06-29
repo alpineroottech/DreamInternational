@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import NiceSelect from "../Header/NiceSelect";
-import { useCollection } from "../../public-cms/hooks";
+import { useCollection, resolveCmsList } from "../../public-cms/hooks";
 
 function Booking() {
     const navigate = useNavigate();
@@ -17,13 +17,31 @@ function Booking() {
     const cmsDestinations = useCollection("/public/destinations");
     const cmsCategories = useCollection("/public/categories");
 
-    const destinationOptions = cmsDestinations && cmsDestinations.length
-        ? cmsDestinations.map((d) => ({ value: d.slug, label: d.name }))
-        : [
-            { value: "pokhara", label: "Pokhara" },
-            { value: "kathmandu", label: "Kathmandu" },
-            { value: "chitwan", label: "Chitwan" },
-        ];
+    const FALLBACK_DESTINATIONS = [
+        { value: "pokhara", label: "Pokhara" },
+        { value: "kathmandu", label: "Kathmandu" },
+        { value: "chitwan", label: "Chitwan" },
+    ];
+    const FALLBACK_CATEGORIES = [
+        { value: "trekking", label: "Trekking" },
+        { value: "cultural-tours", label: "Cultural Tours" },
+        { value: "adventure", label: "Adventure" },
+    ];
+
+    const destResolved = resolveCmsList(cmsDestinations, []);
+    const catResolved = resolveCmsList(cmsCategories, []);
+
+    const destinationOptions = destResolved.loading
+        ? []
+        : (cmsDestinations && cmsDestinations.length
+            ? cmsDestinations.map((d) => ({ value: d.slug, label: d.name }))
+            : FALLBACK_DESTINATIONS);
+
+    const categoryOptions = catResolved.loading
+        ? []
+        : (cmsCategories && cmsCategories.length
+            ? cmsCategories.map((c) => ({ value: c.slug, label: c.name }))
+            : FALLBACK_CATEGORIES);
 
     const adventureOptions = [
         { value: "trekking", label: "Trekking" },
@@ -38,14 +56,6 @@ function Booking() {
         { value: "8-14", label: "8–14 Days" },
         { value: "15+", label: "15+ Days" },
     ];
-
-    const categoryOptions = cmsCategories && cmsCategories.length
-        ? cmsCategories.map((c) => ({ value: c.slug, label: c.name }))
-        : [
-            { value: "trekking", label: "Trekking" },
-            { value: "cultural-tours", label: "Cultural Tours" },
-            { value: "adventure", label: "Adventure" },
-        ];
 
     const handleChange = (name, value) => {
         setFormData((prev) => ({ ...prev, [name]: value }));

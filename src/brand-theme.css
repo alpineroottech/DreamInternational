@@ -50,17 +50,38 @@
   background-color: var(--brand-blue-mid, #1a14c4);
 }
 
-/* Ensure label text stays white regardless of hover-fill */
-.th-btn,
-.th-btn:hover,
-.th-btn:focus,
+/* Ensure label text stays white on filled/outline-on-dark buttons */
+.th-btn:not(.style4),
+.th-btn:not(.style4):hover,
+.th-btn:not(.style4):focus,
 .th-btn.style2,
 .th-btn.style2:hover,
 .th-btn.style3,
-.th-btn.style3:hover,
-.th-btn.style4,
-.th-btn.style4:hover {
+.th-btn.style3:hover {
   color: #ffffff !important;
+}
+
+/* style4 — outline on light cards: dark text default, white on hover */
+.th-btn.style4 {
+  color: var(--title-color) !important;
+  border-color: var(--title-color);
+  background-color: transparent;
+}
+
+.th-btn.style4:hover,
+.th-btn.style4:focus,
+.th-btn.style4.active {
+  color: #ffffff !important;
+  border-color: var(--theme-color);
+}
+
+.th-btn.style4.th-icon:after {
+  background-color: var(--title-color) !important;
+}
+
+.th-btn.style4:hover.th-icon:after,
+.th-btn.style4:focus.th-icon:after {
+  background-color: #ffffff !important;
 }
 
 /* Specific fix: hero CTA buttons */
@@ -648,7 +669,14 @@ select:focus,
 .gallery-area    { background: #88beda !important; }
 .counter-area    { background: #ffffff !important; }
 .di-testimonials { background: #88beda !important; }
-.brand-area      { background: #ffffff !important; }
+.brand-area      { background: #ffffff !important; padding-top: var(--section-space); padding-bottom: var(--section-space); }
+
+@media (max-width: 991px) {
+  .brand-area {
+    padding-top: var(--section-space-mobile);
+    padding-bottom: var(--section-space-mobile);
+  }
+}
 .blog-area       { background: #88beda !important; }
 
 /* Ensure counter section doesn't get the theme-color override */

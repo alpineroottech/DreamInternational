@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Modal from './Modal';
 import { Link } from 'react-router-dom';
-import { useCollection, resolveAssetUrl } from '../../public-cms/hooks';
+import { useCollection, resolveAssetUrl, resolveCmsList } from '../../public-cms/hooks';
 
 const FALLBACK = [1, 2, 3, 4, 5, 6, 7].map((n) => ({ imageUrl: `/assets/img/gallery/gallery_1_${n}.jpg` }));
 
@@ -9,7 +9,8 @@ function GalleryOne({ data = {} }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalImage, setModalImage] = useState('');
     const cms = useCollection('/public/gallery');
-    const images = cms && cms.length ? cms : FALLBACK;
+    const { loading, items: images } = resolveCmsList(cms, FALLBACK);
+    if (loading) return null;
 
     const openModal = (imageSrc, event) => {
         event.preventDefault();

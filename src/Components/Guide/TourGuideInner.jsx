@@ -8,6 +8,17 @@ function TourGuideInner() {
     const postsPerPage = 6;
 
     const cms = useCollection('/public/team');
+
+    if (cms === undefined) {
+        return (
+            <section className="space" id="team-sec">
+                <div className="container text-center py-5">
+                    <p className="mb-0">Loading team…</p>
+                </div>
+            </section>
+        );
+    }
+
     const posts = cms && cms.length
         ? cms.map((m) => ({ id: m.slug, thumb: m.photoUrl, image: m.photoUrl, title: m.name, role: m.role, socials: m.socials }))
         : jsonPosts;

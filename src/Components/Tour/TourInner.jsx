@@ -24,6 +24,16 @@ function TourInner() {
     const filterCategoriesRaw = searchParams.get('category') || '';
     const selectedCategories = filterCategoriesRaw ? filterCategoriesRaw.split(',').filter(Boolean) : [];
 
+    if (cms === undefined) {
+        return (
+            <section className="space">
+                <div className="container text-center py-5">
+                    <p className="mb-0">Loading tours…</p>
+                </div>
+            </section>
+        );
+    }
+
     const allPosts = cms && cms.length
         ? cms.map((t) => ({
             id: t.slug,

@@ -4,7 +4,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import { useCollection, resolveAssetUrl } from "../../public-cms/hooks";
+import { useCollection, resolveAssetUrl, resolveCmsList } from "../../public-cms/hooks";
 
 const FALLBACK = [
   { id: 1, date: "", readTime: "6 min read", title: "Top treks in Nepal for first-timers", image: "/assets/img/blog/blog_1_1.jpg", detailsLink: "/blog/1" },
@@ -14,17 +14,18 @@ const FALLBACK = [
 
 function BlogOne({ data = {} }) {
   const cms = useCollection("/public/blog");
-  const blogPosts =
-    cms && cms.length
-      ? cms.map((p) => ({
-          id: p.slug,
-          date: p.publishedAt ? new Date(p.publishedAt).toLocaleDateString() : "",
-          readTime: "",
-          title: p.title,
-          image: resolveAssetUrl(p.coverImageUrl) || "/assets/img/blog/blog_1_1.jpg",
-          detailsLink: `/blog/${p.slug}`,
-        }))
-      : FALLBACK;
+  const { loading, items: blogPosts } = resolveCmsList(cms, FALLBACK);
+  const posts = cms && cms.length
+    ? cms.map((p) => ({
+        id: p.slug,
+        date: p.publishedAt ? new Date(p.publishedAt).toLocaleDateString() : "",
+        readTime: "",
+        title: p.title,
+        image: resolveAssetUrl(p.coverImageUrl) || "/assets/img/blog/blog_1_1.jpg",
+        detailsLink: `/blog/${p.slug}`,
+      }))
+    : blogPosts;
+  if (loading) return null;
   return (
     <section className="bg-smoke overflow-hidden space overflow-hidden" id="blog-sec">
       <div className="container shape-mockup-wrap">
@@ -57,7 +58,7 @@ function BlogOne({ data = {} }) {
           }}
           className="swiper th-slider has-shadow"
         >
-          {blogPosts.map((post) => (
+          {posts.map((post) => (
             <SwiperSlide key={post.id}>
               <div className="blog-box th-ani">
                 <div className="blog-img global-img">

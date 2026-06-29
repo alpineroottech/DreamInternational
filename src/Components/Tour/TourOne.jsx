@@ -4,7 +4,7 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import { Link } from 'react-router-dom';
-import { useCollection, resolveAssetUrl } from '../../public-cms/hooks';
+import { useCollection, resolveAssetUrl, resolveCmsList } from '../../public-cms/hooks';
 
 const FALLBACK = [
   { slug: 'greece-tour-package', title: 'Greece Tour Package', featuredImageUrl: '/assets/img/tour/tour_box_1.jpg', basePrice: 980, durationDays: 7 },
@@ -15,7 +15,8 @@ const FALLBACK = [
 
 function TourOne({ data = {} }) {
   const cms = useCollection('/public/tours', { featured: true });
-  const tours = cms && cms.length ? cms : FALLBACK;
+  const { loading, items: tours } = resolveCmsList(cms, FALLBACK);
+  if (loading) return null;
 
   return (
     <section className="tour-area position-relative overflow-hidden space" id="service-sec">

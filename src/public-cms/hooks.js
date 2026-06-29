@@ -17,16 +17,25 @@ export function resolveAssetUrl(url) {
   return url;
 }
 
-// Generic collection loader. Returns `null` while loading / on error so callers
-// can fall back to their bundled template defaults.
+/**
+ * Load a public CMS collection.
+ * - `undefined` → still loading (do NOT show fallback yet)
+ * - `null`      → loaded but empty / error (safe to use fallback)
+ * - `array`     → CMS data
+ */
 export function useCollection(path, params) {
-  const [data, setData] = useState(null);
+  const [data, setData] = useState(undefined);
   const key = JSON.stringify(params || {});
   useEffect(() => {
     let active = true;
+    setData(undefined);
     publicApi
       .get(path, { params })
-      .then((r) => active && setData(Array.isArray(r.data) ? r.data : null))
+      .then((r) => {
+        if (!active) return;
+        const rows = Array.isArray(r.data) ? r.data : [];
+        setData(rows.length ? rows : null);
+      })
       .catch(() => active && setData(null));
     return () => {
       active = false;
@@ -34,6 +43,13 @@ export function useCollection(path, params) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [path, key]);
   return data;
+}
+
+/** Resolve CMS list vs fallback without flashing template defaults during load. */
+export function resolveCmsList(cms, fallback = []) {
+  if (cms === undefined) return { loading: true, items: [] };
+  if (cms && cms.length) return { loading: false, items: cms };
+  return { loading: false, items: fallback };
 }
 
 // Site settings, cached across the app (loaded once).
@@ -63,17 +79,18 @@ export function useSettings() {
   return isPlainObject(settings) ? settings : {};
 }
 
-// Home page sections: returns { byKey, order } where order is enabled keys sorted.
+// Home page sections: returns { byKey, order, loaded }.
 export function useHomeSections() {
-  const [state, setState] = useState({ byKey: {}, order: null });
+  const [state, setState] = useState({ byKey: {}, order: null, loaded: false });
   useEffect(() => {
     let active = true;
+    setState({ byKey: {}, order: null, loaded: false });
     publicApi
       .get("/public/sections", { params: { page: "home" } })
       .then((r) => {
         if (!active) return;
         if (!Array.isArray(r.data)) {
-          setState({ byKey: {}, order: null });
+          setState({ byKey: {}, order: null, loaded: true });
           return;
         }
         const byKey = {};
@@ -81,9 +98,9 @@ export function useHomeSections() {
         sorted.forEach((s) => {
           byKey[s.key] = s.data || {};
         });
-        setState({ byKey, order: sorted.map((s) => s.key) });
+        setState({ byKey, order: sorted.map((s) => s.key), loaded: true });
       })
-      .catch(() => active && setState({ byKey: {}, order: null }));
+      .catch(() => active && setState({ byKey: {}, order: null, loaded: true }));
     return () => {
       active = false;
     };
@@ -92,12 +109,13 @@ export function useHomeSections() {
 }
 
 export function useSection(page, key) {
-  const [data, setData] = useState(null);
+  const [data, setData] = useState(undefined);
   useEffect(() => {
     let active = true;
+    setData(undefined);
     publicApi
       .get(`/public/sections/${page}/${key}`)
-      .then((r) => active && setData(r.data?.data || {}))
+      .then((r) => active && setData(r.data?.data || null))
       .catch(() => active && setData(null));
     return () => {
       active = false;

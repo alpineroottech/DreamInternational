@@ -12,6 +12,16 @@ function DestinationInner() {
 
     const cmsDestinations = useCollection('/public/destinations');
 
+    if (cmsDestinations === undefined) {
+        return (
+            <section className="space">
+                <div className="container text-center py-5">
+                    <p className="mb-0">Loading destinations…</p>
+                </div>
+            </section>
+        );
+    }
+
     // Normalise CMS destinations to the same shape expected by DestinationCard.
     const posts = cmsDestinations && cmsDestinations.length
         ? cmsDestinations.map((d) => ({

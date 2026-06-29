@@ -7,6 +7,17 @@ import { useCollection, resolveAssetUrl } from '../../public-cms/hooks';
 function BlogInner() {
     const [currentPage, setCurrentPage] = useState(1);
     const cms = useCollection('/public/blog');
+
+    if (cms === undefined) {
+        return (
+            <section className="th-blog-wrapper space-top space-extra-bottom">
+                <div className="container text-center py-5">
+                    <p className="mb-0">Loading articles…</p>
+                </div>
+            </section>
+        );
+    }
+
     const usingCms = cms && cms.length > 0;
     const postsPerPage = usingCms ? 6 : 1;
     const posts = usingCms ? cms : jsonPosts;

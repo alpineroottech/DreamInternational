@@ -37,17 +37,16 @@ const DEFAULT_ORDER = [
 ];
 
 function HomeOne() {
-    const { byKey, order } = useHomeSections();
-    const keys = order && order.length ? order : DEFAULT_ORDER;
+    const { byKey, order, loaded } = useHomeSections();
+    const keys = loaded && order?.length ? order : DEFAULT_ORDER;
 
     return (
         <div>
             <HeaderOne />
-            {keys.map((key) => {
+            {loaded && keys.map((key) => {
                 const Comp = SECTION_COMPONENTS[key];
                 if (!Comp) return null;
-                const extra = key === "brands" ? { className: "space-bottom" } : {};
-                const el = <Comp key={key} data={byKey[key] || {}} {...extra} />;
+                const el = <Comp key={key} data={byKey[key] || {}} />;
                 // The booking widget always sits directly under the hero.
                 if (key === "hero") {
                     return (

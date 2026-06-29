@@ -3,7 +3,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
-import { useCollection, resolveAssetUrl } from "../../public-cms/hooks";
+import { useCollection, resolveAssetUrl, resolveCmsList } from "../../public-cms/hooks";
 
 const FALLBACK = [
   { name: "Maria Doe", designation: "Traveller", image: "/assets/img/testimonial/testi_1_1.jpg", text: "An unforgettable trip — superbly organised from start to finish.", rating: 5 },
@@ -13,6 +13,7 @@ const FALLBACK = [
 
 function TestimonialOne({ data = {} }) {
   const cms = useCollection("/public/reviews", { featured: "true" });
+  const { loading, items: fallbackItems } = resolveCmsList(cms, FALLBACK);
   const testimonials =
     cms && cms.length
       ? cms.map((r) => ({
@@ -22,7 +23,8 @@ function TestimonialOne({ data = {} }) {
           text: r.reviewText,
           rating: r.rating || 5,
         }))
-      : FALLBACK;
+      : fallbackItems;
+  if (loading) return null;
 
   const useCarousel = testimonials.length > 3;
 

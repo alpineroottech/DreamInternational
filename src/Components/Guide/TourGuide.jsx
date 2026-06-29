@@ -4,7 +4,7 @@ import { Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 import { Link } from "react-router-dom";
-import { useCollection, resolveAssetUrl } from "../../public-cms/hooks";
+import { useCollection, resolveAssetUrl, resolveCmsList } from "../../public-cms/hooks";
 
 const FALLBACK = [
   { id: 1, name: "Jacob Jones", photoUrl: "/assets/img/team/team_1_1.jpg", role: "Tourist Guide" },
@@ -15,7 +15,7 @@ const FALLBACK = [
 
 function TourGuide({ data = {} }) {
   const cms = useCollection("/public/team");
-  const guides = cms && cms.length ? cms : FALLBACK;
+  const { loading, items: guides } = resolveCmsList(cms, FALLBACK);
   const [swiperInstance, setSwiperInstance] = useState(null);
   const paginationRef = useRef(null);
 
@@ -26,6 +26,8 @@ function TourGuide({ data = {} }) {
       swiperInstance.pagination.update();
     }
   }, [swiperInstance]);
+
+  if (loading) return null;
 
   return (
     <section
