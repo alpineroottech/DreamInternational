@@ -103,9 +103,13 @@
   text-align: center;
 }
 
-.th-btn.w-100 {
-  width: 100%;
-  justify-content: center;
+.widget_offer .th-btn.style2:after {
+  display: none;
+}
+
+.widget_offer .th-btn.style2 {
+  min-height: 48px;
+  line-height: 1.2;
 }
 
 /* ─── 2c. LOGO — responsive font sizes ───────────────────────── */

@@ -2,6 +2,7 @@ import { Router } from "express";
 import rateLimit from "express-rate-limit";
 import { z } from "zod";
 import prisma from "../lib/prisma.js";
+import { deliverFlightInquiryEmails } from "../lib/email.js";
 import { verifyJwt, requireRole } from "../middleware/auth.js";
 import { validate } from "../middleware/validate.js";
 
@@ -34,6 +35,7 @@ export const publicFlightInquiries = Router();
 publicFlightInquiries.post("/", limiter, validate(Schema), async (req, res, next) => {
   try {
     const inquiry = await prisma.flightInquiry.create({ data: req.validated });
+    deliverFlightInquiryEmails(inquiry);
     res.status(201).json({ ok: true, id: inquiry.id });
   } catch (e) {
     next(e);

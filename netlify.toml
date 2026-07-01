@@ -21,6 +21,7 @@
     "@prisma/adapter-neon",
     "@neondatabase/serverless",
     "@supabase/storage-js",
+    "resend",
     "ws"
   ]
   included_files = ["node_modules/@prisma/**", "node_modules/.prisma/**"]

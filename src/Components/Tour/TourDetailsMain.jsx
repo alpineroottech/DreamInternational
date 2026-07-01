@@ -275,10 +275,11 @@ function TourDetailsMain() {
                                 {whatsapp && (
                                     <a
                                         href={`https://wa.me/${String(whatsapp).replace(/\D/g, '')}?text=${encodeURIComponent(`Hi, I'd like to enquire about: ${tour.title}`)}`}
-                                        className="th-btn style2 th-icon w-100 text-center d-block mt-3"
+                                        className="th-btn style2 w-100 d-flex align-items-center justify-content-center mt-3"
                                         target="_blank"
                                         rel="noreferrer"
                                     >
+                                        <i className="fa-brands fa-whatsapp me-2" aria-hidden="true" />
                                         WhatsApp Enquiry
                                     </a>
                                 )}

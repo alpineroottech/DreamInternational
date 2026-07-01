@@ -16,9 +16,10 @@
     "seed": "node prisma/seed.js"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^0.10.4",
     "@prisma/adapter-neon": "^6.19.3",
     "@prisma/client": "^6.19.3",
-    "@neondatabase/serverless": "^0.10.4",
+    "@supabase/supabase-js": "^2.49.8",
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
@@ -28,7 +29,7 @@
     "helmet": "^8.0.0",
     "jsonwebtoken": "^9.0.2",
     "multer": "^1.4.5-lts.1",
-    "@supabase/supabase-js": "^2.49.8",
+    "resend": "^6.16.0",
     "sanitize-html": "^2.17.4",
     "ws": "^8.18.0",
     "zod": "^3.24.1"

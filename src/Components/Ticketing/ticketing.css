@@ -320,8 +320,6 @@
 }
 
 .ticketing-sidebar {
-  position: sticky;
-  top: 110px;
   background: #fff;
   border: 1px solid #e8eef0;
   border-radius: 18px;
@@ -373,11 +371,7 @@
   text-decoration: none;
 }
 
-@media (max-width: 991px) {
-  .ticketing-sidebar {
-    position: static;
-  }
-}
+/* Sidebar scrolls with the page so the fare card does not cover the enquiry form */
 
 /* ── Flight booking form ────────────────────────────────────── */
 .flight-booking-form {

@@ -2,6 +2,7 @@ import { Router } from "express";
 import rateLimit from "express-rate-limit";
 import { z } from "zod";
 import prisma from "../lib/prisma.js";
+import { deliverInquiryEmails } from "../lib/email.js";
 import { verifyJwt, requireRole } from "../middleware/auth.js";
 import { validate } from "../middleware/validate.js";
 
@@ -33,7 +34,7 @@ publicInquiries.post("/", inquiryLimiter, validate(InquirySchema), async (req, r
   try {
     // Persist first; email delivery (when configured) must not block/lose the record.
     const inquiry = await prisma.inquiry.create({ data: req.validated });
-    // TODO: integrate SMTP/Nodemailer here; failures should be logged, not thrown.
+    deliverInquiryEmails(inquiry);
     res.status(201).json({ ok: true, id: inquiry.id });
   } catch (e) {
     next(e);

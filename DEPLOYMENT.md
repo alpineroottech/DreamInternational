@@ -176,6 +176,9 @@ Click **Add environment variables** and add **each row** below.
 | `SEED_ADMIN_EMAIL` | `you@yourcompany.com` | Your admin login email |
 | `SEED_ADMIN_PASSWORD` | `YourStrongPassword123!` | Change after first login |
 | `SEED_ADMIN_NAME` | `Dream Admin` | Display name |
+| `RESEND_API_KEY` | `re_...` | From [Resend](https://resend.com/api-keys) — contact & flight form emails |
+| `RESEND_FROM_EMAIL` | `Dream International <noreply@yourdomain.com>` | Verified sender in Resend; use `onboarding@resend.dev` only for testing |
+| `RESEND_ADMIN_EMAIL` | `info@yourdomain.com` | Inbox for new inquiry notifications (optional; falls back to CMS contact email) |
 | `NODE_ENV` | `production` | |
 
 **Scopes:** check **Production** and **Deploy previews** for all variables.
