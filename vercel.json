@@ -3,15 +3,11 @@
   "buildCommand": "CI=false npm run build:web",
   "outputDirectory": "build",
   "functions": {
-    "api/index.mjs": {
+    "api/[...all].mjs": {
       "maxDuration": 26
     }
   },
   "rewrites": [
-    {
-      "source": "/api/(.*)",
-      "destination": "/api/index"
-    },
     {
       "source": "/(.*)",
       "destination": "/index.html"
