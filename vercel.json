@@ -1,19 +1,17 @@
 {
-  "installCommand": "npm install && npm install --prefix server && npm run prisma:generate --prefix server && (node scripts/prisma-migrate-deploy-retry.mjs || echo \"Prisma migrate skipped due to DB connectivity\") && node scripts/merge-server-modules.mjs",
+  "installCommand": "npm install --legacy-peer-deps && npm run prisma:generate && (node scripts/prisma-migrate-deploy-retry.mjs || echo \"Prisma migrate skipped\")",
   "buildCommand": "CI=false npm run build:web",
   "outputDirectory": "build",
   "functions": {
-    "api/index.mjs": {
-      "maxDuration": 26
+    "api/[...slug].mjs": {
+      "maxDuration": 60,
+      "memory": 1024,
+      "includeFiles": "node_modules/.prisma/**"
     }
   },
   "rewrites": [
     {
-      "source": "/api/(.*)",
-      "destination": "/api?path=$1"
-    },
-    {
-      "source": "/((?!api/).*)",
+      "source": "/((?!api(?:/|$)).*)",
       "destination": "/index.html"
     }
   ]
