@@ -1,6 +1,7 @@
 /**
- * Merge server/node_modules into root node_modules so Netlify Functions can
- * resolve Express/Prisma dependencies at /var/task/node_modules.
+ * Merge server/node_modules into root node_modules so serverless functions
+ * (Netlify / Vercel) can resolve Express/Prisma deps and the generated
+ * Prisma client at /var/task/node_modules.
  */
 import { cpSync, existsSync, mkdirSync, readdirSync } from "node:fs";
 import path from "node:path";

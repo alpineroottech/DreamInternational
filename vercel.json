@@ -1,12 +1,12 @@
 {
-  "installCommand": "npm install && npm run prisma:generate && (node scripts/prisma-migrate-deploy-retry.mjs || echo \"Prisma migrate skipped\")",
+  "installCommand": "npm install && npm install --prefix server && npm run prisma:generate && (node scripts/prisma-migrate-deploy-retry.mjs || echo \"Prisma migrate skipped\") && node scripts/merge-server-modules.mjs",
   "buildCommand": "CI=false npm run build:web",
   "outputDirectory": "build",
   "functions": {
     "api/[...slug].mjs": {
       "maxDuration": 60,
       "memory": 1024,
-      "includeFiles": "node_modules/.prisma/**"
+      "includeFiles": "node_modules/{.prisma,@prisma}/**"
     }
   },
   "rewrites": [
