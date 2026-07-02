@@ -1,0 +1,20 @@
+{
+  "installCommand": "npm install && npm install --prefix server && npm run prisma:generate --prefix server && node scripts/merge-server-modules.mjs",
+  "buildCommand": "npm run build:web",
+  "outputDirectory": "build",
+  "functions": {
+    "api/index.mjs": {
+      "maxDuration": 26
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/index"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
