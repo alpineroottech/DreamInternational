@@ -3,13 +3,17 @@
   "buildCommand": "CI=false npm run build:web",
   "outputDirectory": "build",
   "functions": {
-    "api/[...slug].mjs": {
+    "api/index.mjs": {
       "maxDuration": 60,
       "memory": 1024,
-      "includeFiles": "node_modules/{.prisma,@prisma}/**"
+      "includeFiles": "node_modules/.prisma/**"
     }
   },
   "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/index?_path=$1"
+    },
     {
       "source": "/((?!api(?:/|$)).*)",
       "destination": "/index.html"
