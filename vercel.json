@@ -1,5 +1,5 @@
 {
-  "installCommand": "npm install --legacy-peer-deps && npm run prisma:generate && (node scripts/prisma-migrate-deploy-retry.mjs || echo \"Prisma migrate skipped\")",
+  "installCommand": "npm install && npm run prisma:generate && (node scripts/prisma-migrate-deploy-retry.mjs || echo \"Prisma migrate skipped\")",
   "buildCommand": "CI=false npm run build:web",
   "outputDirectory": "build",
   "functions": {
