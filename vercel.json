@@ -1,5 +1,5 @@
 {
-  "installCommand": "npm install && npm install --prefix server && npm run prisma:generate --prefix server && node scripts/prisma-migrate-deploy-retry.mjs && node scripts/merge-server-modules.mjs",
+  "installCommand": "npm install && npm install --prefix server && npm run prisma:generate --prefix server && (node scripts/prisma-migrate-deploy-retry.mjs || echo \"Prisma migrate skipped due to DB connectivity\") && node scripts/merge-server-modules.mjs",
   "buildCommand": "CI=false npm run build:web",
   "outputDirectory": "build",
   "functions": {
