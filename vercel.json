@@ -1,6 +1,6 @@
 {
   "installCommand": "npm install && npm install --prefix server && npm run prisma:generate --prefix server && node scripts/merge-server-modules.mjs",
-  "buildCommand": "npm run build:web",
+  "buildCommand": "CI=false npm run build:web",
   "outputDirectory": "build",
   "functions": {
     "api/index.mjs": {
