@@ -1,7 +1,8 @@
 import { Resend } from "resend";
-import prisma from "./prisma.js";
 
 const SITE_NAME = "Dream International Travel and Tours";
+/** Official inbox for all inquiry notifications (Resend-verified). */
+const DEFAULT_ADMIN_EMAIL = "resend@flywithdream.com";
 
 let resendClient = null;
 
@@ -12,13 +13,13 @@ function getResend() {
 }
 
 function fromAddress() {
+  // Sender can be any verified Resend address; onboarding works without a custom domain.
   return process.env.RESEND_FROM_EMAIL || "Dream International <onboarding@resend.dev>";
 }
 
-async function adminRecipient() {
-  if (process.env.RESEND_ADMIN_EMAIL) return process.env.RESEND_ADMIN_EMAIL;
-  const row = await prisma.setting.findUnique({ where: { key: "contactEmail" } });
-  return row?.value || null;
+function adminRecipient() {
+  const configured = (process.env.RESEND_ADMIN_EMAIL || "").trim();
+  return configured || DEFAULT_ADMIN_EMAIL;
 }
 
 function escapeHtml(value) {
@@ -47,7 +48,7 @@ function plainFields(fields) {
     .join("\n");
 }
 
-async function sendMail({ to, subject, html, text }) {
+async function sendMail({ to, subject, html, text, replyTo }) {
   const resend = getResend();
   if (!resend) {
     console.warn("[email] RESEND_API_KEY not configured — email not sent");
@@ -59,17 +60,21 @@ async function sendMail({ to, subject, html, text }) {
   }
 
   try {
-    const { data, error } = await resend.emails.send({
+    const payload = {
       from: fromAddress(),
       to: Array.isArray(to) ? to : [to],
       subject,
       html,
       text,
-    });
+    };
+    if (replyTo) payload.reply_to = replyTo;
+
+    const { data, error } = await resend.emails.send(payload);
     if (error) {
-      console.error("[email] Resend API error:", error);
+      console.error("[email] Resend API error:", { to, subject, error });
       return { ok: false, error };
     }
+    console.log("[email] Sent:", { to, subject, id: data?.id });
     return { ok: true, id: data?.id };
   } catch (err) {
     console.error("[email] Send failed:", err);
@@ -115,23 +120,26 @@ async function sendInquiryEmails(inquiry) {
     ["Message", inquiry.message],
   ];
 
-  const admin = await adminRecipient();
+  const admin = adminRecipient();
   const tasks = [
+    // Primary: always notify the official inbox.
     sendMail({
-      to: inquiry.email,
-      subject: `We received your message — ${SITE_NAME}`,
-      html: userConfirmationHtml(inquiry.name),
-      text: `Thank you, ${inquiry.name}! We've received your message and will be in touch shortly.\n\n— ${SITE_NAME}`,
+      to: admin,
+      replyTo: inquiry.email,
+      subject: `New contact inquiry — ${inquiry.name}`,
+      html: adminTemplate("New Contact Inquiry", fields, inquiry.id),
+      text: `New contact inquiry\n\n${plainFields(fields)}\n\nReference: ${inquiry.id}`,
     }),
   ];
 
-  if (admin) {
+  // Best-effort confirmation to the visitor (may fail on free-tier / unverified domains).
+  if (inquiry.email && inquiry.email.toLowerCase() !== admin.toLowerCase()) {
     tasks.push(
       sendMail({
-        to: admin,
-        subject: `New contact inquiry — ${inquiry.name}`,
-        html: adminTemplate("New Contact Inquiry", fields, inquiry.id),
-        text: `New contact inquiry\n\n${plainFields(fields)}\n\nReference: ${inquiry.id}`,
+        to: inquiry.email,
+        subject: `We received your message — ${SITE_NAME}`,
+        html: userConfirmationHtml(inquiry.name),
+        text: `Thank you, ${inquiry.name}! We've received your message and will be in touch shortly.\n\n— ${SITE_NAME}`,
       })
     );
   }
@@ -162,25 +170,29 @@ async function sendFlightInquiryEmails(inquiry) {
     ["Notes", inquiry.message],
   ];
 
-  const admin = await adminRecipient();
+  const admin = adminRecipient();
   const routeLabel = `${inquiry.fromCity} → ${inquiry.toCity}`;
 
   const tasks = [
     sendMail({
-      to: inquiry.email,
-      subject: `Flight enquiry received — ${SITE_NAME}`,
-      html: userConfirmationHtml(inquiry.name, "your flight enquiry for <strong>" + escapeHtml(routeLabel) + "</strong>"),
-      text: `Thank you, ${inquiry.name}! We've received your flight enquiry for ${routeLabel} and will be in touch shortly.\n\n— ${SITE_NAME}`,
+      to: admin,
+      replyTo: inquiry.email,
+      subject: `New flight enquiry — ${routeLabel} (${inquiry.name})`,
+      html: adminTemplate("New Flight Ticketing Inquiry", fields, inquiry.id),
+      text: `New flight inquiry\n\n${plainFields(fields)}\n\nReference: ${inquiry.id}`,
     }),
   ];
 
-  if (admin) {
+  if (inquiry.email && inquiry.email.toLowerCase() !== admin.toLowerCase()) {
     tasks.push(
       sendMail({
-        to: admin,
-        subject: `New flight enquiry — ${routeLabel} (${inquiry.name})`,
-        html: adminTemplate("New Flight Ticketing Inquiry", fields, inquiry.id),
-        text: `New flight inquiry\n\n${plainFields(fields)}\n\nReference: ${inquiry.id}`,
+        to: inquiry.email,
+        subject: `Flight enquiry received — ${SITE_NAME}`,
+        html: userConfirmationHtml(
+          inquiry.name,
+          "your flight enquiry for <strong>" + escapeHtml(routeLabel) + "</strong>"
+        ),
+        text: `Thank you, ${inquiry.name}! We've received your flight enquiry for ${routeLabel} and will be in touch shortly.\n\n— ${SITE_NAME}`,
       })
     );
   }

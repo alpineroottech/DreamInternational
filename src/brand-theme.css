@@ -150,9 +150,17 @@
   min-height: 72px;
 }
 
+/* Mobile / tablet: logo left, menu toggle right (nav is hidden below xl) */
+@media (max-width: 1199.98px) {
+  .di-header-bar {
+    grid-template-columns: 1fr auto;
+    gap: 12px;
+  }
+}
+
 .di-header-bar__logo {
   justify-self: start;
-  max-width: 240px;
+  max-width: min(240px, 70vw);
 }
 
 .di-header-bar__nav {
@@ -185,7 +193,20 @@
   justify-self: end;
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   gap: 12px;
+}
+
+.di-header-bar__actions .th-menu-toggle {
+  flex-shrink: 0;
+  margin: 0;
+}
+
+.di-form-alert {
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  line-height: 1.45;
 }
 
 .header-layout1 .di-header-bar .header-button .th-btn {

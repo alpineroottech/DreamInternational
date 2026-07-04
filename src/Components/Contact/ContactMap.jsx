@@ -1,22 +1,31 @@
-import React from 'react'
+import React from "react";
+import { useSettings } from "../../public-cms/hooks";
+
+const DEFAULT_MAP =
+  "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3532.0205!2d85.3123!3d27.7154!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39eb190a74aa1f23%3A0x74ebef82ad0e5c15!2sThamel%2C%20Kathmandu%2044600!5e0!3m2!1sen!2snp!4v1700000000000!5m2!1sen!2snp";
 
 function ContactMap() {
-    return (
-        <div className="">
-            <div className="container-fluid">
-                <div className="contact-map style2">
-                    <iframe
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3644.7310056272386!2d89.2286059153658!3d24.00527418490799!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39fe9b97badc6151%3A0x30b048c9fb2129bc!2sAngfuztheme!5e0!3m2!1sen!2sbd!4v1651028958211!5m2!1sen!2sbd"
-                        allowFullScreen=""
-                        loading="lazy"
-                    />
-                    <div className="contact-icon">
-                        <img src="assets/img/icon/location-dot3.svg" alt="" />
-                    </div>
-                </div>
-            </div>
+  const settings = useSettings();
+  const mapSrc = settings.mapEmbedUrl || settings.googleMapsEmbed || DEFAULT_MAP;
+
+  return (
+    <div className="">
+      <div className="container-fluid">
+        <div className="contact-map style2">
+          <iframe
+            title="Dream International office location"
+            src={mapSrc}
+            allowFullScreen
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+          />
+          <div className="contact-icon">
+            <img src="/assets/img/icon/location-dot3.svg" alt="" />
+          </div>
         </div>
-    )
+      </div>
+    </div>
+  );
 }
 
-export default ContactMap
+export default ContactMap;
