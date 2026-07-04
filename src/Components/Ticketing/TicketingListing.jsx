@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { useCollection, useSection, resolveAssetUrl } from "../../public-cms/hooks";
+import { useCollection, useSection, useSettings, resolveAssetUrl } from "../../public-cms/hooks";
 import TicketingRouteCard from "./TicketingRouteCard";
 import FlightBookingForm from "./FlightBookingForm";
 import "./ticketing.css";
@@ -24,9 +24,19 @@ const DEFAULTS = {
 
 export default function TicketingListing({ ticketType, pageKey, breadcrumbTitle, siblingLabel, siblingUrl }) {
   const section = useSection(pageKey, "page");
+  const settings = useSettings();
   const cms = useCollection("/public/flight-routes", { ticketType });
   const defaults = DEFAULTS[ticketType];
-  const hero = { ...defaults, ...(section !== undefined && section ? section : {}) };
+  const pageHeroes =
+    settings.pageHeroes && typeof settings.pageHeroes === "object" ? settings.pageHeroes : {};
+  const settingsHeroKey =
+    ticketType === "international" ? "ticketing-international" : "ticketing-domestic";
+  const hero = {
+    ...defaults,
+    heroImage:
+      pageHeroes[settingsHeroKey] || settings.defaultHeroImage || defaults.heroImage,
+    ...(section !== undefined && section ? section : {}),
+  };
   const [query, setQuery] = useState("");
 
   const routes = useMemo(() => {

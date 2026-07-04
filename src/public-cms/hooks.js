@@ -55,6 +55,13 @@ export function resolveCmsList(cms, fallback = []) {
 // Site settings, cached across the app (loaded once).
 let settingsCache = null;
 let settingsPromise = null;
+
+/** Clear cached settings so the next useSettings() fetch picks up CMS changes. */
+export function clearSettingsCache() {
+  settingsCache = null;
+  settingsPromise = null;
+}
+
 export function useSettings() {
   const [settings, setSettings] = useState(settingsCache);
   useEffect(() => {

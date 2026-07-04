@@ -11,7 +11,8 @@ function Wishlist() {
         <>
             <HeaderOne />
             <Breadcrumb
-                title="Wishlist"
+                pageKey="wishlist"
+            title="Wishlist"
             />
             <WishlistInner />
             <FooterOne />

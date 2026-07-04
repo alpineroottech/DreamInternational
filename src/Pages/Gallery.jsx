@@ -11,7 +11,8 @@ function Gallery() {
         <>
             <HeaderOne />
             <Breadcrumb
-                title="Gallery"
+                pageKey="gallery"
+            title="Gallery"
             />
             <GalleryInner />
             <FooterOne />

@@ -11,7 +11,8 @@ function Checkout() {
         <>
             <HeaderOne />
             <Breadcrumb
-                title='Checkout'
+                pageKey="checkout"
+            title='Checkout'
             />
             <CheckoutInner />
             <FooterFour/>

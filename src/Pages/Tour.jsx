@@ -11,7 +11,8 @@ function Tour() {
         <>
             <HeaderOne />
             <Breadcrumb
-                title="Popular Tours"
+                pageKey="tours"
+            title="Popular Tours"
             />
             <TourInner />
             <FooterOne />

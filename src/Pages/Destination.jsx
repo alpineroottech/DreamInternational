@@ -11,7 +11,8 @@ function Destination() {
         <>
             <HeaderOne />
             <Breadcrumb
-                title="Destination"
+                pageKey="destinations"
+            title="Destination"
             />
             <DestinationInner />
             <FooterOne />

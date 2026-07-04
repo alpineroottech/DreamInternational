@@ -11,7 +11,8 @@ function Blog() {
         <>
             <HeaderOne />
             <Breadcrumb
-                title="Blog Lists View"
+                pageKey="blog"
+            title="Blog Lists View"
             />
             <BlogInner />
             <FooterOne />

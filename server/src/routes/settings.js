@@ -19,6 +19,8 @@ const PUBLIC_KEYS = [
   "defaultSeoTitle",
   "defaultSeoDescription",
   "defaultOgImage",
+  "defaultHeroImage",
+  "pageHeroes",
 ];
 
 function rowsToObject(rows) {

@@ -11,7 +11,8 @@ function Activities() {
         <>
             <HeaderOne />
             <Breadcrumb
-                title="Activities"
+                pageKey="activities"
+            title="Activities"
             />
             <ActivitiesInner />
             <FooterOne />

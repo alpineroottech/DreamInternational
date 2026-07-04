@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom';
 import { publicApi, resolveAssetUrl } from '../../public-cms/hooks';
 import SafeHtml from '../../public-cms/SafeHtml';
+import Breadcrumb from '../BreadCrumb/Breadcrumb';
 
 function DestinationDetailsMain() {
     const { id } = useParams();
@@ -41,13 +42,21 @@ function DestinationDetailsMain() {
         );
     }
 
-    const heroImg = resolveAssetUrl(dest.heroImageUrl) || '/assets/img/destination/destination_details_1.jpg';
+    const heroImg = resolveAssetUrl(dest.heroImageUrl) || resolveAssetUrl(dest.heroImage?.url) || '/assets/img/destination/destination_details_1.jpg';
     const galleryImages = Array.isArray(dest.galleryImages) && dest.galleryImages.length
         ? dest.galleryImages.map(g => typeof g === 'string' ? { url: resolveAssetUrl(g), alt: dest.name } : { url: resolveAssetUrl(g.url), alt: g.alt || dest.name })
         : [];
     const thingsToDo = Array.isArray(dest.thingsToDo) ? dest.thingsToDo : [];
 
     return (
+        <>
+        <Breadcrumb
+            title={dest.name}
+            pageKey="destination-details"
+            bgImage={heroImg}
+            parent={{ label: "Destinations", url: "/destination" }}
+        />
+
         <section className="space">
             <div className="container">
                 <div className="row gx-4">
@@ -183,6 +192,7 @@ function DestinationDetailsMain() {
                 </div>
             </div>
         </section>
+        </>
     );
 }
 

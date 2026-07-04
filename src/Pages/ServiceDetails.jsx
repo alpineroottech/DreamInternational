@@ -11,7 +11,8 @@ function ServiceDetails() {
         <>
             <HeaderOne />
             <Breadcrumb
-                title="Service Details"
+                pageKey="service-details"
+            title="Service Details"
             />
             <ServiceDetailsMain />
             <FooterOne />

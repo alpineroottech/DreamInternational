@@ -10,7 +10,7 @@ function Service() {
     return (
         <div>
             <HeaderOne />
-            <Breadcrumb title="Our Services" />
+            <Breadcrumb pageKey="services" title="Our Services" />
             <ServiceInner />
             <TestimonialOne />
             <FooterOne />

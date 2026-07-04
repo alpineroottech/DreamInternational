@@ -11,7 +11,8 @@ function Resort() {
         <>
             <HeaderOne />
             <Breadcrumb
-                title="Resort"
+                pageKey="resort"
+            title="Resort"
             />
             <ResortInner />
             <FooterOne />

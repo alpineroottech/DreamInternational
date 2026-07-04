@@ -11,7 +11,8 @@ function Error() {
     <>
       <HeaderOne />
       <Breadcrumb
-        title="Error Page"
+        pageKey="error"
+            title="Error Page"
       />
       <section className="space bg-smoke">
         <div className="container">

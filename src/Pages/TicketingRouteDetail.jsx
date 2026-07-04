@@ -5,17 +5,23 @@ import FooterOne from "../Components/Footer/FooterOne";
 import Breadcrumb from "../Components/BreadCrumb/Breadcrumb";
 import TicketingRouteDetailMain from "../Components/Ticketing/TicketingRouteDetailMain";
 import ScrollToTop from "../Components/ScrollToTop";
-import { useSlugItem } from "../public-cms/hooks";
+import { useSlugItem, resolveAssetUrl } from "../public-cms/hooks";
 
 function TicketingRouteDetail({ ticketType, listingLabel, listingUrl }) {
   const { slug } = useParams();
   const { data: route } = useSlugItem("/public/flight-routes", slug);
   const title = route?.title || "Flight Details";
+  const bgImage = resolveAssetUrl(route?.imageUrl) || "";
 
   return (
     <>
       <HeaderOne />
-      <Breadcrumb title={title} />
+      <Breadcrumb
+        title={title}
+        pageKey="ticketing-route"
+        bgImage={bgImage}
+        parent={listingLabel && listingUrl ? { label: listingLabel, url: listingUrl } : undefined}
+      />
       <TicketingRouteDetailMain
         ticketType={ticketType}
         listingLabel={listingLabel}

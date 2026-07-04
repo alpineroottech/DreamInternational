@@ -13,7 +13,8 @@ function Pricing() {
         <div>
             <HeaderOne />
             <Breadcrumb
-                title="Pricing Plan"
+                pageKey="pricing"
+            title="Pricing Plan"
             />
             <PricingPlan className="space"/>
             <Cta />

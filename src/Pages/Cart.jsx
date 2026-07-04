@@ -11,7 +11,8 @@ function Cart() {
         <>
             <HeaderOne />
             <Breadcrumb
-                title='Cart Page'
+                pageKey="cart"
+            title='Cart Page'
             />
             <CartInner />
             <FooterOne />

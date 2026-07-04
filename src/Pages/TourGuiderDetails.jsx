@@ -12,7 +12,8 @@ function TourGuiderDetails() {
         <>
             <HeaderOne />
             <Breadcrumb
-                title="Tour Guide Details"
+                pageKey="tour-guide-details"
+            title="Tour Guide Details"
             />
             <TourGuiderDetailsMain />
             <TourGuideTwo />

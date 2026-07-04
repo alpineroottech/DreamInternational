@@ -1,23 +1,34 @@
-import React from 'react'
-import HeaderOne from '../Components/Header/HeaderOne'
-import FooterOne from '../Components/Footer/FooterOne'
-import Breadcrumb from '../Components/BreadCrumb/Breadcrumb'
-import ActivitiesDetailsMain from '../Components/Activities/ActivitiesDetailsMain'
-import FooterFour from '../Components/Footer/FooterFour'
-import ScrollToTop from '../Components/ScrollToTop'
+import React from "react";
+import { useParams, useSearchParams } from "react-router-dom";
+import HeaderOne from "../Components/Header/HeaderOne";
+import FooterOne from "../Components/Footer/FooterOne";
+import Breadcrumb from "../Components/BreadCrumb/Breadcrumb";
+import ActivitiesDetailsMain from "../Components/Activities/ActivitiesDetailsMain";
+import ScrollToTop from "../Components/ScrollToTop";
+import { useSlugItem, resolveAssetUrl } from "../public-cms/hooks";
 
 function ActivitiesDetails() {
-    return (
-        <>
-            <HeaderOne />
-            <Breadcrumb
-                title="Activities Details"
-            />
-            <ActivitiesDetailsMain />
-            <FooterOne />
-            <ScrollToTop />
-        </>
-    )
+  const [searchParams] = useSearchParams();
+  const params = useParams();
+  const slug = searchParams.get("slug") || params.slug;
+  const { data: activity } = useSlugItem("/public/activities", slug);
+  const title = activity?.title || "Activity Details";
+  const bgImage = resolveAssetUrl(activity?.imageUrl) || "";
+
+  return (
+    <>
+      <HeaderOne />
+      <Breadcrumb
+        title={title}
+        pageKey="activity-details"
+        bgImage={bgImage}
+        parent={{ label: "Activities", url: "/activities" }}
+      />
+      <ActivitiesDetailsMain />
+      <FooterOne />
+      <ScrollToTop />
+    </>
+  );
 }
 
-export default ActivitiesDetails
+export default ActivitiesDetails;

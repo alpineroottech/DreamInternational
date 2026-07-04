@@ -13,7 +13,8 @@ function Faq() {
         <>
             <HeaderOne />
             <Breadcrumb
-                title="FAQs"
+                pageKey="faq"
+            title="FAQs"
             />
             <FaqInner />
             <ElementSection />

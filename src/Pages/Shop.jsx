@@ -11,7 +11,8 @@ function Shop() {
         <>
             <HeaderOne />
             <Breadcrumb
-                title="Shops"
+                pageKey="shop"
+            title="Shops"
             />
             <ShopInner />
             <FooterOne />

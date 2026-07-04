@@ -11,7 +11,8 @@ function TourGuide() {
     <>
       <HeaderOne />
       <Breadcrumb
-        title="Tour Guide"
+        pageKey="tour-guide"
+            title="Tour Guide"
       />
       <TourGuideInner />
       <FooterOne />

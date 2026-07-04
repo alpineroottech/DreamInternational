@@ -13,7 +13,7 @@ function About() {
     return (
         <>
             <HeaderOne />
-            <Breadcrumb title="About Dream International Travel and Tours" />
+            <Breadcrumb pageKey="about" title="About Dream International Travel and Tours" />
             <AboutFour />
             <TourGuide />
             <TestimonialOne />

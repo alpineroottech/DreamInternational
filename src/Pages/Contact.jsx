@@ -13,7 +13,8 @@ function Contact() {
         <>
             <HeaderOne />
             <Breadcrumb
-                title='Contact Us'
+                pageKey="contact"
+            title='Contact Us'
             />
             <GetInTouch />
             <BookATour />
