@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import DestinationCard from './DestinationCard';
 import staticPosts from '../data/data-destination.json';
 import DestinationCardTwo from './DestinationCardTwo';
+import { BRAND_NAME, LOGO_FULL } from '../../brand/brandAssets';
 import { useCollection, resolveAssetUrl } from '../../public-cms/hooks';
 
 function DestinationInner() {
@@ -312,7 +313,7 @@ function DestinationInner() {
                                             Need Help? We Are Here To Help You
                                         </h6>
                                         <div className="banner-logo">
-                                            <img src="/assets/img/logo2.svg" alt="Dream International Travel and Tours" />
+                                            <img src={LOGO_FULL} alt={BRAND_NAME} className="di-logo-full" />
                                         </div>
                                         <div className="offer">
                                             <h6 className="offer-title">You Get Online support</h6>

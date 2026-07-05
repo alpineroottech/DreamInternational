@@ -54,7 +54,18 @@ export async function uploadImageToSupabase(buffer, originalname, mimetype) {
     cacheControl: "3600",
   });
 
-  if (error) throw error;
+  if (error) {
+    const msg = error.message || "Supabase upload failed";
+    if (/bucket not found/i.test(msg)) {
+      throw Object.assign(
+        new Error(
+          `Supabase bucket "${bucket}" was not found. Set SUPABASE_STORAGE_BUCKET to your exact bucket name in Netlify environment variables.`
+        ),
+        { status: 503 }
+      );
+    }
+    throw error;
+  }
 
   const { data } = client.from(bucket).getPublicUrl(objectPath);
   return { url: data.publicUrl, publicId: objectPath };

@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { BRAND_NAME, LOGO_TITLE } from '../../brand/brandAssets';
 
 function MobileMenu({ isOpen, onClose, nav = [] }) {
     const [activeMenu, setActiveMenu] = useState(null);
@@ -31,43 +32,8 @@ function MobileMenu({ isOpen, onClose, nav = [] }) {
                 </button>
 
                 <div className="mobile-logo">
-                    <Link
-                        to="/"
-                        onClick={onClose}
-                        style={{
-                            display: "inline-flex",
-                            flexDirection: "column",
-                            alignItems: "center",
-                            lineHeight: 1,
-                            textDecoration: "none",
-                            whiteSpace: "nowrap"
-                        }}
-                        aria-label="Dream International Travel and Tours"
-                    >
-                        <span
-                            style={{
-                                fontFamily: "'Montez', cursive",
-                                fontSize: "44px",
-                                fontWeight: 600,
-                                color: "#1CA8CB",
-                                letterSpacing: "0.3px"
-                            }}
-                        >
-                            Dream International
-                        </span>
-                        <span
-                            style={{
-                                fontFamily: "'Manrope', sans-serif",
-                                fontSize: "16px",
-                                fontWeight: 800,
-                                color: "#113D48",
-                                letterSpacing: "1px",
-                                textTransform: "uppercase",
-                                marginTop: "4px"
-                            }}
-                        >
-                            Travel and Tours
-                        </span>
+                    <Link to="/" onClick={onClose} className="di-mobile-logo-link" aria-label={BRAND_NAME}>
+                        <img src={LOGO_TITLE} alt={BRAND_NAME} className="di-header-logo-img" />
                     </Link>
                 </div>
 

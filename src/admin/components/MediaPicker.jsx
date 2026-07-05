@@ -9,6 +9,7 @@ export function MediaPickerModal({ onSelect, onClose }) {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState("");
   const fileRef = useRef(null);
 
   const load = async () => {
@@ -28,13 +29,14 @@ export function MediaPickerModal({ onSelect, onClose }) {
   const upload = async (file) => {
     if (!file) return;
     setUploading(true);
+    setError("");
     try {
       const data = await uploadMediaFile(file);
       setItems((prev) => [data, ...prev]);
       onSelect(data.url);
       onClose();
-    } catch {
-      /* picker has no error banner — parent can add later */
+    } catch (err) {
+      setError(err?.response?.data?.error || err.message || "Upload failed");
     } finally {
       setUploading(false);
     }
@@ -63,6 +65,11 @@ export function MediaPickerModal({ onSelect, onClose }) {
           </div>
         </div>
         <div className="p-3" style={{ maxHeight: "60vh", overflowY: "auto" }}>
+          {error && (
+            <div className="alert alert-danger py-2 small mb-3" role="alert">
+              {error}
+            </div>
+          )}
           {loading ? (
             <div className="text-muted">Loading…</div>
           ) : items.length === 0 ? (

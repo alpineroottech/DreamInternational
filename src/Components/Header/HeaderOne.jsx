@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import MobileMenu from './MobileMenu';
 import { useSettings } from '../../public-cms/hooks';
+import { BRAND_NAME, LOGO_TITLE } from '../../brand/brandAssets';
 
 const DEFAULT_NAV = [
     { label: "Home", url: "/" },
@@ -107,10 +108,13 @@ function HeaderOne() {
                                     <Link
                                         to="/"
                                         className="di-header-logo-link"
-                                        aria-label="Dream International Travel and Tours"
+                                        aria-label={BRAND_NAME}
                                     >
-                                        <span className="di-logo-main">Dream International</span>
-                                        <span className="di-logo-sub">Travel and Tours</span>
+                                        <img
+                                            src={LOGO_TITLE}
+                                            alt={BRAND_NAME}
+                                            className="di-header-logo-img"
+                                        />
                                     </Link>
                                 </div>
 

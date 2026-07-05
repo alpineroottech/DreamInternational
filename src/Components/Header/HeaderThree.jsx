@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import SideMenu from './SideMenu';
 import MobileMenu from './MobileMenu';
+import { BRAND_NAME, LOGO_TITLE } from '../../brand/brandAssets';
 
 function HeaderThree() {
     const [isSticky, setIsSticky] = useState(false);
@@ -173,7 +174,7 @@ function HeaderThree() {
                                 <div className="col-auto">
                                     <div className="header-logo">
                                         <Link to="/">
-                                            <img src="/assets/img/logo-white2.svg" alt="Dream International Travel and Tours" />
+                                            <img src={LOGO_TITLE} alt={BRAND_NAME} className="di-header-logo-img" />
                                         </Link>
                                     </div>
                                 </div>

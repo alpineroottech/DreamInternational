@@ -1,5 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { BRAND_NAME, LOGO_FOOTER } from '../../brand/brandAssets'
 
 function FooterTwo() {
     return (
@@ -36,7 +37,7 @@ function FooterTwo() {
                                 <div className="th-widget-about">
                                     <div className="about-logo">
                                         <Link to="/">
-                                            <img src="/assets/img/logo-white.svg" alt="Dream International Travel and Tours" />
+                                            <img src={LOGO_FOOTER} alt={BRAND_NAME} className="di-logo-footer" />
                                         </Link>
                                     </div>
                                     <p className="about-text">

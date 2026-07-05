@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Modal from '../Gallery/Modal';
+import { BRAND_NAME, LOGO_FOOTER } from '../../brand/brandAssets';
 
 function FooterThree() {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -51,7 +52,7 @@ function FooterThree() {
                                 <div className="th-widget-about">
                                     <div className="about-logo">
                                         <Link to="/">
-                                            <img src="/assets/img/logo5.svg" alt="Dream International Travel and Tours" />
+                                            <img src={LOGO_FOOTER} alt={BRAND_NAME} className="di-logo-footer" />
                                         </Link>
                                     </div>
                                     <p className="about-text">

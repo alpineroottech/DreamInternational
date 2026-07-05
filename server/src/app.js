@@ -79,6 +79,7 @@ app.get("/api/health", (_req, res) =>
     storage: {
       supabase: isSupabaseConfigured(),
       mode: isSupabaseConfigured() ? "supabase" : isServerless ? "unconfigured" : "local",
+      bucket: process.env.SUPABASE_STORAGE_BUCKET || null,
     },
   })
 );

@@ -10,7 +10,8 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:push": "prisma db push",
-    "seed": "node prisma/seed.js"
+    "seed": "node prisma/seed.js",
+    "import:cms": "node prisma/cms-content-import.js"
   },
   "prisma": {
     "seed": "node prisma/seed.js"

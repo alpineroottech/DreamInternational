@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import Posts from '../data/data-service.json';
 import Modal from '../Gallery/Modal';
+import { BRAND_NAME, LOGO_FULL } from '../../brand/brandAssets';
 
 function ServiceDetailsMain() {
     const { id } = useParams();
@@ -505,7 +506,7 @@ function ServiceDetailsMain() {
                                             Need Help? We Are Here To Help You
                                         </h6>
                                         <div className="banner-logo">
-                                            <img src="/assets/img/logo2.svg" alt="Dream International Travel and Tours" />
+                                            <img src={LOGO_FULL} alt={BRAND_NAME} className="di-logo-full" />
                                         </div>
                                         <div className="offer">
                                             <h6 className="offer-title">You Get Online support</h6>

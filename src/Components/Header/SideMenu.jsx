@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { BRAND_NAME, LOGO_FULL } from '../../brand/brandAssets'
 
 function SideMenu({ isOpen, onClose }) {
     const [activeMenu, setActiveMenu] = useState(null);
@@ -19,7 +20,7 @@ function SideMenu({ isOpen, onClose }) {
                         <div className="th-widget-about">
                             <div className="about-logo">
                                 <Link to="/">
-                                    <img src="assets/img/logo2.svg" alt="Dream International Travel and Tours" />
+                                    <img src={LOGO_FULL} alt={BRAND_NAME} className="di-logo-full" />
                                 </Link>
                             </div>
                             <p className="about-text">

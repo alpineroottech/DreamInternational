@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { useSettings } from '../../public-cms/hooks'
+import { BRAND_NAME, LOGO_FOOTER } from '../../brand/brandAssets'
 
 function FooterOne() {
     const settings = useSettings();
@@ -30,9 +31,9 @@ function FooterOne() {
                                     <div className="about-logo">
                                         <Link to="/">
                                             <img
-                                                src="/assets/img/Logo.jpg"
-                                                alt="Dream International Travel and Tours"
-                                                style={{ height: "88px", width: "auto", objectFit: "contain" }}
+                                                src={LOGO_FOOTER}
+                                                alt={BRAND_NAME}
+                                                className="di-logo-footer"
                                             />
                                         </Link>
                                     </div>
