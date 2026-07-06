@@ -4,9 +4,10 @@ import SafeHtml from '../../public-cms/SafeHtml'
 
 function AboutFour() {
    const settings = useSettings();
-   const img1 = resolveAssetUrl(settings.aboutImage1) || "/assets/img/normal/about_3_1.jpg";
-   const img2 = resolveAssetUrl(settings.aboutImage2) || "/assets/img/normal/about_3_2.jpg";
-   const img3 = resolveAssetUrl(settings.aboutImage3) || "/assets/img/normal/about_3_3.jpg";
+   const img1 = settings.aboutImage1 ? resolveAssetUrl(settings.aboutImage1) : "";
+   const img2 = settings.aboutImage2 ? resolveAssetUrl(settings.aboutImage2) : "";
+   const img3 = settings.aboutImage3 ? resolveAssetUrl(settings.aboutImage3) : "";
+   const hasCollage = Boolean(img1 || img2 || img3);
    const subTitle = settings.aboutSubtitle || "Welcome To Dream International";
    const title = settings.aboutTitle || "Trusted Nepal travel specialists for adventure, culture, and comfort";
    const text1 =
@@ -33,22 +34,30 @@ function AboutFour() {
    return (
       <div className="about-area position-relative overflow-hidden overflow-hidden space" id="about-sec">
          <div className="container shape-mockup-wrap">
-            <div className="row">
-               <div className="col-xl-7">
-                  <div className="img-box3">
-                     <div className="img1">
-                        <img src={img1} alt="About" />
-                     </div>
-                     <div className="img2">
-                        <img src={img2} alt="About" />
-                     </div>
-                     <div className="img3 movingX">
-                        <img src={img3} alt="About" />
+            <div className="row gy-4 align-items-center">
+               {hasCollage && (
+                  <div className="col-xl-7">
+                     <div className="img-box3">
+                        {img1 && (
+                           <div className="img1">
+                              <img src={img1} alt="About Dream International" />
+                           </div>
+                        )}
+                        {img2 && (
+                           <div className="img2">
+                              <img src={img2} alt="Nepal travel" />
+                           </div>
+                        )}
+                        {img3 && (
+                           <div className="img3 movingX">
+                              <img src={img3} alt="Nepal destination" />
+                           </div>
+                        )}
                      </div>
                   </div>
-               </div>
-               <div className="col-xl-5">
-                  <div className="ps-xl-4">
+               )}
+               <div className={hasCollage ? "col-xl-5" : "col-xl-10 col-lg-11 mx-auto"}>
+                  <div className={hasCollage ? "ps-xl-4" : ""}>
                      <div className="title-area mb-20">
                         <span className="sub-title style1 ">{subTitle}</span>
                         <h2 className="sec-title mb-20 pe-xl-5 me-xl-5 heading">
@@ -98,25 +107,25 @@ function AboutFour() {
                className="shape-mockup movingX d-none d-xxl-block"
                style={{ top: '0%', left: '-18%' }}
             >
-               <img src="/assets/img/shape/shape_2_1.png" alt="shape" />
+               <img src="/assets/img/shape/shape_2_1.png" alt="" />
             </div>
             <div
                className="shape-mockup jump d-none d-xxl-block"
                style={{ top: '28%', right: '-15%' }}
             >
-               <img src="/assets/img/shape/shape_2_2.png" alt="shape" />
+               <img src="/assets/img/shape/shape_2_2.png" alt="" />
             </div>
             <div
                className="shape-mockup spin d-none d-xxl-block"
                style={{ top: '18%', left: '-112%' }}
             >
-               <img src="/assets/img/shape/shape_2_3.png" alt="shape" />
+               <img src="/assets/img/shape/shape_2_3.png" alt="" />
             </div>
             <div
                className="shape-mockup movixgX d-none d-xxl-block"
                style={{ bottom: '18%', right: '-12%' }}
             >
-               <img src="/assets/img/shape/shape_2_4.png" alt="shape" />
+               <img src="/assets/img/shape/shape_2_4.png" alt="" />
             </div>
          </div>
       </div>

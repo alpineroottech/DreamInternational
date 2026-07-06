@@ -39,6 +39,8 @@ const FIELDS = [
   },
   {
     group: "About page content",
+    description:
+      "Controls the dedicated /about page. For the homepage about collage, use Homepage Builder → About Section.",
     items: [
       { key: "aboutSubtitle", label: "About subtitle" },
       { key: "aboutTitle", label: "About title" },
@@ -52,9 +54,9 @@ const FIELDS = [
       { key: "aboutFeatureThreeText", label: "Feature 3 text" },
       { key: "aboutCtaLabel", label: "About CTA label" },
       { key: "aboutCtaUrl", label: "About CTA URL" },
-      { key: "aboutImage1", label: "About image 1", type: "image" },
-      { key: "aboutImage2", label: "About image 2", type: "image" },
-      { key: "aboutImage3", label: "About image 3", type: "image" },
+      { key: "aboutImage1", label: "Image 1 (large, back)", type: "image" },
+      { key: "aboutImage2", label: "Image 2 (middle)", type: "image" },
+      { key: "aboutImage3", label: "Image 3 (small, floating)", type: "image" },
     ],
   },
 ];
@@ -153,6 +155,9 @@ export default function Settings() {
           <div className="col-md-6" key={group.group}>
             <div className="di-card p-4 h-100">
               <h6 className="fw-bold mb-3">{group.group}</h6>
+              {group.description && (
+                <p className="text-muted small mb-3">{group.description}</p>
+              )}
               {group.items.map((f) => (
                 <div className="mb-3" key={f.key}>
                   <label className="form-label small fw-semibold">{f.label}</label>
