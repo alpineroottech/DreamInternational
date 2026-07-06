@@ -4,7 +4,7 @@ import { Icon } from "@iconify/react";
 import api from "../api/client";
 import { RESOURCE_CONFIG } from "../resourceConfig";
 import { slugify } from "../utils";
-import FieldRenderer from "../components/FieldRenderer";
+import FieldRenderer, { normalizeGalleryList } from "../components/FieldRenderer";
 
 export default function ResourceEditor({ resource: resourceProp }) {
   const params = useParams();
@@ -54,7 +54,18 @@ export default function ResourceEditor({ resource: resourceProp }) {
     api
       .get(`/admin/${cfg.apiPath}/${id}`)
       .then(({ data }) => {
-        setForm(data);
+        const normalized = { ...data };
+        for (const tab of cfg.tabs) {
+          for (const field of tab.fields) {
+            if (field.type === "gallery") {
+              normalized[field.name] = normalizeGalleryList(data[field.name]);
+            }
+            if (field.type === "reference" && normalized[field.name] && typeof normalized[field.name] === "object") {
+              normalized[field.name] = normalized[field.name].id || null;
+            }
+          }
+        }
+        setForm(normalized);
         setSlugTouched(true);
       })
       .catch(() => setError("Could not load this item."))
@@ -87,7 +98,18 @@ export default function ResourceEditor({ resource: resourceProp }) {
         navigate(`/admin/${resource}/${saved.id}/edit`, { replace: true });
       } else {
         ({ data: saved } = await api.patch(`/admin/${cfg.apiPath}/${id}`, payload));
-        setForm(saved);
+        const normalized = { ...saved };
+        for (const tab of cfg.tabs) {
+          for (const field of tab.fields) {
+            if (field.type === "gallery") {
+              normalized[field.name] = normalizeGalleryList(saved[field.name]);
+            }
+            if (field.type === "reference" && normalized[field.name] && typeof normalized[field.name] === "object") {
+              normalized[field.name] = normalized[field.name].id || null;
+            }
+          }
+        }
+        setForm(normalized);
       }
       if (statusOverride === "PUBLISHED") setMessage("Published successfully.");
       else if (statusOverride === "DRAFT") setMessage("Saved as draft.");

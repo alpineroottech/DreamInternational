@@ -13,6 +13,7 @@ function TourInner() {
 
     // Search/filter values from URL (set by the Booking widget on the homepage)
     const filterDestination = searchParams.get('destination') || '';
+    const filterType = searchParams.get('type') || '';
     const filterDuration   = searchParams.get('duration') || '';
     const [localSearch, setLocalSearch] = useState(searchParams.get('q') || '');
 
@@ -48,11 +49,33 @@ function TourInner() {
         }))
         : jsonPosts.map((p) => ({ ...p, durationDays: null, categorySlug: '', categoryName: '', raw: p }));
 
-    // Apply filters from URL params
+    // Apply filters from URL params (homepage booking bar + sidebar)
     const posts = allPosts.filter((p) => {
         if (localSearch && !p.title.toLowerCase().includes(localSearch.toLowerCase())) return false;
         if (selectedCategories.length > 0) {
             if (!p.categorySlug || !selectedCategories.includes(p.categorySlug)) return false;
+        }
+        if (filterDestination) {
+            const needle = filterDestination.replace(/-/g, ' ').toLowerCase();
+            const hay = [
+                p.title,
+                p.raw?.startPoint,
+                p.raw?.endPoint,
+                p.categoryName,
+                p.categorySlug?.replace(/-/g, ' '),
+            ]
+                .filter(Boolean)
+                .join(' ')
+                .toLowerCase();
+            if (!hay.includes(needle)) return false;
+        }
+        if (filterType) {
+            const typeNeedle = filterType.replace(/-/g, ' ').toLowerCase();
+            const hay = [p.categorySlug, p.categoryName, p.title, p.raw?.difficulty]
+                .filter(Boolean)
+                .join(' ')
+                .toLowerCase();
+            if (!hay.includes(typeNeedle)) return false;
         }
         if (filterDuration && p.durationDays) {
             const d = p.durationDays;

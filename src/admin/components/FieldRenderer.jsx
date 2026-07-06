@@ -16,8 +16,11 @@ function ReferenceField({ field, value, onChange }) {
       .then(({ data }) => setOptions(data))
       .catch(() => setOptions([]));
   }, [field.refResource]);
+  const selectedId =
+    typeof value === "object" && value !== null && value.id ? value.id : value || "";
+
   return (
-    <select className="form-select" value={value || ""} onChange={(e) => onChange(e.target.value || null)}>
+    <select className="form-select" value={selectedId} onChange={(e) => onChange(e.target.value || null)}>
       <option value="">— None —</option>
       {options.map((o) => (
         <option key={o.id} value={o.id}>
@@ -30,6 +33,8 @@ function ReferenceField({ field, value, onChange }) {
 
 function StringList({ value, onChange }) {
   const list = Array.isArray(value) ? value : [];
+  const asText = (item) =>
+    typeof item === "string" ? item : item?.name || item?.title || item?.url || "";
   const setItem = (i, v) => onChange(list.map((x, idx) => (idx === i ? v : x)));
   const add = () => onChange([...list, ""]);
   const remove = (i) => onChange(list.filter((_, idx) => idx !== i));
@@ -37,7 +42,7 @@ function StringList({ value, onChange }) {
     <div>
       {list.map((item, i) => (
         <div className="input-group mb-2" key={i}>
-          <input className="form-control" value={item} onChange={(e) => setItem(i, e.target.value)} />
+          <input className="form-control" value={asText(item)} onChange={(e) => setItem(i, e.target.value)} />
           <button type="button" className="btn btn-outline-danger" onClick={() => remove(i)}>
             <Icon icon="solar:trash-bin-trash-outline" />
           </button>
@@ -50,9 +55,36 @@ function StringList({ value, onChange }) {
   );
 }
 
+function isCategoryShape(item) {
+  return (
+    item &&
+    typeof item === "object" &&
+    "slug" in item &&
+    "type" in item &&
+    "isVisible" in item &&
+    !("url" in item && typeof item.url === "string")
+  );
+}
+
+/** Accept { url, alt }, { imageUrl, imageAlt }, plain URL strings; skip stray relation objects. */
+export function normalizeGalleryList(value) {
+  if (!Array.isArray(value)) return [];
+  return value
+    .map((item) => {
+      if (typeof item === "string") return { url: item, alt: "" };
+      if (!item || typeof item !== "object" || isCategoryShape(item)) return null;
+      return {
+        url: item.url || item.imageUrl || "",
+        alt: item.alt || item.imageAlt || "",
+      };
+    })
+    .filter(Boolean);
+}
+
 function Gallery({ value, onChange }) {
-  const list = Array.isArray(value) ? value : [];
-  const setItem = (i, patch) => onChange(list.map((x, idx) => (idx === i ? { ...x, ...patch } : x)));
+  const list = normalizeGalleryList(value);
+  const setItem = (i, patch) =>
+    onChange(list.map((x, idx) => (idx === i ? { ...x, ...patch } : x)));
   const add = () => onChange([...list, { url: "", alt: "" }]);
   const remove = (i) => onChange(list.filter((_, idx) => idx !== i));
   return (
@@ -212,7 +244,11 @@ export default function FieldRenderer({ field, value, onChange, error }) {
         )}
       </label>
       {control}
-      {error && <div className="text-danger small mt-1">{error}</div>}
+      {error && (
+        <div className="text-danger small mt-1">
+          {typeof error === "string" ? error : "Please check this field."}
+        </div>
+      )}
     </div>
   );
 }

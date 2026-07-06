@@ -31,6 +31,14 @@ export default function ResourceList({ resource: resourceProp }) {
     String(it[cfg.titleField] || "").toLowerCase().includes(search.toLowerCase())
   );
 
+  const formatCell = (val) => {
+    if (val == null || val === "") return "—";
+    if (typeof val === "object") {
+      return val.name || val.title || val.slug || val.label || val.id || "—";
+    }
+    return val;
+  };
+
   const renderCell = (col, row) => {
     const val = row[col.key];
     if (col.type === "bool") {
@@ -39,7 +47,7 @@ export default function ResourceList({ resource: resourceProp }) {
     if (col.badge && val) {
       return <span className={`di-badge-status di-badge-${val}`}>{val}</span>;
     }
-    return val ?? "—";
+    return formatCell(val);
   };
 
   return (

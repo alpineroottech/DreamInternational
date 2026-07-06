@@ -1,8 +1,5 @@
 import React, { useState, useRef } from "react";
-import Modal from "react-modal";
-import { publicApi } from "../../public-cms/hooks";
-
-Modal.setAppElement("#root");
+import { publicApi, useSettings } from "../../public-cms/hooks";
 
 const TOUR_TYPES = [
   "Trekking",
@@ -15,13 +12,17 @@ const TOUR_TYPES = [
 
 const emptyForm = { name: "", email: "", tourType: "", message: "" };
 
+const DEFAULT_MAP =
+  "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3532.0205!2d85.3123!3d27.7154!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39eb190a74aa1f23%3A0x74ebef82ad0e5c15!2sThamel%2C%20Kathmandu%2044600!5e0!3m2!1sen!2snp!4v1700000000000!5m2!1sen!2snp";
+
 function BookATour() {
-  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const settings = useSettings();
   const [form, setForm] = useState(emptyForm);
   const [status, setStatus] = useState({ state: "idle", msg: "" });
   const statusRef = useRef(null);
 
   const setField = (key, value) => setForm((f) => ({ ...f, [key]: value }));
+  const mapSrc = settings.mapEmbedUrl || settings.googleMapsEmbed || DEFAULT_MAP;
 
   const submit = async (e) => {
     e.preventDefault();
@@ -56,30 +57,11 @@ function BookATour() {
   };
 
   return (
-    <div
-      className="space-extra2-top space-extra2-bottom"
-      style={{
-        background: "url(/assets/img/bg/video_bg_1.jpg)",
-        backgroundRepeat: "no-repeat",
-        backgroundSize: "cover",
-      }}
-    >
+    <section className="di-contact-form-section space-extra2-top space-extra2-bottom">
       <div className="container">
-        <div className="row flex-row-reverse justify-content-center align-items-center">
+        <div className="row g-4 align-items-stretch">
           <div className="col-lg-6">
-            <div className="video-box1">
-              <button
-                type="button"
-                className="play-btn style2 popup-video"
-                onClick={() => setModalIsOpen(true)}
-                aria-label="Play video"
-              >
-                <i className="fa-sharp fa-solid fa-play" />
-              </button>
-            </div>
-          </div>
-          <div className="col-lg-6">
-            <form onSubmit={submit} className="contact-form style2" noValidate>
+            <form onSubmit={submit} className="contact-form style2 di-contact-form-card h-100" noValidate>
               <h3 className="sec-title mb-30 text-capitalize">Book a tour</h3>
 
               <div ref={statusRef}>
@@ -148,7 +130,7 @@ function BookATour() {
                     name="message"
                     id="contact-message"
                     cols={30}
-                    rows={3}
+                    rows={4}
                     className="form-control"
                     placeholder="Your Message"
                     value={form.message}
@@ -172,34 +154,21 @@ function BookATour() {
               </div>
             </form>
           </div>
+
+          <div className="col-lg-6">
+            <div className="di-contact-map-card h-100">
+              <iframe
+                title="Dream International office location"
+                src={mapSrc}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+            </div>
+          </div>
         </div>
       </div>
-      <Modal
-        isOpen={modalIsOpen}
-        onRequestClose={() => setModalIsOpen(false)}
-        contentLabel="Video Popup"
-        className="video-modal"
-        overlayClassName="video-modal-overlay"
-      >
-        <button
-          type="button"
-          className="close-btn"
-          onClick={() => setModalIsOpen(false)}
-          aria-label="Close video"
-        >
-          &times;
-        </button>
-        <iframe
-          width="100%"
-          height="400px"
-          src="https://www.youtube.com/embed/cQfIUPw72Dk"
-          title="YouTube video player"
-          frameBorder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-        />
-      </Modal>
-    </div>
+    </section>
   );
 }
 
