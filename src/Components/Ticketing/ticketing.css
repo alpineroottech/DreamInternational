@@ -281,6 +281,16 @@
   overflow: hidden;
 }
 
+.ticketing-detail-hero--no-image {
+  background: linear-gradient(135deg, var(--title-color, #0a074f) 0%, #1a1570 100%);
+  min-height: 180px;
+}
+
+.ticketing-detail-hero--no-image .ticketing-detail-hero__overlay {
+  position: relative;
+  background: transparent;
+}
+
 .ticketing-detail-hero img {
   width: 100%;
   min-height: 320px;

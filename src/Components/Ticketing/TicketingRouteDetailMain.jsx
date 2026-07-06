@@ -33,7 +33,7 @@ export default function TicketingRouteDetailMain({ ticketType, listingLabel, lis
     );
   }
 
-  const image = resolveAssetUrl(route.imageUrl) || "/assets/img/destination/destination_4_2.jpg";
+  const image = resolveAssetUrl(route.imageUrl);
   const price = route.priceDisplay || (route.priceFrom ? `From $${route.priceFrom}` : "On request");
   const highlights = Array.isArray(route.highlights) ? route.highlights : [];
   const whatsapp = settings.whatsappNumber || settings.contactPhone;
@@ -43,8 +43,8 @@ export default function TicketingRouteDetailMain({ ticketType, listingLabel, lis
       <div className="container">
         <div className="row gy-4">
           <div className="col-lg-8">
-            <div className="ticketing-detail-hero">
-              <img src={image} alt={route.imageAlt || route.title} />
+            <div className={`ticketing-detail-hero${image ? "" : " ticketing-detail-hero--no-image"}`}>
+              {image && <img src={image} alt={route.imageAlt || route.title} />}
               <div className="ticketing-detail-hero__overlay">
                 <div className="ticketing-card__route ticketing-card__route--lg">
                   <div className="ticketing-card__city">

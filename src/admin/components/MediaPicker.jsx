@@ -117,6 +117,16 @@ export function MediaInput({ value, onChange, placeholder }) {
         <button type="button" className="btn btn-outline-secondary" onClick={() => setOpen(true)}>
           <Icon icon="solar:gallery-outline" className="me-1" /> Browse
         </button>
+        {value && (
+          <button
+            type="button"
+            className="btn btn-outline-danger"
+            onClick={() => onChange("")}
+            title="Remove image"
+          >
+            <Icon icon="solar:trash-bin-trash-outline" />
+          </button>
+        )}
       </div>
       {value && (
         <img

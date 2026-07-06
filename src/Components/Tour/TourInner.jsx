@@ -274,11 +274,13 @@ function TourInner() {
                                     <div className="recent-post-wrap">
                                         {cmsBlogs.slice(0, 3).map((post) => (
                                             <div className="recent-post" key={post.slug || post.id}>
-                                                <div className="media-img">
-                                                    <Link to={`/blog/${post.slug || post.id}`}>
-                                                        <img src={resolveAssetUrl(post.coverImageUrl) || '/assets/img/blog/recent-post-1-1.jpg'} alt={post.title} />
-                                                    </Link>
-                                                </div>
+                                                {post.coverImageUrl && (
+                                                    <div className="media-img">
+                                                        <Link to={`/blog/${post.slug || post.id}`}>
+                                                            <img src={resolveAssetUrl(post.coverImageUrl)} alt={post.title} />
+                                                        </Link>
+                                                    </div>
+                                                )}
                                                 <div className="media-body">
                                                     <h4 className="post-title">
                                                         <Link className="text-inherit" to={`/blog/${post.slug || post.id}`}>{post.title}</Link>

@@ -42,7 +42,7 @@ function DestinationDetailsMain() {
         );
     }
 
-    const heroImg = resolveAssetUrl(dest.heroImageUrl) || resolveAssetUrl(dest.heroImage?.url) || '/assets/img/destination/destination_details_1.jpg';
+    const heroImg = resolveAssetUrl(dest.heroImageUrl) || resolveAssetUrl(dest.heroImage?.url);
     const galleryImages = Array.isArray(dest.galleryImages) && dest.galleryImages.length
         ? dest.galleryImages.map(g => typeof g === 'string' ? { url: resolveAssetUrl(g), alt: dest.name } : { url: resolveAssetUrl(g.url), alt: g.alt || dest.name })
         : [];
@@ -62,14 +62,15 @@ function DestinationDetailsMain() {
                     {/* Main content */}
                     <div className="col-xxl-8 col-lg-7">
                         <div className="page-single">
-                            {/* Hero image */}
-                            <div className="service-img mb-4">
-                                <img
-                                    src={heroImg}
-                                    alt={dest.heroImageAlt || dest.name}
-                                    style={{ width: '100%', borderRadius: 16, maxHeight: 420, objectFit: 'cover' }}
-                                />
-                            </div>
+                            {heroImg && (
+                                <div className="service-img mb-4">
+                                    <img
+                                        src={heroImg}
+                                        alt={dest.heroImageAlt || dest.name}
+                                        style={{ width: '100%', borderRadius: 16, maxHeight: 420, objectFit: 'cover' }}
+                                    />
+                                </div>
+                            )}
 
                             <div className="page-content d-block">
                                 <div className="page-meta mb-3 d-flex align-items-center gap-3">

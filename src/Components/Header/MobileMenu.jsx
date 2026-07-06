@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { BRAND_NAME, LOGO_TITLE } from '../../brand/brandAssets';
+import { BRAND_NAME, LOGO_FOOTER } from '../../brand/brandAssets';
 
 function MobileMenu({ isOpen, onClose, nav = [] }) {
     const [activeMenu, setActiveMenu] = useState(null);
@@ -33,7 +33,7 @@ function MobileMenu({ isOpen, onClose, nav = [] }) {
 
                 <div className="mobile-logo">
                     <Link to="/" onClick={onClose} className="di-mobile-logo-link" aria-label={BRAND_NAME}>
-                        <img src={LOGO_TITLE} alt={BRAND_NAME} className="di-header-logo-img" />
+                        <img src={LOGO_FOOTER} alt={BRAND_NAME} className="di-logo-full di-mobile-menu-logo" />
                     </Link>
                 </div>
 

@@ -44,8 +44,6 @@ function ActivitiesDetailsMain() {
         ? activity.galleryImages.map(g => typeof g === 'string' ? g : g.url)
         : [activity.imageUrl].filter(Boolean);
     const images = galleryRaw.map(resolveAssetUrl).filter(Boolean);
-    const fallback = "/assets/img/tour/tour_inner_2_1.jpg";
-    const slides = images.length ? images : [fallback, fallback, fallback];
 
     const highlights = Array.isArray(activity.highlights) ? activity.highlights : [];
     const priceIncludes = Array.isArray(activity.priceIncludes) ? activity.priceIncludes : [];
@@ -58,17 +56,17 @@ function ActivitiesDetailsMain() {
                 <div className="row gx-4">
                     <div className="col-xxl-8 col-lg-7">
                         <div className="tour-page-single">
-                            {/* Gallery slider */}
+                            {images.length > 0 && (
                             <div className="slider-area tour-slider1 mb-4">
                                 <Swiper
                                     modules={[Navigation, Thumbs]}
-                                    loop={slides.length > 1}
+                                    loop={images.length > 1}
                                     spaceBetween={10}
                                     navigation={{ prevEl: ".slider-prev", nextEl: ".slider-next" }}
                                     thumbs={{ swiper: thumbsSwiper && !thumbsSwiper.destroyed ? thumbsSwiper : null }}
                                     className="swiper th-slider mb-3"
                                 >
-                                    {slides.map((img, i) => (
+                                    {images.map((img, i) => (
                                         <SwiperSlide key={i}>
                                             <div className="tour-slider-img">
                                                 <img src={img} alt={`${activity.title} — ${i + 1}`} />
@@ -76,17 +74,17 @@ function ActivitiesDetailsMain() {
                                         </SwiperSlide>
                                     ))}
                                 </Swiper>
-                                {slides.length > 1 && (
+                                {images.length > 1 && (
                                     <Swiper
                                         modules={[Thumbs]}
-                                        loop={slides.length > 1}
+                                        loop={images.length > 1}
                                         spaceBetween={12}
-                                        slidesPerView={Math.min(3, slides.length)}
+                                        slidesPerView={Math.min(3, images.length)}
                                         watchSlidesProgress
                                         onSwiper={setThumbsSwiper}
                                         className="swiper tour-thumb-slider"
                                     >
-                                        {slides.map((img, i) => (
+                                        {images.map((img, i) => (
                                             <SwiperSlide key={i}>
                                                 <div className="tour-slider-img">
                                                     <img src={img} alt={`Thumb ${i + 1}`} />
@@ -102,6 +100,7 @@ function ActivitiesDetailsMain() {
                                     <img src="/assets/img/icon/hero-arrow-right.svg" alt="Next" />
                                 </button>
                             </div>
+                            )}
 
                             <div className="page-content">
                                 <div className="page-meta mb-3 d-flex flex-wrap gap-2 align-items-center">
