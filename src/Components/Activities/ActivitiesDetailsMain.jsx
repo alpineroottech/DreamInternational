@@ -224,7 +224,7 @@ function ActivitiesDetailsMain() {
                                     Book This Activity
                                 </Link>
                             </div>
-                            <div className="widget widget_offer" style={{ background: 'url(/assets/img/bg/widget_bg_1.jpg)', borderRadius: 16, overflow: 'hidden' }}>
+                            <div className="widget widget_offer di-help-planning-card">
                                 <div className="offer-banner p-4">
                                     <h6 className="box-title mb-2">Need Help Planning?</h6>
                                     <p className="small mb-3">Our team can customise this activity for your group.</p>

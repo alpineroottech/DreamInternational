@@ -20,6 +20,8 @@ const EMPTY = {
   description: "",
   heroImageUrl: "",
   heroImageAlt: "",
+  cardImageUrl: "",
+  cardImageAlt: "",
   bestTimeToVisit: "",
   gettingThere: "",
   tips: "",
@@ -195,8 +197,26 @@ export default function DestinationEdit() {
                   placeholder="One-line summary shown on cards"
                 />
               </div>
+              <div className="col-12">
+                <p className="text-muted small mb-2">
+                  <strong>Card image</strong> (~424×274) appears on destination listing tiles.
+                  <strong> Hero image</strong> (at least 1200×800) powers the detail page — use a high-resolution file there.
+                </p>
+              </div>
               <div className="col-md-8">
-                <label className="form-label fw-semibold">Hero image</label>
+                <label className="form-label fw-semibold">Card image (listing tile)</label>
+                <MediaInput value={form.cardImageUrl || ""} onChange={(url) => set("cardImageUrl", url)} />
+              </div>
+              <div className="col-md-4">
+                <label className="form-label fw-semibold">Card image alt</label>
+                <input
+                  className="form-control"
+                  value={form.cardImageAlt || ""}
+                  onChange={(e) => set("cardImageAlt", e.target.value)}
+                />
+              </div>
+              <div className="col-md-8">
+                <label className="form-label fw-semibold">Hero image (detail page)</label>
                 <MediaInput value={form.heroImageUrl || ""} onChange={(url) => set("heroImageUrl", url)} />
               </div>
               <div className="col-md-4">

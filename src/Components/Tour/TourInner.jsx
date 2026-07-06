@@ -38,7 +38,7 @@ function TourInner() {
         ? cms.map((t) => ({
             id: t.slug,
             slug: t.slug,
-            image: t.featuredImageUrl,
+            image: t.cardImageUrl || t.featuredImageUrl,
             title: t.title,
             price: t.basePrice ? `$${t.basePrice}.00` : 'On request',
             durationDays: t.durationDays,

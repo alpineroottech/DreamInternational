@@ -67,11 +67,27 @@ export const RESOURCE_CONFIG = {
         ],
       },
       {
+        name: "Itinerary",
+        fields: [
+          { name: "_hintItin", label: "hint", type: "_hint", hint: "Add one row per trek/tour day. Changes here replace the full itinerary when you save." },
+          { name: "itineraryDays", label: "Itinerary days", type: "itineraryDays" },
+        ],
+      },
+      {
+        name: "FAQs",
+        fields: [
+          { name: "faqs", label: "Frequently asked questions", type: "tourFaqs" },
+        ],
+      },
+      {
         name: "Media",
         fields: [
-          { name: "featuredImageUrl", label: "Featured image", type: "image" },
-          { name: "featuredImageAlt", label: "Image alt text", type: "text" },
-          { name: "galleryImages", label: "Gallery", type: "gallery" },
+          { name: "_hintCard", label: "hint", type: "_hint", hint: "Listing card image: ~424×274 px (cropped on the grid). Detail page hero: upload at least 1200×800 px for a sharp full-width image." },
+          { name: "cardImageUrl", label: "Card image (listing tile)", type: "image" },
+          { name: "cardImageAlt", label: "Card image alt", type: "text" },
+          { name: "featuredImageUrl", label: "Featured image (detail page)", type: "image" },
+          { name: "featuredImageAlt", label: "Featured image alt text", type: "text" },
+          { name: "galleryImages", label: "Gallery (detail page slider)", type: "gallery" },
           { name: "videoUrl", label: "Video URL", type: "text" },
         ],
       },
@@ -117,9 +133,12 @@ export const RESOURCE_CONFIG = {
       {
         name: "Media",
         fields: [
-          { name: "imageUrl", label: "Image", type: "image" },
-          { name: "imageAlt", label: "Image alt", type: "text" },
-          { name: "galleryImages", label: "Gallery", type: "gallery" },
+          { name: "_hintCard", label: "hint", type: "_hint", hint: "Card image (~424×274) for listing grids. Main image (1200×800+) for the activity detail page. Leave card blank to use the main image on listings." },
+          { name: "cardImageUrl", label: "Card image (listing)", type: "image" },
+          { name: "cardImageAlt", label: "Card image alt", type: "text" },
+          { name: "imageUrl", label: "Main image (detail page)", type: "image" },
+          { name: "imageAlt", label: "Main image alt", type: "text" },
+          { name: "galleryImages", label: "Gallery (detail page)", type: "gallery" },
         ],
       },
       seoTab,
@@ -446,7 +465,10 @@ export const RESOURCE_CONFIG = {
       {
         name: "Media",
         fields: [
-          { name: "imageUrl", label: "Route image", type: "image" },
+          { name: "_hintCard", label: "hint", type: "_hint", hint: "Card image (~424×274) for route listings. Main image (1200×800+) for the route detail page." },
+          { name: "cardImageUrl", label: "Card image (listing)", type: "image" },
+          { name: "cardImageAlt", label: "Card image alt", type: "text" },
+          { name: "imageUrl", label: "Main image (detail page)", type: "image" },
           { name: "imageAlt", label: "Image alt text", type: "text" },
         ],
       },

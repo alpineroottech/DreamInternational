@@ -8,7 +8,7 @@ function TourCard({ tourImage, tourTitle, tourPrice, tourLink, tourDuration, tou
         : `/assets/img/tour/${tourImage}`;
     const link = tourLink || '/tour-details';
     return (
-        <div className="tour-box th-ani">
+        <div className="tour-box th-ani di-card-grid">
             <div className="tour-box_img global-img">
                 <Link to={link}>
                     <img src={src} alt={tourTitle || 'Tour'} />

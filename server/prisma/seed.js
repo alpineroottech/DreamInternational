@@ -54,6 +54,24 @@ async function main() {
       v: "Nepal travel and tour experiences — trekking, cultural tours, and tailor-made journeys.",
       t: "string",
     },
+    aboutSubtitle: { v: "Welcome To Dream International", t: "string" },
+    aboutTitle: { v: "Trusted Nepal travel specialists for adventure, culture, and comfort", t: "string" },
+    aboutText1: {
+      v: "Dream International is a Kathmandu-based travel company helping guests explore Nepal through curated trekking, cultural, pilgrimage, and nature journeys.",
+      t: "string",
+    },
+    aboutText2: {
+      v: "From airport arrival to final departure, our local team handles permits, transport, and on-ground support so every trip runs smoothly.",
+      t: "string",
+    },
+    aboutFeatureOneTitle: { v: "Custom Itineraries", t: "string" },
+    aboutFeatureOneText: { v: "Personalized travel plans tailored to your pace, budget, and interests.", t: "string" },
+    aboutFeatureTwoTitle: { v: "Safety First Always", t: "string" },
+    aboutFeatureTwoText: { v: "Reliable guides, practical route planning, and clear communication from start to finish.", t: "string" },
+    aboutFeatureThreeTitle: { v: "Professional Guide", t: "string" },
+    aboutFeatureThreeText: { v: "Licensed local guides who share authentic stories, culture, and hidden highlights.", t: "string" },
+    aboutCtaLabel: { v: "Contact With Us", t: "string" },
+    aboutCtaUrl: { v: "/contact", t: "string" },
     headerNav: {
       t: "json",
       v: JSON.stringify([

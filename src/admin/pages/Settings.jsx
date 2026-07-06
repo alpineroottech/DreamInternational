@@ -37,6 +37,26 @@ const FIELDS = [
       { key: "defaultOgImage", label: "Default OG image URL", type: "image" },
     ],
   },
+  {
+    group: "About page content",
+    items: [
+      { key: "aboutSubtitle", label: "About subtitle" },
+      { key: "aboutTitle", label: "About title" },
+      { key: "aboutText1", label: "About paragraph 1" },
+      { key: "aboutText2", label: "About paragraph 2" },
+      { key: "aboutFeatureOneTitle", label: "Feature 1 title" },
+      { key: "aboutFeatureOneText", label: "Feature 1 text" },
+      { key: "aboutFeatureTwoTitle", label: "Feature 2 title" },
+      { key: "aboutFeatureTwoText", label: "Feature 2 text" },
+      { key: "aboutFeatureThreeTitle", label: "Feature 3 title" },
+      { key: "aboutFeatureThreeText", label: "Feature 3 text" },
+      { key: "aboutCtaLabel", label: "About CTA label" },
+      { key: "aboutCtaUrl", label: "About CTA URL" },
+      { key: "aboutImage1", label: "About image 1", type: "image" },
+      { key: "aboutImage2", label: "About image 2", type: "image" },
+      { key: "aboutImage3", label: "About image 3", type: "image" },
+    ],
+  },
 ];
 
 /** Keys used by <Breadcrumb pageKey="…" /> across the public site. */

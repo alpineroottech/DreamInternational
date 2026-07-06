@@ -3,6 +3,8 @@ import { Icon } from "@iconify/react";
 import api from "../api/client";
 import RichTextEditor from "./RichTextEditor";
 import { MediaInput } from "./MediaPicker";
+import ItineraryDaysEditor from "./ItineraryDaysEditor";
+import TourFaqsEditor from "./TourFaqsEditor";
 
 const SOCIAL_KEYS = ["facebook", "instagram", "twitter", "linkedin", "youtube"];
 
@@ -161,6 +163,12 @@ export default function FieldRenderer({ field, value, onChange, error }) {
       break;
     case "image":
       control = <MediaInput value={value} onChange={onChange} />;
+      break;
+    case "itineraryDays":
+      control = <ItineraryDaysEditor value={value} onChange={onChange} />;
+      break;
+    case "tourFaqs":
+      control = <TourFaqsEditor value={value} onChange={onChange} />;
       break;
     case "gallery":
       control = <Gallery value={value} onChange={onChange} />;

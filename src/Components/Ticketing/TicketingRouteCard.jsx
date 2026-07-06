@@ -4,7 +4,7 @@ import { resolveAssetUrl } from "../../public-cms/hooks";
 
 export default function TicketingRouteCard({ route, ticketType }) {
   const price = route.priceDisplay || (route.priceFrom ? `From $${route.priceFrom}` : "On request");
-  const image = resolveAssetUrl(route.imageUrl) || "/assets/img/destination/destination_4_1.jpg";
+  const image = resolveAssetUrl(route.cardImageUrl || route.imageUrl) || "/assets/img/destination/destination_4_1.jpg";
   const detailUrl = `/ticketing/${ticketType}/${route.slug}`;
 
   return (

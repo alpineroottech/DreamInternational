@@ -1,6 +1,35 @@
 import { Link } from 'react-router-dom'
+import { resolveAssetUrl, useSettings } from '../../public-cms/hooks'
+import SafeHtml from '../../public-cms/SafeHtml'
 
 function AboutFour() {
+   const settings = useSettings();
+   const img1 = resolveAssetUrl(settings.aboutImage1) || "/assets/img/normal/about_3_1.jpg";
+   const img2 = resolveAssetUrl(settings.aboutImage2) || "/assets/img/normal/about_3_2.jpg";
+   const img3 = resolveAssetUrl(settings.aboutImage3) || "/assets/img/normal/about_3_3.jpg";
+   const subTitle = settings.aboutSubtitle || "Welcome To Dream International";
+   const title = settings.aboutTitle || "Trusted Nepal travel specialists for adventure, culture, and comfort";
+   const text1 =
+      settings.aboutText1 ||
+      "Dream International is a Kathmandu-based travel company helping guests experience Nepal through curated trekking, cultural, pilgrimage, and nature journeys.";
+   const text2 =
+      settings.aboutText2 ||
+      "From airport arrival to final departure, our local team manages permits, logistics, and support so your trip stays smooth, safe, and meaningful.";
+   const featureOneTitle = settings.aboutFeatureOneTitle || "Custom Itineraries";
+   const featureOneText =
+      settings.aboutFeatureOneText ||
+      "Personalized travel plans designed around your schedule, budget, and comfort level.";
+   const featureTwoTitle = settings.aboutFeatureTwoTitle || "Safety First Always";
+   const featureTwoText =
+      settings.aboutFeatureTwoText ||
+      "Experienced guides, practical altitude planning, and responsive support throughout your trip.";
+   const featureThreeTitle = settings.aboutFeatureThreeTitle || "Professional Guide";
+   const featureThreeText =
+      settings.aboutFeatureThreeText ||
+      "Licensed local guides who bring destinations, culture, and history to life.";
+   const ctaLabel = settings.aboutCtaLabel || "Contact With Us";
+   const ctaUrl = settings.aboutCtaUrl || "/contact";
+
    return (
       <div className="about-area position-relative overflow-hidden overflow-hidden space" id="about-sec">
          <div className="container shape-mockup-wrap">
@@ -8,49 +37,34 @@ function AboutFour() {
                <div className="col-xl-7">
                   <div className="img-box3">
                      <div className="img1">
-                        <img src="/assets/img/normal/about_3_1.jpg" alt="About" />
+                        <img src={img1} alt="About" />
                      </div>
                      <div className="img2">
-                        <img src="/assets/img/normal/about_3_2.jpg" alt="About" />
+                        <img src={img2} alt="About" />
                      </div>
                      <div className="img3 movingX">
-                        <img src="/assets/img/normal/about_3_3.jpg" alt="About" />
+                        <img src={img3} alt="About" />
                      </div>
                   </div>
                </div>
                <div className="col-xl-5">
                   <div className="ps-xl-4">
                      <div className="title-area mb-20">
-                        <span className="sub-title style1 ">Welcome To Dream International</span>
+                        <span className="sub-title style1 ">{subTitle}</span>
                         <h2 className="sec-title mb-20 pe-xl-5 me-xl-5 heading">
-                           We are world reputeted travel agency
+                           {title}
                         </h2>
                      </div>
-                     <p className="pe-xl-5">
-                        There are many variations of passages of available but the majority
-                        have suffered alteration in some form, by injected hum randomised
-                        words.
-                     </p>
-                     <p className="mb-30 pe-xl-5">
-                        {" "}
-                        Leiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-                        ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-                        aliquip ex ea commodo consequat. Duis aute irure dolor in
-                        reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-                        pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-                        culpa qui officia deserunt.
-                     </p>
+                     <SafeHtml className="pe-xl-5" html={`<p>${text1}</p>`} />
+                     <SafeHtml className="mb-30 pe-xl-5" html={`<p>${text2}</p>`} />
                      <div className="about-item-wrap">
                         <div className="about-item style2">
                            <div className="about-item_img">
                               <img src="/assets/img/icon/about_1_1.svg" alt="" />
                            </div>
                            <div className="about-item_centent">
-                              <h5 className="box-title">Exclusive Trip</h5>
-                              <p className="about-item_text">
-                                 There are many variations of passages of available but the
-                                 majority.
-                              </p>
+                              <h5 className="box-title">{featureOneTitle}</h5>
+                              <p className="about-item_text">{featureOneText}</p>
                            </div>
                         </div>
                         <div className="about-item style2">
@@ -58,11 +72,8 @@ function AboutFour() {
                               <img src="/assets/img/icon/about_1_2.svg" alt="" />
                            </div>
                            <div className="about-item_centent">
-                              <h5 className="box-title">Safety First Always</h5>
-                              <p className="about-item_text">
-                                 There are many variations of passages of available but the
-                                 majority.
-                              </p>
+                              <h5 className="box-title">{featureTwoTitle}</h5>
+                              <p className="about-item_text">{featureTwoText}</p>
                            </div>
                         </div>
                         <div className="about-item style2">
@@ -70,17 +81,14 @@ function AboutFour() {
                               <img src="/assets/img/icon/about_1_3.svg" alt="" />
                            </div>
                            <div className="about-item_centent">
-                              <h5 className="box-title">Professional Guide</h5>
-                              <p className="about-item_text">
-                                 There are many variations of passages of available but the
-                                 majority.
-                              </p>
+                              <h5 className="box-title">{featureThreeTitle}</h5>
+                              <p className="about-item_text">{featureThreeText}</p>
                            </div>
                         </div>
                      </div>
                      <div className="mt-35">
-                        <Link to="/contact" className="th-btn style3 th-icon">
-                           Contact With Us
+                        <Link to={ctaUrl} className="th-btn style3 th-icon">
+                           {ctaLabel}
                         </Link>
                      </div>
                   </div>

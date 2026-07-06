@@ -750,12 +750,12 @@ select:focus,
 .gallery-area    { background: #88beda !important; }
 .counter-area    { background: #ffffff !important; }
 .di-testimonials { background: #88beda !important; }
-.brand-area      { background: #ffffff !important; padding-top: var(--section-space); padding-bottom: var(--section-space); }
+.brand-area      { background: #ffffff !important; padding-top: clamp(34px, 5vw, 56px); padding-bottom: clamp(34px, 5vw, 56px); }
 
 @media (max-width: 991px) {
   .brand-area {
-    padding-top: var(--section-space-mobile);
-    padding-bottom: var(--section-space-mobile);
+    padding-top: 28px;
+    padding-bottom: 28px;
   }
 }
 .blog-area       { background: #88beda !important; }
@@ -809,6 +809,19 @@ select:focus,
 }
 
 .tour-box_img { position: relative; }
+
+.di-help-planning-card {
+  background: linear-gradient(135deg, #06153b, #0d2f7a) !important;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.di-help-planning-card .offer-banner,
+.di-help-planning-card .box-title,
+.di-help-planning-card p,
+.di-help-planning-card .small {
+  color: #fff !important;
+}
 
 /* Uniform card thumbnails — template tile ratio 424×274 */
 .di-card-grid .tour-box_img {

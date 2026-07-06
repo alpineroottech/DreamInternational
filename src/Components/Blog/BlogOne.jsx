@@ -21,7 +21,7 @@ function BlogOne({ data = {} }) {
         date: p.publishedAt ? new Date(p.publishedAt).toLocaleDateString() : "",
         readTime: "",
         title: p.title,
-        image: resolveAssetUrl(p.coverImageUrl) || "/assets/img/blog/blog_1_1.jpg",
+        image: resolveAssetUrl(p.coverImageUrl),
         detailsLink: `/blog/${p.slug}`,
       }))
     : blogPosts;
@@ -61,9 +61,11 @@ function BlogOne({ data = {} }) {
           {posts.map((post) => (
             <SwiperSlide key={post.id}>
               <div className="blog-box th-ani">
-                <div className="blog-img global-img">
-                  <img src={post.image} alt="blog" />
-                </div>
+                {post.image && (
+                  <div className="blog-img global-img">
+                    <img src={post.image} alt="blog" />
+                  </div>
+                )}
                 <div className="blog-box_content">
                   <div className="blog-meta">
                     <Link className="author" to="/blog">

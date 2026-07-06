@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { buildResource } from "./lib/crudFactory.js";
+import { transformTourCreate, transformTourUpdate } from "./lib/tourTransforms.js";
 
 // ---- Shared Zod helpers ----
 const status = z.enum(["DRAFT", "PUBLISHED", "ARCHIVED"]).optional();
@@ -17,6 +18,23 @@ const seo = {
   ogImageUrl: str,
   canonicalUrl: str,
 };
+
+const itineraryDaySchema = z.object({
+  dayNumber: z.number().int().optional(),
+  title: z.string().min(1),
+  description: str,
+  startLocation: str,
+  endLocation: str,
+  altitudeM: z.number().int().optional().nullable(),
+  notes: str,
+  order: z.number().int().optional(),
+});
+
+const tourFaqSchema = z.object({
+  question: z.string().min(1),
+  answer: z.string().min(1),
+  order: z.number().int().optional(),
+});
 
 // ---- Per-resource configuration ----
 const TourSchema = z.object({
@@ -41,8 +59,12 @@ const TourSchema = z.object({
   priceExcludes: strArr,
   featuredImageUrl: str,
   featuredImageAlt: str,
+  cardImageUrl: str,
+  cardImageAlt: str,
   galleryImages: imgArr,
   videoUrl: str,
+  itineraryDays: z.array(itineraryDaySchema).optional().nullable(),
+  faqs: z.array(tourFaqSchema).optional().nullable(),
   ...seo,
 });
 
@@ -62,6 +84,8 @@ const ActivitySchema = z.object({
   amenities: strArr,
   imageUrl: str,
   imageAlt: str,
+  cardImageUrl: str,
+  cardImageAlt: str,
   galleryImages: imgArr,
   status,
   isFeatured: bool,
@@ -203,6 +227,8 @@ const FlightRouteSchema = z.object({
   description: str,
   imageUrl: str,
   imageAlt: str,
+  cardImageUrl: str,
+  cardImageAlt: str,
   highlights: strArr,
   baggageInfo: str,
   bookingNotes: str,
@@ -229,7 +255,10 @@ export const RESOURCES = {
     adminInclude: {
       category: true,
       itineraryDays: { orderBy: { dayNumber: "asc" } },
+      faqs: { orderBy: { order: "asc" } },
     },
+    transformCreate: transformTourCreate,
+    transformUpdate: transformTourUpdate,
     publicShape: (t) => ({
       ...t,
       itinerary: (t.itineraryDays || []).map((d) => ({

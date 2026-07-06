@@ -23,6 +23,21 @@ const PUBLIC_KEYS = [
   "pageHeroes",
   "defaultHeroColor",
   "pageHeroColors",
+  "aboutSubtitle",
+  "aboutTitle",
+  "aboutText1",
+  "aboutText2",
+  "aboutFeatureOneTitle",
+  "aboutFeatureOneText",
+  "aboutFeatureTwoTitle",
+  "aboutFeatureTwoText",
+  "aboutFeatureThreeTitle",
+  "aboutFeatureThreeText",
+  "aboutCtaLabel",
+  "aboutCtaUrl",
+  "aboutImage1",
+  "aboutImage2",
+  "aboutImage3",
 ];
 
 function rowsToObject(rows) {

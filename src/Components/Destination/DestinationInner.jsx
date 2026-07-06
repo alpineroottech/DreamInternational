@@ -29,7 +29,7 @@ function DestinationInner() {
             id: d.slug,
             slug: d.slug,
             title: d.name,
-            image: resolveAssetUrl(d.heroImage?.url) || '/assets/img/destination/destination_4_1.jpg',
+            image: resolveAssetUrl(d.cardImage?.url || d.heroImage?.url) || '/assets/img/destination/destination_4_1.jpg',
             price: d.price || (d.basePrice != null ? `From $${d.basePrice}` : null),
             shortDescription: d.shortDescription,
           }))

@@ -42,10 +42,12 @@ function TourDetailsMain() {
         );
     }
 
-    // Gallery images: use galleryImages array if present, else featuredImage
-    const galleryRaw = Array.isArray(tour.galleryImages) && tour.galleryImages.length
-        ? tour.galleryImages.map(g => typeof g === 'string' ? g : g.url)
-        : [tour.featuredImageUrl].filter(Boolean);
+    // Gallery: featured image first (detail hero), then additional gallery shots
+    const galleryExtras = Array.isArray(tour.galleryImages) && tour.galleryImages.length
+        ? tour.galleryImages.map((g) => (typeof g === "string" ? g : g.url))
+        : [];
+    const featured = tour.featuredImageUrl ? [tour.featuredImageUrl] : [];
+    const galleryRaw = [...featured, ...galleryExtras.filter((u) => u && u !== tour.featuredImageUrl)];
     const gallery = galleryRaw.map(resolveAssetUrl).filter(Boolean);
     const fallbackImg = "/assets/img/tour/tour_inner_1.jpg";
     const images = gallery.length ? gallery : [fallbackImg, fallbackImg, fallbackImg];
@@ -286,7 +288,7 @@ function TourDetailsMain() {
                             </div>
 
                             {/* Need help */}
-                            <div className="widget widget_offer" style={{ background: 'url(/assets/img/bg/widget_bg_1.jpg)', borderRadius: 16, overflow: 'hidden' }}>
+                            <div className="widget widget_offer di-help-planning-card">
                                 <div className="offer-banner p-4">
                                     <h6 className="box-title mb-2">Need Help Planning?</h6>
                                     <p className="small mb-3">Our Nepal travel experts are ready to customise this trip for you.</p>

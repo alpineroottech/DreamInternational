@@ -31,7 +31,7 @@ function ActivitiesInner() {
         ? cms.map((a) => ({
             id: a.slug,
             slug: a.slug,
-            image: a.imageUrl,
+            image: a.cardImageUrl || a.imageUrl,
             title: a.title,
             price: a.price || 'On request',
             duration: a.duration,

@@ -3,7 +3,8 @@
  * Run: npm run import:cms --prefix server
  *
  * Content is original copy informed by public Nepal travel references — not scraped images.
- * Safe to re-run: upserts by slug and refreshes itineraries/FAQs on existing tours.
+ * Safe to re-run: updates text content only. Images, galleries, and tour categories
+ * assigned in the admin are never overwritten on existing records.
  */
 import "dotenv/config";
 import { PrismaClient } from "@prisma/client";

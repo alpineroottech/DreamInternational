@@ -4,6 +4,7 @@ import { verifyJwt, requireRole } from "../middleware/auth.js";
 import { validate } from "../middleware/validate.js";
 import { uniqueSlug } from "./slug.js";
 import { sanitizeFields } from "./sanitize.js";
+import { stripRelationPayload } from "./prismaPayload.js";
 
 const DEFAULT_ROLES = ["SUPER_ADMIN", "ADMIN", "EDITOR"];
 
@@ -28,6 +29,8 @@ export function buildResource(config) {
     roles = DEFAULT_ROLES,
     publicInclude = undefined,
     adminInclude = undefined,
+    transformCreate,
+    transformUpdate,
   } = config;
 
   const model = prisma[modelName];
@@ -108,10 +111,15 @@ export function buildResource(config) {
 
   adminRouter.post("/", validate(schema), async (req, res, next) => {
     try {
-      const data = sanitizeFields({ ...req.validated }, htmlFields);
+      let data = sanitizeFields({ ...req.validated }, htmlFields);
       if (hasSlug) data.slug = await uniqueSlug(model, data.slug || data[slugFrom]);
       if (hasStatus && data.status === "PUBLISHED") data.publishedAt = new Date();
-      res.status(201).json(await model.create({ data }));
+      data = stripRelationPayload(data, { keep: transformCreate ? ["itineraryDays", "faqs"] : [] });
+      if (transformCreate) data = await transformCreate(prisma, data);
+      res.status(201).json(await model.create({
+        data,
+        ...(adminInclude ? { include: adminInclude } : {}),
+      }));
     } catch (e) {
       next(e);
     }
@@ -121,7 +129,7 @@ export function buildResource(config) {
     try {
       const existing = await model.findUnique({ where: { id: req.params.id } });
       if (!existing) return res.status(404).json({ error: "Not found" });
-      const data = sanitizeFields({ ...req.validated }, htmlFields);
+      let data = sanitizeFields({ ...req.validated }, htmlFields);
       if (hasSlug && (data.slug !== undefined || data[slugFrom] !== undefined)) {
         data.slug = await uniqueSlug(
           model,
@@ -132,7 +140,13 @@ export function buildResource(config) {
       if (hasStatus && data.status === "PUBLISHED" && !existing.publishedAt) {
         data.publishedAt = new Date();
       }
-      res.json(await model.update({ where: { id: existing.id }, data }));
+      data = stripRelationPayload(data, { keep: transformUpdate ? ["itineraryDays", "faqs"] : [] });
+      if (transformUpdate) data = await transformUpdate(prisma, data, existing);
+      res.json(await model.update({
+        where: { id: existing.id },
+        data,
+        ...(adminInclude ? { include: adminInclude } : {}),
+      }));
     } catch (e) {
       next(e);
     }

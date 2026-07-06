@@ -33,7 +33,7 @@ function DestinationOne({ data = {} }) {
 
   const name = dest?.name || "Pokhara City";
   const slug = dest?.slug || "pokhara-city";
-  const image = resolveAssetUrl(dest?.heroImage?.url) || "/assets/img/destination/destination_4_1.jpg";
+  const image = resolveAssetUrl(dest?.cardImage?.url || dest?.heroImage?.url) || "/assets/img/destination/destination_4_1.jpg";
   const summary =
     dest?.shortDescription ||
     "Nepal's lakeside city with Phewa Lake, mountain views, paragliding, and easy access to Annapurna treks.";

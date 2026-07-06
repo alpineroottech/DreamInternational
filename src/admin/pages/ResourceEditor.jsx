@@ -17,6 +17,22 @@ export default function ResourceEditor({ resource: resourceProp }) {
   const allFields = useMemo(() => cfg.tabs.flatMap((t) => t.fields), [cfg]);
   const hasStatusField = useMemo(() => allFields.some((f) => f.name === "status"), [allFields]);
 
+  const buildPayload = (source, statusOverride) => {
+    const names = new Set(
+      allFields.filter((f) => !f.name.startsWith("_")).map((f) => f.name)
+    );
+    if (resource === "tours") {
+      names.add("itineraryDays");
+      names.add("faqs");
+    }
+    const payload = {};
+    for (const name of names) {
+      if (source[name] !== undefined) payload[name] = source[name];
+    }
+    if (statusOverride) payload.status = statusOverride;
+    return payload;
+  };
+
   const [form, setForm] = useState({});
   const [activeTab, setActiveTab] = useState(cfg.tabs[0].name);
   const [slugTouched, setSlugTouched] = useState(false);
@@ -64,7 +80,7 @@ export default function ResourceEditor({ resource: resourceProp }) {
     setFieldErrors({});
     setMessage("");
     try {
-      const payload = statusOverride ? { ...form, status: statusOverride } : form;
+      const payload = buildPayload(form, statusOverride);
       let saved;
       if (isNew) {
         ({ data: saved } = await api.post(`/admin/${cfg.apiPath}`, payload));

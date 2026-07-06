@@ -48,6 +48,8 @@ model Destination {
   description      String?  // HTML (rich text)
   heroImageUrl     String?
   heroImageAlt     String?
+  cardImageUrl     String?  // listing tile (~424×274); detail uses heroImageUrl
+  cardImageAlt     String?
   galleryImages    Json?    // [{ url, alt, sortOrder }]
   bestTimeToVisit  String?  // HTML
   gettingThere     String?  // HTML
@@ -94,6 +96,8 @@ model Tour {
   bestMonths         Json?          // number[] 1-12
   featuredImageUrl   String?
   featuredImageAlt   String?
+  cardImageUrl       String?  // listing tile (~424×274); detail uses featuredImageUrl + gallery
+  cardImageAlt       String?
   galleryImages      Json?          // [{ url, alt }]
   mapImageUrl        String?
   videoUrl           String?
@@ -234,6 +238,8 @@ model Activity {
   amenities        Json?    // string[] (what's provided)
   imageUrl         String?
   imageAlt         String?
+  cardImageUrl     String?
+  cardImageAlt     String?
   galleryImages    Json?    // [{ url, alt }]
   status           String   @default("DRAFT") // DRAFT | PUBLISHED | ARCHIVED
   isFeatured       Boolean  @default(false)
@@ -376,6 +382,8 @@ model FlightRoute {
   description      String?
   imageUrl         String?
   imageAlt         String?
+  cardImageUrl     String?
+  cardImageAlt     String?
   highlights       Json?
   baggageInfo      String?
   bookingNotes     String?
