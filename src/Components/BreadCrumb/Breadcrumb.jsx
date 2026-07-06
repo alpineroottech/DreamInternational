@@ -1,41 +1,20 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { useSettings, resolveAssetUrl } from "../../public-cms/hooks";
-
-const FALLBACK_HERO = "/assets/img/hero/Hero2.jpg";
+import { useSettings } from "../../public-cms/hooks";
+import { heroBannerStyle, resolveHeroColor } from "../../brand/heroColors";
 
 /**
- * Page hero / breadcrumb banner.
- *
- * Image resolution order:
- * 1. `bgImage` prop (item-specific, e.g. tour featured image)
- * 2. CMS `pageHeroes[pageKey]` (per-page image from Settings)
- * 3. CMS `defaultHeroImage` (site-wide default)
- * 4. Static fallback
+ * Page hero / breadcrumb banner — solid CMS-pickable color per page.
+ * Item card images (tours, destinations, etc.) are not used here.
  */
-function Breadcrumb({ title, bgImage, pageKey, parent }) {
+function Breadcrumb({ title, pageKey, parent }) {
   const settings = useSettings();
-  const pageHeroes =
-    settings.pageHeroes && typeof settings.pageHeroes === "object" && !Array.isArray(settings.pageHeroes)
-      ? settings.pageHeroes
-      : {};
-
-  const fromPage = pageKey ? pageHeroes[pageKey] : null;
-  const image =
-    resolveAssetUrl(bgImage) ||
-    resolveAssetUrl(fromPage) ||
-    resolveAssetUrl(settings.defaultHeroImage) ||
-    FALLBACK_HERO;
+  const color = resolveHeroColor(pageKey, settings);
 
   return (
     <div
-      className="breadcumb-wrapper"
-      style={{
-        backgroundImage: `url(${image})`,
-        backgroundRepeat: "no-repeat",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }}
+      className="breadcumb-wrapper breadcumb-wrapper--solid"
+      style={heroBannerStyle(color)}
     >
       <div className="container">
         <div className="breadcumb-content">

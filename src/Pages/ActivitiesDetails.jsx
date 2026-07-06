@@ -5,7 +5,7 @@ import FooterOne from "../Components/Footer/FooterOne";
 import Breadcrumb from "../Components/BreadCrumb/Breadcrumb";
 import ActivitiesDetailsMain from "../Components/Activities/ActivitiesDetailsMain";
 import ScrollToTop from "../Components/ScrollToTop";
-import { useSlugItem, resolveAssetUrl } from "../public-cms/hooks";
+import { useSlugItem } from "../public-cms/hooks";
 
 function ActivitiesDetails() {
   const [searchParams] = useSearchParams();
@@ -13,7 +13,6 @@ function ActivitiesDetails() {
   const slug = searchParams.get("slug") || params.slug;
   const { data: activity } = useSlugItem("/public/activities", slug);
   const title = activity?.title || "Activity Details";
-  const bgImage = resolveAssetUrl(activity?.imageUrl) || "";
 
   return (
     <>
@@ -21,7 +20,6 @@ function ActivitiesDetails() {
       <Breadcrumb
         title={title}
         pageKey="activity-details"
-        bgImage={bgImage}
         parent={{ label: "Activities", url: "/activities" }}
       />
       <ActivitiesDetailsMain />

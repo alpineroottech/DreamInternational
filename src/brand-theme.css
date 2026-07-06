@@ -168,6 +168,28 @@
   max-width: 160px;
 }
 
+.breadcumb-wrapper--solid {
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  background-image: linear-gradient(
+    135deg,
+    var(--hero-banner-color, #140ca9) 0%,
+    color-mix(in srgb, var(--hero-banner-color, #140ca9) 72%, #000) 100%
+  );
+}
+
+.breadcumb-wrapper--solid .breadcumb-title,
+.breadcumb-wrapper--solid .breadcumb-menu,
+.breadcumb-wrapper--solid .breadcumb-menu a,
+.breadcumb-wrapper--solid .breadcumb-menu li {
+  color: #fff;
+}
+
+.breadcumb-wrapper--solid .breadcumb-menu a:hover {
+  color: rgba(255, 255, 255, 0.85);
+}
+
 /* ─── 2e. HEADER BAR — centered nav, balanced spacing ─────────── */
 .di-header-bar {
   display: grid;
@@ -787,6 +809,28 @@ select:focus,
 }
 
 .tour-box_img { position: relative; }
+
+/* Uniform card thumbnails — template tile ratio 424×274 */
+.di-card-grid .tour-box_img {
+  aspect-ratio: 424 / 274;
+}
+
+.di-card-grid .tour-box_img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.di-card-subtitle {
+  font-size: 0.85rem;
+  line-height: 1.45;
+  color: #666;
+  margin: 0 0 10px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
 
 /* Category filter pills on the tours listing page */
 .di-category-filter-btn {

@@ -227,7 +227,7 @@ export function buildDestinations() {
         "Closest major Himalaya to Kathmandu — Tamang heritage, glacial Langtang Valley, and sacred Gosainkunda lakes.",
       description:
         "<p>Langtang lies north of Kathmandu and was reopened after the 2015 earthquake with rebuilt teahouses and renewed trails. The valley combines alpine scenery, Tamang Buddhist culture, and optional extensions to the high-altitude Gosainkunda lakes — a major pilgrimage site.</p><p>It is ideal for trekkers who want authentic Himalayan experience without flying to Lukla. Dream International arranges Syabrubesi transfers, permits, and experienced local guides.</p>",
-      heroImageUrl: img.hero(1),
+      heroImageUrl: img.dest(1),
       heroImageAlt: "Langtang Valley Himalayan scenery",
       bestTimeToVisit:
         "<p><strong>March–May</strong> and <strong>October–November</strong>. Gosainkunda pilgrimage peaks in August during Janai Purnima.</p>",
@@ -257,7 +257,7 @@ export function buildDestinations() {
         "Kathmandu Valley's premier sunrise ridge — panoramic views from Everest to Annapurna on clear mornings.",
       description:
         "<p>Nagarkot sits at 2,175 metres on the eastern rim of the Kathmandu Valley, offering one of Nepal's most accessible Himalayan panoramas. On clear days the view stretches from Dhaulagiri in the west to Everest in the east — without the commitment of a multi-day trek.</p><p>It pairs perfectly with a short Kathmandu heritage tour or a dawn hike from Changu Narayan temple. Dream International arranges overnight stays and private sunrise transfers from Kathmandu.</p>",
-      heroImageUrl: img.hero(2),
+      heroImageUrl: img.dest(2),
       heroImageAlt: "Nagarkot sunrise Himalayan panorama",
       bestTimeToVisit:
         "<p><strong>October–December</strong> and <strong>March–April</strong> for the best visibility. Winter mornings can be exceptionally clear but cold.</p>",
@@ -287,7 +287,7 @@ export function buildDestinations() {
         "Nepal's forbidden kingdom — arid Tibetan plateau landscapes, cave monasteries, and the walled city of Lo Manthang.",
       description:
         "<p>Upper Mustang is a restricted area on the rain shadow of the Annapurna range, culturally closer to Tibet than the Kathmandu Valley. Ochre cliffs, ancient cave dwellings, and the medieval walled capital of Lo Manthang create a landscape unlike anywhere else in Nepal.</p><p>A special restricted-area permit is required. Dream International arranges permits, 4WD transport from Jomsom, and culturally informed guides for this remarkable journey.</p>",
-      heroImageUrl: img.hero(3),
+      heroImageUrl: img.dest(3),
       heroImageAlt: "Upper Mustang arid Himalayan landscape",
       bestTimeToVisit:
         "<p><strong>May–October</strong> — the region is in rain shadow so monsoon months are viable. Winter is harsh and many lodges close.</p>",
@@ -317,7 +317,7 @@ export function buildDestinations() {
         "Nepal's largest lake in remote western Nepal — pristine blue waters, alpine forests, and uncrowded Himalayan wilderness.",
       description:
         "<p>Rara Lake sits at 2,990 metres in Rara National Park, far from Nepal's main tourist corridors. Often called the Queen of Lakes, its deep blue waters reflect surrounding pine forests and snow peaks in spring and autumn.</p><p>The journey requires flights to Nepalgunj and Talcha (Mugu), making it a true off-the-beaten-path adventure. Dream International handles logistics for this rewarding western Nepal expedition.</p>",
-      heroImageUrl: img.hero(4),
+      heroImageUrl: img.dest(4),
       heroImageAlt: "Rara Lake western Nepal",
       bestTimeToVisit:
         "<p><strong>March–May</strong> and <strong>September–November</strong>. Winter snow can block trails; monsoon makes flights unreliable.</p>",
@@ -950,92 +950,4 @@ export function buildTours(categoryMap) {
       faqs: [],
     },
   ];
-}
-
-function routeRow(title, slug, fromCity, toCity, fromAirport, toAirport, airline, duration, frequency, price, ticketType, order, featured, imgN, extra = {}) {
-  return {
-    title,
-    slug,
-    ticketType,
-    fromCity,
-    toCity,
-    fromAirport,
-    toAirport,
-    airline,
-    flightDuration: duration,
-    frequency,
-    priceFrom: price,
-    priceDisplay: `From $${price}`,
-    shortDescription: extra.shortDescription || `Book ${fromCity} to ${toCity} flights with competitive fares and local support from Dream International.`,
-    description:
-      extra.description ||
-      `<p>Secure your seat on the <strong>${title}</strong> route with Dream International. We compare fares across partner airlines, assist with date changes, group bookings, and trekker luggage requirements.</p>`,
-    imageUrl: img.tour(imgN),
-    imageAlt: title,
-    highlights: extra.highlights || ["Instant fare quote", "Date change assistance", "Group & trekker fares", "Airport transfer add-ons"],
-    baggageInfo: extra.baggageInfo || "Standard 15–20 kg checked baggage on most sectors; exact allowance varies by airline and fare class.",
-    bookingNotes:
-      extra.bookingNotes ||
-      "<p>Fares are indicative and subject to availability. Domestic mountain sectors are weather-dependent — allow buffer days for Lukla and Jomsom connections.</p>",
-    status: "PUBLISHED",
-    isFeatured: featured,
-    order,
-  };
-}
-
-export function buildFlightRoutes() {
-  const domestic = [
-    routeRow("Kathmandu to Lukla", "kathmandu-to-lukla", "Kathmandu", "Lukla", "KTM", "LUA", "Tara Air / Summit Air / Sita Air", "30 min", "Multiple daily (weather permitting)", 215, "domestic", 0, true, 1, {
-      description: "<p>The Kathmandu–Lukla flight is the gateway to Everest Base Camp and the Khumbu region. This 30-minute scenic flight lands at Tenzing-Hillary Airport — one of the world's most dramatic airstrips. Dream International books confirmed seats and advises on seasonal Ramechhap diversions during peak months.</p>",
-      bookingNotes: "<p><strong>Important:</strong> March–November flights may operate from Ramechhap (4–5 hr drive from Kathmandu) due to Kathmandu airport congestion. Lukla flights are frequently delayed by weather — keep 1–2 buffer days in your itinerary.</p>",
-    }),
-    routeRow("Kathmandu to Pokhara", "kathmandu-to-pokhara", "Kathmandu", "Pokhara", "KTM", "PKR", "Buddha Air / Yeti Airlines", "25 min", "Multiple daily", 119, "domestic", 1, true, 2),
-    routeRow("Kathmandu to Bhairahawa", "kathmandu-to-bhairahawa", "Kathmandu", "Bhairahawa", "KTM", "BWA", "Buddha Air / Yeti Airlines", "30–45 min", "Daily", 140, "domestic", 2, false, 3, {
-      description: "<p>Fly to Bhairahawa (Siddharthanagar) for easy access to Lumbini — birthplace of Buddha — and the western Terai. A 30-minute drive connects the airport to Lumbini's sacred garden.</p>",
-    }),
-    routeRow("Kathmandu to Bharatpur", "kathmandu-to-bharatpur", "Kathmandu", "Bharatpur", "KTM", "BHR", "Buddha Air / Yeti Airlines", "20 min", "Daily", 111, "domestic", 3, false, 4, {
-      description: "<p>Bharatpur Airport is the closest air gateway to Chitwan National Park — just 20 minutes from Kathmandu with a short drive to Sauraha lodges.</p>",
-    }),
-    routeRow("Pokhara to Jomsom", "pokhara-to-jomsom", "Pokhara", "Jomsom", "PKR", "JMO", "Tara Air / Summit Air", "20 min", "Morning flights (weather dependent)", 160, "domestic", 4, true, 5, {
-      description: "<p>The Pokhara–Jomsom flight threads through the Kali Gandaki gorge with Annapurna and Dhaulagiri on either side. Essential for Mustang and Muktinath pilgrims who want to avoid the multi-day trek from Pokhara.</p>",
-    }),
-    routeRow("Everest Mountain Flight", "everest-mountain-flight", "Kathmandu", "Everest Region", "KTM", "—", "Buddha Air / Yeti Airlines", "50–60 min", "Daily early morning", 250, "domestic", 5, true, 1, {
-      shortDescription: "One-hour scenic flight with guaranteed window seat — Everest and the Himalaya without trekking.",
-      description: "<p>The Everest Mountain Flight is Nepal's most popular aerial experience. Every passenger gets a window seat as the aircraft cruises alongside the Himalaya, with Everest centre-stage. Ideal for travellers short on time or unable to trek at altitude.</p>",
-      highlights: ["Guaranteed window seat", "Certificate of flight", "Hotel pick-up and drop-off", "All major peaks visible on clear days"],
-    }),
-    routeRow("Kathmandu to Bhadrapur", "kathmandu-to-bhadrapur", "Kathmandu", "Bhadrapur", "KTM", "BDP", "Buddha Air / Yeti Airlines", "45–55 min", "Daily", 182, "domestic", 6, false, 2),
-    routeRow("Ramechhap to Lukla", "ramechhap-to-lukla", "Ramechhap", "Lukla", "RHP", "LUA", "Tara Air / Summit Air", "18 min", "Seasonal (peak trekking months)", 175, "domestic", 7, false, 3, {
-      description: "<p>During peak trekking seasons, Lukla-bound flights operate from Manthali (Ramechhap) Airport to reduce Kathmandu congestion. Dream International arranges the Kathmandu–Ramechhap road transfer and flight connection as a package.</p>",
-    }),
-    routeRow("Kathmandu to Nepalgunj", "kathmandu-to-nepalgunj", "Kathmandu", "Nepalgunj", "KTM", "KEP", "Buddha Air / Shree Airlines", "55 min", "Daily", 125, "domestic", 8, false, 4),
-    routeRow("Kathmandu to Biratnagar", "kathmandu-to-biratnagar", "Kathmandu", "Biratnagar", "KTM", "BIR", "Yeti Airlines / Buddha Air", "40 min", "Daily", 108, "domestic", 9, false, 5),
-    routeRow("Kathmandu to Dhangadhi", "kathmandu-to-dhangadhi", "Kathmandu", "Dhangadhi", "KTM", "DHI", "Buddha Air", "1h 10m", "Daily", 145, "domestic", 10, false, 6),
-    routeRow("Kathmandu to Tumlingtar", "kathmandu-to-tumlingtar", "Kathmandu", "Tumlingtar", "KTM", "TMI", "Tara Air", "50 min", "Several weekly", 155, "domestic", 11, false, 1, {
-      description: "<p>Tumlingtar is the gateway to Makalu Base Camp treks in eastern Nepal. Remote and scenic — book early for limited seat availability.</p>",
-    }),
-    routeRow("Kathmandu to Jomsom", "kathmandu-to-jomsom", "Kathmandu", "Jomsom", "KTM", "JMO", "Tara Air (via Pokhara)", "—", "Seasonal", 195, "domestic", 12, false, 2),
-  ];
-
-  const international = [
-    routeRow("Kathmandu to Delhi", "kathmandu-to-delhi", "Kathmandu", "Delhi", "KTM", "DEL", "Nepal Airlines / Air India / IndiGo", "1h 45m", "Multiple daily", 195, "international", 0, true, 3),
-    routeRow("Kathmandu to Dubai", "kathmandu-to-dubai", "Kathmandu", "Dubai", "KTM", "DXB", "Flydubai / Emirates / Nepal Airlines", "4h 30m", "Daily", 380, "international", 1, true, 4),
-    routeRow("Kathmandu to Doha", "kathmandu-to-doha", "Kathmandu", "Doha", "KTM", "DOH", "Qatar Airways / Himalaya Airlines", "4h 15m", "Daily", 420, "international", 2, true, 5),
-    routeRow("Kathmandu to Bangkok", "kathmandu-to-bangkok", "Kathmandu", "Bangkok", "KTM", "BKK", "Thai Airways / Nepal Airlines", "3h 10m", "Daily", 295, "international", 3, true, 6),
-    routeRow("Kathmandu to Singapore", "kathmandu-to-singapore", "Kathmandu", "Singapore", "KTM", "SIN", "Singapore Airlines / Scoot", "5h", "Daily", 450, "international", 4, true, 1),
-    routeRow("Kathmandu to Kuala Lumpur", "kathmandu-to-kuala-lumpur", "Kathmandu", "Kuala Lumpur", "KTM", "KUL", "AirAsia / Malindo Air / Nepal Airlines", "4h 40m", "4–5 weekly", 275, "international", 5, false, 2),
-    routeRow("Kathmandu to London", "kathmandu-to-london", "Kathmandu", "London", "KTM", "LHR", "Qatar Airways / Turkish Airlines (1 stop)", "14–16h", "Daily connections", 620, "international", 6, true, 3, {
-      description: "<p>Reach London Heathrow from Kathmandu via Doha, Istanbul, or Delhi. Dream International finds the best connection times and handles multi-airline ticketing.</p>",
-    }),
-    routeRow("Kathmandu to Mumbai", "kathmandu-to-mumbai", "Kathmandu", "Mumbai", "KTM", "BOM", "Nepal Airlines / Air India / IndiGo", "2h 30m", "Daily", 210, "international", 7, false, 4),
-    routeRow("Kathmandu to Hong Kong", "kathmandu-to-hong-kong", "Kathmandu", "Hong Kong", "KTM", "HKG", "Cathay Pacific / Nepal Airlines", "4h 30m", "4 weekly", 390, "international", 8, false, 5),
-    routeRow("Kathmandu to Abu Dhabi", "kathmandu-to-abu-dhabi", "Kathmandu", "Abu Dhabi", "KTM", "AUH", "Etihad Airways / Air Arabia", "4h 45m", "Daily", 365, "international", 9, false, 6),
-    routeRow("Kathmandu to Tokyo (Narita)", "kathmandu-to-tokyo-narita", "Kathmandu", "Tokyo", "KTM", "NRT", "Nepal Airlines / Cathay Pacific (1 stop)", "10–12h", "Daily connections", 580, "international", 10, false, 1),
-    routeRow("Kathmandu to Osaka", "kathmandu-to-osaka", "Kathmandu", "Osaka", "KTM", "KIX", "Various (1 stop via Bangkok/HK)", "11–13h", "Several weekly", 595, "international", 11, false, 2),
-    routeRow("Kathmandu to Sydney", "kathmandu-to-sydney", "Kathmandu", "Sydney", "KTM", "SYD", "Qatar / Singapore Airlines (1–2 stops)", "16–20h", "Daily connections", 720, "international", 12, false, 3, {
-      description: "<p>Fly from Kathmandu to Sydney via Singapore, Doha, or Bangkok. We compare routings for shortest journey time and best baggage allowance.</p>",
-    }),
-  ];
-
-  return [...domestic, ...international];
 }

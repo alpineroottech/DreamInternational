@@ -28,7 +28,14 @@ function ActivitiesInner() {
     }
 
     const posts = cms && cms.length
-        ? cms.map((a) => ({ id: a.slug, slug: a.slug, image: a.imageUrl, title: a.title, price: a.price || 'On request' }))
+        ? cms.map((a) => ({
+            id: a.slug,
+            slug: a.slug,
+            image: a.imageUrl,
+            title: a.title,
+            price: a.price || 'On request',
+            duration: a.duration,
+          }))
         : jsonPosts;
 
     const totalPages = Math.ceil(posts.length / postsPerPage);
@@ -52,6 +59,7 @@ function ActivitiesInner() {
                                         activitiesImage={`${data.image}`}
                                         activitiesTitle={data.title}
                                         activitiesPrice={data.price}
+                                        activitiesDuration={data.duration}
                                         activitiesLink={data.slug ? `/activities-details?slug=${data.slug}` : undefined}
                                     />
                                 </div>

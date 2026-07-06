@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import api from "../api/client";
 import { MediaInput } from "../components/MediaPicker";
+import { DEFAULT_HERO_COLOR, DEFAULT_PAGE_HERO_COLORS } from "../../brand/heroColors";
 
 const FIELDS = [
   {
@@ -89,13 +90,13 @@ export default function Settings() {
 
   const set = (key, value) => setValues((v) => ({ ...v, [key]: value }));
 
-  const pageHeroes =
-    values.pageHeroes && typeof values.pageHeroes === "object" && !Array.isArray(values.pageHeroes)
-      ? values.pageHeroes
+  const pageHeroColors =
+    values.pageHeroColors && typeof values.pageHeroColors === "object" && !Array.isArray(values.pageHeroColors)
+      ? values.pageHeroColors
       : {};
 
-  const setPageHero = (key, url) => {
-    set("pageHeroes", { ...pageHeroes, [key]: url || "" });
+  const setPageHeroColor = (key, color) => {
+    set("pageHeroColors", { ...pageHeroColors, [key]: color || "" });
   };
 
   const save = async (e) => {
@@ -105,7 +106,7 @@ export default function Settings() {
     try {
       const { data } = await api.put("/admin/settings", values);
       setValues(data);
-      setMessage("Settings saved. Refresh the public site to see hero image changes.");
+      setMessage("Settings saved. Refresh the public site to see hero color changes.");
     } finally {
       setSaving(false);
     }
@@ -152,19 +153,18 @@ export default function Settings() {
       </div>
 
       <div className="di-card p-4 mt-4">
-        <h6 className="fw-bold mb-1">Page hero banners</h6>
+        <h6 className="fw-bold mb-1">Page hero banner colors</h6>
         <p className="text-muted small mb-3">
-          Background image for each page&apos;s top banner. Detail pages (tour, destination, blog, etc.)
-          use the item&apos;s own image when set; the values below are fallbacks for those pages and the
-          primary image for listing pages.
+          Solid background color for each page&apos;s top banner. Tour, destination, and activity
+          <strong> card images</strong> are separate — they are not stretched into these banners.
         </p>
 
         <div className="mb-4">
-          <label className="form-label small fw-semibold">Default hero (all pages without a specific image)</label>
-          <MediaInput
-            value={values.defaultHeroImage || ""}
-            onChange={(url) => set("defaultHeroImage", url)}
-            placeholder="Site-wide fallback hero image"
+          <label className="form-label small fw-semibold">Default banner color</label>
+          <HeroColorInput
+            value={values.defaultHeroColor || DEFAULT_HERO_COLOR}
+            onChange={(color) => set("defaultHeroColor", color)}
+            fallback={DEFAULT_HERO_COLOR}
           />
         </div>
 
@@ -172,15 +172,47 @@ export default function Settings() {
           {PAGE_HERO_FIELDS.map((f) => (
             <div className="col-md-6 col-xl-4" key={f.key}>
               <label className="form-label small fw-semibold">{f.label}</label>
-              <MediaInput
-                value={pageHeroes[f.key] || ""}
-                onChange={(url) => setPageHero(f.key, url)}
-                placeholder={`Hero for ${f.label}`}
+              <HeroColorInput
+                value={pageHeroColors[f.key] || DEFAULT_PAGE_HERO_COLORS[f.key] || DEFAULT_HERO_COLOR}
+                onChange={(color) => setPageHeroColor(f.key, color)}
+                fallback={DEFAULT_PAGE_HERO_COLORS[f.key] || DEFAULT_HERO_COLOR}
               />
             </div>
           ))}
         </div>
       </div>
     </form>
+  );
+}
+
+function HeroColorInput({ value, onChange, fallback }) {
+  const color = value || fallback;
+  return (
+    <div className="d-flex align-items-center gap-2">
+      <input
+        type="color"
+        className="form-control form-control-color"
+        value={color}
+        onChange={(e) => onChange(e.target.value)}
+        title="Pick banner color"
+        style={{ width: 48, height: 38, padding: 2 }}
+      />
+      <input
+        type="text"
+        className="form-control form-control-sm font-monospace"
+        value={color}
+        onChange={(e) => {
+          const next = e.target.value.trim();
+          if (/^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/.test(next)) onChange(next);
+        }}
+        placeholder={fallback}
+        maxLength={7}
+      />
+      <span
+        className="rounded border flex-shrink-0"
+        style={{ width: 38, height: 38, background: color }}
+        aria-hidden
+      />
+    </div>
   );
 }

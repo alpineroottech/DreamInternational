@@ -53,7 +53,6 @@ function DestinationDetailsMain() {
         <Breadcrumb
             title={dest.name}
             pageKey="destination-details"
-            bgImage={heroImg}
             parent={{ label: "Destinations", url: "/destination" }}
         />
 

@@ -21,6 +21,8 @@ const PUBLIC_KEYS = [
   "defaultOgImage",
   "defaultHeroImage",
   "pageHeroes",
+  "defaultHeroColor",
+  "pageHeroColors",
 ];
 
 function rowsToObject(rows) {

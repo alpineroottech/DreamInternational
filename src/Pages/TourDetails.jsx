@@ -5,7 +5,7 @@ import FooterOne from "../Components/Footer/FooterOne";
 import Breadcrumb from "../Components/BreadCrumb/Breadcrumb";
 import TourDetailsMain from "../Components/Tour/TourDetailsMain";
 import ScrollToTop from "../Components/ScrollToTop";
-import { useSlugItem, resolveAssetUrl } from "../public-cms/hooks";
+import { useSlugItem } from "../public-cms/hooks";
 
 function TourDetails() {
   const [searchParams] = useSearchParams();
@@ -14,15 +14,6 @@ function TourDetails() {
   const { data: tour } = useSlugItem("/public/tours", slug);
 
   const title = tour?.title || "Tour Details";
-  const bgImage =
-    resolveAssetUrl(tour?.featuredImageUrl) ||
-    (Array.isArray(tour?.galleryImages) && tour.galleryImages[0]
-      ? resolveAssetUrl(
-          typeof tour.galleryImages[0] === "string"
-            ? tour.galleryImages[0]
-            : tour.galleryImages[0].url
-        )
-      : "");
 
   return (
     <>
@@ -30,7 +21,6 @@ function TourDetails() {
       <Breadcrumb
         title={title}
         pageKey="tour-details"
-        bgImage={bgImage}
         parent={{ label: "Tours", url: "/tour" }}
       />
       <TourDetailsMain />

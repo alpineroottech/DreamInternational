@@ -6,11 +6,20 @@
   color: #fff;
 }
 
-.ticketing-hero::before {
+.ticketing-hero--solid::before {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(120deg, rgba(10, 7, 79, 0.88), rgba(28, 168, 203, 0.55));
+  background: linear-gradient(
+    120deg,
+    color-mix(in srgb, var(--hero-banner-color, #140ca9) 88%, #000),
+    color-mix(in srgb, var(--hero-banner-color, #140ca9) 55%, #1ca8cb)
+  );
+  opacity: 1;
+}
+
+.ticketing-hero--solid {
+  background-image: none !important;
 }
 
 .ticketing-hero .container {

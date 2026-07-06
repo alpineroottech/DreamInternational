@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { useCollection, useSection, useSettings, resolveAssetUrl } from "../../public-cms/hooks";
+import { useCollection, useSection, useSettings } from "../../public-cms/hooks";
+import { heroBannerStyle, resolveHeroColor } from "../../brand/heroColors";
 import TicketingRouteCard from "./TicketingRouteCard";
 import FlightBookingForm from "./FlightBookingForm";
 import "./ticketing.css";
@@ -10,14 +11,12 @@ const DEFAULTS = {
     subTitle: "Domestic Flights",
     title: "Nepal Domestic Air Tickets",
     intro: "Book flights across Nepal with competitive fares on major routes — Pokhara, Lukla, Bharatpur, and more.",
-    heroImage: "/assets/img/hero/Hero2.jpg",
     trustBadges: ["Licensed Travel Agency", "Instant Confirmation", "24/7 Support"],
   },
   international: {
     subTitle: "International Flights",
     title: "International Air Tickets from Nepal",
     intro: "Fly from Kathmandu to Delhi, Dubai, Doha, Bangkok, and other global hubs with trusted airline partners.",
-    heroImage: "/assets/img/bg/breadcumb-bg.jpg",
     trustBadges: ["Best Fare Search", "Multi-airline Options", "Visa & Travel Support"],
   },
 };
@@ -27,14 +26,11 @@ export default function TicketingListing({ ticketType, pageKey, breadcrumbTitle,
   const settings = useSettings();
   const cms = useCollection("/public/flight-routes", { ticketType });
   const defaults = DEFAULTS[ticketType];
-  const pageHeroes =
-    settings.pageHeroes && typeof settings.pageHeroes === "object" ? settings.pageHeroes : {};
   const settingsHeroKey =
     ticketType === "international" ? "ticketing-international" : "ticketing-domestic";
+  const heroColor = resolveHeroColor(settingsHeroKey, settings);
   const hero = {
     ...defaults,
-    heroImage:
-      pageHeroes[settingsHeroKey] || settings.defaultHeroImage || defaults.heroImage,
     ...(section !== undefined && section ? section : {}),
   };
   const [query, setQuery] = useState("");
@@ -59,8 +55,8 @@ export default function TicketingListing({ ticketType, pageKey, breadcrumbTitle,
   return (
     <>
       <section
-        className="ticketing-hero"
-        style={{ backgroundImage: `url(${resolveAssetUrl(hero.heroImage) || hero.heroImage})` }}
+        className="ticketing-hero ticketing-hero--solid"
+        style={heroBannerStyle(heroColor)}
       >
         <div className="container">
           <div className="ticketing-hero__content">
@@ -146,7 +142,6 @@ export default function TicketingListing({ ticketType, pageKey, breadcrumbTitle,
         </div>
       </section>
 
-      {/* Booking enquiry form */}
       <section className="space-bottom" id="enquiry-form">
         <div className="container">
           <div className="row justify-content-center">

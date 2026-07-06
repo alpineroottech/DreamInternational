@@ -1,50 +1,39 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
+function formatPrice(price) {
+    if (!price) return { amount: '$980.00', suffix: '/Person' };
+    const lower = String(price).toLowerCase();
+    if (lower.includes('per person') || lower.includes('/person') || lower.startsWith('from') || lower.includes('trek')) {
+        return { amount: price, suffix: '' };
+    }
+    return { amount: price, suffix: '/Person' };
+}
+
 function DestinationCardTwo(props) {
-    const { destinationID, destinationImage, destinationTitle, destinationPrice } = props;
+    const { destinationID, destinationImage, destinationTitle, destinationPrice, destinationSubtitle } = props;
     const imgSrc = destinationImage && (destinationImage.startsWith('/') || destinationImage.startsWith('http'))
         ? destinationImage
         : `/assets/img/tour/${destinationImage}`;
+    const { amount, suffix } = formatPrice(destinationPrice);
     return (
-        <div className="tour-box style-flex th-ani">
+        <div className="tour-box style-flex th-ani di-card-grid">
             <div className="tour-box_img global-img">
-                <img src={imgSrc} alt={destinationTitle || 'Destination'} />
+                <img src={imgSrc} alt={destinationTitle || 'Destination'} loading="lazy" />
             </div>
             <div className="tour-content">
                 <h3 className="box-title">
                     <Link to={`/destination/${destinationID}`}>{destinationTitle ? destinationTitle : 'Dubai'}</Link>
                 </h3>
-                <div className="tour-rating">
-                    <div
-                        className="star-rating"
-                        role="img"
-                        aria-label="Rated 5.00 out of 5"
-                    >
-                        <span style={{ width: "100%" }}>
-                            Rated
-                            <strong className="rating">5.00</strong> out of 5
-                            based on <span className="rating">4.8</span>(4.8
-                            Rating)
-                        </span>
-                    </div>
-                    <Link
-                        to={`/destination/${destinationID}`}
-                        className="woocommerce-review-link"
-                    >
-                        (<span className="count">4.8</span>
-                        Rating)
-                    </Link>
-                </div>
+                {destinationSubtitle && (
+                    <p className="di-card-subtitle">{destinationSubtitle}</p>
+                )}
                 <h4 className="tour-box_price">
-                    <span className="currency">{destinationPrice ? destinationPrice : '$980.00'}</span>/Person
+                    <span className="currency">{amount}</span>{suffix}
                 </h4>
                 <div className="tour-action">
-                    <span>
-                        <i className="fa-light fa-clock" />7 Days
-                    </span>
-                    <Link to="/contact" className="th-btn style4 th-icon">
-                        Book Now
+                    <Link to={`/destination/${destinationID}`} className="th-btn style4 th-icon">
+                        View Details
                     </Link>
                 </div>
             </div>

@@ -40,6 +40,15 @@ export async function upsertFlightRoute(prisma, data) {
   });
 }
 
+export async function upsertActivity(prisma, data) {
+  const { slug, ...rest } = data;
+  return prisma.activity.upsert({
+    where: { slug },
+    update: { ...rest, publishedAt: rest.status === "PUBLISHED" ? now() : undefined },
+    create: { slug, ...rest, publishedAt: rest.status === "PUBLISHED" ? now() : undefined },
+  });
+}
+
 export async function upsertTour(prisma, tourData, itinerary = [], faqs = []) {
   const { slug, ...rest } = tourData;
   const existing = await prisma.tour.findUnique({ where: { slug } });

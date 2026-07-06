@@ -122,6 +122,7 @@ function DestinationInner() {
                                                 destinationImage={data.image}
                                                 destinationTitle={data.title}
                                                 destinationPrice={data.price}
+                                                destinationSubtitle={data.shortDescription}
                                             />
                                         </div>
                                     ))}
@@ -137,6 +138,7 @@ function DestinationInner() {
                                                 destinationImage={data.image}
                                                 destinationTitle={data.title}
                                                 destinationPrice={data.price}
+                                                destinationSubtitle={data.shortDescription}
                                             />
                                         </div>
                                     ))}

@@ -10,8 +10,10 @@ import { PrismaClient } from "@prisma/client";
 import { PrismaNeon } from "@prisma/adapter-neon";
 import { neonConfig } from "@neondatabase/serverless";
 import ws from "ws";
-import { buildDestinations, buildFlightRoutes, buildTours } from "./content/cms-content-data.js";
-import { upsertDestination, upsertFlightRoute, upsertTour } from "./lib/cms-import-utils.js";
+import { buildActivities } from "./content/cms-content-activities.js";
+import { buildDestinations, buildTours } from "./content/cms-content-data.js";
+import { buildFlightRoutes } from "./content/cms-content-flights.js";
+import { upsertActivity, upsertDestination, upsertFlightRoute, upsertTour } from "./lib/cms-import-utils.js";
 
 if (typeof globalThis.WebSocket === "undefined") {
   neonConfig.webSocketConstructor = ws;
@@ -53,13 +55,22 @@ async function main() {
     console.log(`  flight: ${route.slug}`);
   }
 
-  const [destCount, tourCount, routeCount] = await Promise.all([
+  // Activities
+  const activities = buildActivities();
+  for (const activity of activities) {
+    // eslint-disable-next-line no-await-in-loop
+    await upsertActivity(prisma, activity);
+    console.log(`  activity: ${activity.slug}`);
+  }
+
+  const [destCount, tourCount, routeCount, activityCount] = await Promise.all([
     prisma.destination.count({ where: { status: "PUBLISHED" } }),
     prisma.tour.count({ where: { status: "PUBLISHED" } }),
     prisma.flightRoute.count({ where: { status: "PUBLISHED" } }),
+    prisma.activity.count({ where: { status: "PUBLISHED" } }),
   ]);
 
-  console.log(`\nDone — ${destCount} published destinations, ${tourCount} published tours, ${routeCount} published flight routes.`);
+  console.log(`\nDone — ${destCount} destinations, ${tourCount} tours, ${routeCount} flights, ${activityCount} activities (published).`);
 }
 
 main()
