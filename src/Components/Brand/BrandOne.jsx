@@ -1,57 +1,48 @@
 import React from "react";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay } from "swiper/modules";
-import "swiper/css";
-import { Link } from "react-router-dom";
-import { useCollection, resolveAssetUrl, resolveCmsList } from "../../public-cms/hooks";
+import { useCollection, resolveCmsList } from "../../public-cms/hooks";
 
 const FALLBACK = [
-  "brand_1_1.svg", "brand_1_2.svg", "brand_1_3.svg", "brand_1_4.svg",
-  "brand_1_5.svg", "brand_1_6.svg", "brand_1_7.svg", "brand_1_8.svg",
-].map((f) => ({ logoUrl: `/assets/img/brand/${f}`, url: "#", name: "Brand" }));
+  "Buddha Air",
+  "Yeti Airlines",
+  "Qatar Airways",
+  "Emirates",
+  "Singapore Airlines",
+  "Turkish Airlines",
+  "Nepal Airlines",
+  "IndiGo",
+].map((name) => ({ name, logoUrl: "" }));
 
 function BrandOne({ className, data = {} }) {
   const cms = useCollection("/public/brands");
   const { loading, items: brands } = resolveCmsList(cms, FALLBACK);
   if (loading) return null;
+
+  const names = brands
+    .map((b) => (b.name || "").trim())
+    .filter(Boolean);
+
+  const track = names.length ? [...names, ...names] : FALLBACK.map((b) => b.name);
+
   return (
-    <div className={`brand-area overflow-hidden ${className || ""}`}>
-      <div className="container th-container">
+    <div className={`brand-area di-brand-marquee overflow-hidden ${className || ""}`}>
+      <div className="container-fluid px-0">
         {(data.subTitle || data.title) && (
-          <div className="title-area text-center mb-30">
-            {data.subTitle && <span className="sub-title">{data.subTitle}</span>}
-            {data.title && <h2 className="sec-title">{data.title}</h2>}
+          <div className="container th-container">
+            <div className="title-area text-center mb-20">
+              {data.subTitle && <span className="sub-title">{data.subTitle}</span>}
+              {data.title && <h2 className="sec-title">{data.title}</h2>}
+            </div>
           </div>
         )}
-        <Swiper
-          modules={[Autoplay]}
-          autoplay={{ delay: 3000, disableOnInteraction: false }}
-          loop={brands.length > 4}
-          speed={1000}
-          spaceBetween={20}
-          breakpoints={{
-            0: { slidesPerView: 2 },
-            576: { slidesPerView: 3 },
-            768: { slidesPerView: 4 },
-            992: { slidesPerView: 5 },
-            1200: { slidesPerView: 6 },
-          }}
-          className="brandSlider1"
-        >
-          {brands.map((brand, index) => {
-            const src = resolveAssetUrl(brand.logoUrl);
-            return (
-              <SwiperSlide key={index}>
-                <div className="brand-box">
-                  <Link to={brand.url || "#"}>
-                    <img className="original" src={src} alt={brand.name || "Partner logo"} />
-                    <img className="gray" src={src} alt="" aria-hidden="true" />
-                  </Link>
-                </div>
-              </SwiperSlide>
-            );
-          })}
-        </Swiper>
+        <div className="di-brand-marquee__viewport" aria-hidden={false}>
+          <div className="di-brand-marquee__track">
+            {track.map((name, index) => (
+              <span key={`${name}-${index}`} className="di-brand-marquee__item">
+                {name}
+              </span>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );

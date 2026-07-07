@@ -4,6 +4,7 @@ import { PrismaNeon } from "@prisma/adapter-neon";
 import { neonConfig } from "@neondatabase/serverless";
 import ws from "ws";
 import bcrypt from "bcryptjs";
+import { seedInternationalTours } from "./seedInternationalTours.js";
 
 if (typeof globalThis.WebSocket === "undefined") {
   neonConfig.webSocketConstructor = ws;
@@ -77,8 +78,8 @@ async function main() {
       v: JSON.stringify([
         { label: "Home", url: "/" },
         { label: "About", url: "/about" },
-        { label: "Tours", url: "/tour" },
-        { label: "Destinations", url: "/destination" },
+        { label: "Nepal Experiences", url: "/tour" },
+        { label: "International Holidays", url: "/international-holidays" },
         { label: "Activities", url: "/activities" },
         { label: "Services", url: "/service" },
         {
@@ -146,6 +147,26 @@ async function main() {
       nextNav = [...nav.slice(0, insertAt), ticketing, ...nav.slice(insertAt)];
     }
     // Remove Contact from nav — Book Now CTA covers it.
+    // Upgrade legacy nav labels/URLs without overwriting custom CMS entries.
+    if (Array.isArray(nextNav) && nextNav.length) {
+      nextNav = nextNav.map((item) => {
+        if (item.url === "/destination") {
+          return { ...item, label: "International Holidays", url: "/international-holidays" };
+        }
+        if (item.url === "/tour" && item.label === "Tours") {
+          return { ...item, label: "Nepal Experiences", url: "/tour" };
+        }
+        return item;
+      });
+      const changed = JSON.stringify(nextNav) !== JSON.stringify(nav);
+      if (changed) {
+        await prisma.setting.update({
+          where: { key: "headerNav" },
+          data: { value: JSON.stringify(nextNav) },
+        });
+      }
+    }
+
     if (Array.isArray(nextNav) && nextNav.length) {
       const withoutContact = nextNav.filter(
         (item) =>
@@ -234,13 +255,23 @@ async function main() {
     { label: "Expert Guides", value: "25", suffix: "+", order: 3 },
   ]);
 
-  // ---------- Partner brands ----------
+  // ---------- Partner brands (text names for marquee) ----------
+  const partnerNames = [
+    "Buddha Air",
+    "Yeti Airlines",
+    "Qatar Airways",
+    "Emirates",
+    "Singapore Airlines",
+    "Turkish Airlines",
+    "Nepal Airlines",
+    "IndiGo",
+  ];
   await seedIfEmpty(
     prisma.brand,
-    [1, 2, 3, 4, 5, 6].map((n) => ({
-      name: `Partner ${n}`,
-      logoUrl: `/assets/img/brand/brand_1_${n}.svg`,
-      order: n - 1,
+    partnerNames.map((name, i) => ({
+      name,
+      logoUrl: "",
+      order: i,
       isVisible: true,
     }))
   );
@@ -399,6 +430,7 @@ async function main() {
       durationNights: Math.max(days - 1, 0),
       difficulty: "MODERATE",
       featuredImageUrl: `/assets/img/tour/${img}`,
+      market: "nepal",
       status: "PUBLISHED",
       isFeatured: i < 6,
       publishedAt: now(),
@@ -655,6 +687,8 @@ async function main() {
       },
     },
   });
+
+  await seedInternationalTours(prisma, now);
 
   console.log("Seed complete.");
 }

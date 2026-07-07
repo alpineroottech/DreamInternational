@@ -5,6 +5,7 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import { Link } from 'react-router-dom';
 import { useCollection, resolveAssetUrl, resolveCmsList } from '../../public-cms/hooks';
+import { tourDetailPath } from '../../lib/tourUrls';
 
 const FALLBACK = [
   { slug: 'greece-tour-package', title: 'Greece Tour Package', featuredImageUrl: '/assets/img/tour/tour_box_1.jpg', basePrice: 980, durationDays: 7 },
@@ -14,7 +15,7 @@ const FALLBACK = [
 ];
 
 function TourOne({ data = {} }) {
-  const cms = useCollection('/public/tours', { featured: true });
+  const cms = useCollection('/public/tours', { featured: true, market: 'nepal' });
   const { loading, items: tours } = resolveCmsList(cms, FALLBACK);
   if (loading) return null;
 
@@ -25,7 +26,7 @@ function TourOne({ data = {} }) {
           <div className="col-lg-6 offset-lg-3">
             <div className="title-area text-center">
               <span className="sub-title">{data.subTitle || 'Best Place For You'}</span>
-              <h2 className="sec-title">{data.title || 'Most Popular Tour'}</h2>
+              <h2 className="sec-title">{data.title || 'Popular Nepal Experiences'}</h2>
               {data.text && <p className="sec-text">{data.text}</p>}
             </div>
           </div>
@@ -45,7 +46,7 @@ function TourOne({ data = {} }) {
             className="swiper th-slider has-shadow slider-drag-wrap"
           >
             {tours.map((tour) => {
-              const to = `/tour-details?slug=${tour.slug}`;
+              const to = tourDetailPath(tour);
               const catName = tour.category?.name;
               const catSlug = tour.category?.slug;
               return (

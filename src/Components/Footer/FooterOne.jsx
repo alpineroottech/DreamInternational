@@ -16,10 +16,17 @@ function FooterOne() {
         links: [
             { label: "Home", url: "/" },
             { label: "About us", url: "/about" },
-            { label: "Our Service", url: "/service" },
-            { label: "Contact", url: "/contact" },
+            { label: "Nepal Experiences", url: "/tour" },
+            { label: "International Holidays", url: "/international-holidays" },
         ],
     };
+
+    const planLinks = [
+        { label: "Domestic Flights", url: "/ticketing/domestic" },
+        { label: "International Flights", url: "/ticketing/international" },
+        { label: "Activities", url: "/activities" },
+        { label: "Contact", url: "/contact" },
+    ];
 
     const phone = settings.contactPhone || "+977-1-0000000";
     const email = settings.contactEmail || "info@dreaminternationaltours.com";
@@ -29,8 +36,8 @@ function FooterOne() {
         <footer className="footer-wrapper footer-layout1 di-footer">
             <div className="widget-area">
                 <div className="container">
-                    <div className="row g-4 g-xl-5 align-items-start di-footer__grid">
-                        <div className="col-lg-4 col-md-6">
+                    <div className="row g-4 g-xl-4 align-items-start di-footer__grid">
+                        <div className="col-lg-3 col-md-6">
                             <div className="widget footer-widget di-footer__brand">
                                 <div className="th-widget-about">
                                     <div className="about-logo">
@@ -78,7 +85,7 @@ function FooterOne() {
                             </div>
                         </div>
 
-                        <div className="col-lg-5 col-md-12">
+                        <div className="col-lg-3 col-md-6">
                             <div className="widget footer-widget di-footer__contact">
                                 <h3 className="widget_title">Get in touch</h3>
                                 <div className="th-widget-contact di-footer__contact-list">
@@ -128,6 +135,23 @@ function FooterOne() {
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+
+                        <div className="col-lg-3 col-md-6">
+                            <div className="widget widget_nav_menu footer-widget di-footer__links">
+                                <h3 className="widget_title">Plan your trip</h3>
+                                <ul className="menu di-footer__menu">
+                                    {planLinks.map((l, i) => (
+                                        <li key={i}>
+                                            <Link to={l.url}>{l.label}</Link>
+                                        </li>
+                                    ))}
+                                </ul>
+                                <p className="di-footer__hours small mt-3 mb-0">
+                                    <i className="fa-regular fa-clock me-2" aria-hidden="true" />
+                                    Sun–Fri, 9:00 AM – 6:00 PM NPT
+                                </p>
                             </div>
                         </div>
                     </div>

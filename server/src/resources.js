@@ -40,6 +40,7 @@ const tourFaqSchema = z.object({
 const TourSchema = z.object({
   title: z.string().min(1, "Title is required"),
   slug,
+  market: z.enum(["nepal", "international"]).optional(),
   shortDescription: str,
   description: str,
   highlights: strArr,
@@ -247,6 +248,7 @@ export const RESOURCES = {
     schema: TourSchema,
     slugFrom: "title",
     htmlFields: ["description"],
+    filterQueryFields: ["market"],
     publicOrderBy: [{ isFeatured: "desc" }, { updatedAt: "desc" }],
     publicInclude: {
       category: true,

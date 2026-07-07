@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from 'react'
-import { Link, useSearchParams, useParams } from 'react-router-dom'
+import { Link, useSearchParams, useParams, useLocation } from 'react-router-dom'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Navigation, Thumbs } from "swiper/modules";
 import { publicApi, resolveAssetUrl, useSettings } from '../../public-cms/hooks';
 import SafeHtml from '../../public-cms/SafeHtml';
+import TourInquiryWidget from './TourInquiryWidget';
+import { tourListingPath } from '../../lib/tourUrls';
 
-function TourDetailsMain() {
+function TourDetailsMain({ market: marketProp }) {
     const [thumbsSwiper, setThumbsSwiper] = useState(null);
     const [activeTab, setActiveTab] = useState(0);
     const [searchParams] = useSearchParams();
     const params = useParams();
+    const location = useLocation();
     const slug = searchParams.get('slug') || params.slug;
     const [tour, setTour] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -31,16 +34,22 @@ function TourDetailsMain() {
     }
 
     if (!tour) {
+        const backMarket = marketProp || (location.pathname.startsWith('/international-holidays') ? 'international' : 'nepal');
         return (
             <section className="space">
                 <div className="container text-center py-5">
-                    <h3>Tour not found</h3>
-                    <p className="text-muted mb-4">This tour may have been removed or is not published yet.</p>
-                    <Link to="/tour" className="th-btn style3 th-icon">Back to Tours</Link>
+                    <h3>{backMarket === 'international' ? 'Holiday package not found' : 'Tour not found'}</h3>
+                    <p className="text-muted mb-4">This package may have been removed or is not published yet.</p>
+                    <Link to={tourListingPath(backMarket)} className="th-btn style3 th-icon">
+                        Back to {backMarket === 'international' ? 'International Holidays' : 'Nepal Experiences'}
+                    </Link>
                 </div>
             </section>
         );
     }
+
+    const market = tour.market || marketProp || 'nepal';
+    const listingPath = tourListingPath(market);
 
     // Gallery: featured image first (detail hero), then additional gallery shots
     const galleryExtras = Array.isArray(tour.galleryImages) && tour.galleryImages.length
@@ -117,7 +126,7 @@ function TourDetailsMain() {
                                 {/* Meta row */}
                                 <div className="page-meta mb-3 d-flex flex-wrap gap-2 align-items-center">
                                     {tour.category?.name && (
-                                        <Link className="page-tag" to={`/tour?category=${tour.category.slug}`}>
+                                        <Link className="page-tag" to={`${listingPath}?category=${tour.category.slug}`}>
                                             {tour.category.name}
                                         </Link>
                                     )}
@@ -287,11 +296,17 @@ function TourDetailsMain() {
                                 )}
                             </div>
 
+                            <TourInquiryWidget tour={tour} />
+
                             {/* Need help */}
                             <div className="widget widget_offer di-help-planning-card">
                                 <div className="offer-banner p-4">
                                     <h6 className="box-title mb-2">Need Help Planning?</h6>
-                                    <p className="small mb-3">Our Nepal travel experts are ready to customise this trip for you.</p>
+                                    <p className="small mb-3">
+                                        {market === 'international'
+                                            ? 'Our outbound travel team can tailor flights, hotels, and visas for you.'
+                                            : 'Our Nepal travel experts are ready to customise this trip for you.'}
+                                    </p>
                                     <p className="fw-bold mb-3"><i className="fa-light fa-phone me-2" />{phone}</p>
                                     <Link to="/contact" className="th-btn style3 th-icon">Contact Us</Link>
                                 </div>

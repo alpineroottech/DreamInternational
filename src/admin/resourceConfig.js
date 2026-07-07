@@ -40,6 +40,15 @@ export const RESOURCE_CONFIG = {
         fields: [
           { name: "title", label: "Title", type: "text", required: true },
           { name: "slug", label: "Slug", type: "slug" },
+          {
+            name: "market",
+            label: "Market",
+            type: "select",
+            options: [
+              { value: "nepal", label: "Nepal experiences (inbound)" },
+              { value: "international", label: "International holidays (outbound)" },
+            ],
+          },
           { name: "categoryId", label: "Category", type: "reference", refResource: "categories", refLabel: "name" },
           { name: "shortDescription", label: "Short description", type: "textarea" },
           { name: "status", label: "Status", type: "select", options: STATUS_OPTS },

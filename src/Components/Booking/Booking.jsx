@@ -13,23 +13,18 @@ function Booking() {
         duration: "",
     });
 
-    const cmsDestinations = useCollection("/public/destinations");
     const cmsCategories = useCollection("/public/categories");
 
-    const destResolved = resolveCmsList(cmsDestinations, []);
     const catResolved = resolveCmsList(cmsCategories, []);
 
     const destinationOptions = [
         ANY,
-        ...(destResolved.loading
-            ? []
-            : cmsDestinations && cmsDestinations.length
-                ? cmsDestinations.map((d) => ({ value: d.slug, label: d.name }))
-                : [
-                    { value: "pokhara", label: "Pokhara" },
-                    { value: "kathmandu", label: "Kathmandu" },
-                    { value: "chitwan", label: "Chitwan" },
-                ]),
+        { value: "everest", label: "Everest Region" },
+        { value: "annapurna", label: "Annapurna" },
+        { value: "pokhara", label: "Pokhara" },
+        { value: "kathmandu", label: "Kathmandu Valley" },
+        { value: "chitwan", label: "Chitwan" },
+        { value: "lumbini", label: "Lumbini" },
     ];
 
     const categoryOptions = [
@@ -71,7 +66,7 @@ function Booking() {
         <div className="booking-sec">
             <div className="container">
                 <p className="booking-sec__lead text-center mb-3">
-                    Find a tour by <strong>where</strong> you want to go, <strong>experience type</strong>, and <strong>trip length</strong>.
+                    Find a Nepal experience by <strong>region</strong>, <strong>experience type</strong>, and <strong>trip length</strong>.
                 </p>
                 <form onSubmit={handleSubmit} className="booking-form">
                     <div className="input-wrap">
@@ -84,7 +79,7 @@ function Booking() {
                                     <label>Where to go?</label>
                                     <NiceSelect
                                         options={destinationOptions}
-                                        placeholder="Any destination"
+                                        placeholder="Any region"
                                         onChange={(value) => handleChange("destination", value)}
                                     />
                                 </div>

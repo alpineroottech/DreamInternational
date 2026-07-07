@@ -12,7 +12,7 @@ function Tour() {
             <HeaderOne />
             <Breadcrumb
                 pageKey="tours"
-            title="Popular Tours"
+            title="Nepal Experiences"
             />
             <TourInner />
             <FooterOne />

@@ -1,13 +1,11 @@
 import React from 'react'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, Navigate, useParams } from 'react-router-dom'
 import HomeOne from './HomeOne'
 import HomeTwo from './HomeTwo'
 import HomeThree from './HomeThree'
 import HomeFour from './HomeFour'
 import About from './About'
 import LoadTop from '../Components/LoadTop'
-import Destination from './Destination'
-import DestinationDetails from './DestinationDetails'
 import Service from './Service'
 import ServiceDetails from './ServiceDetails';
 import Activities from './Activities'
@@ -20,6 +18,7 @@ import Wishlist from './Wishlist'
 import Gallery from './Gallery'
 import Tour from './Tour'
 import TourDetails from './TourDetails'
+import InternationalHolidays from './InternationalHolidays'
 import Resort from './Resort'
 import ResortDetails from './ResortDetails'
 import TourGuide from './TourGuide'
@@ -34,6 +33,12 @@ import AdminApp from '../admin/AdminApp'
 import TicketingDomestic from './TicketingDomestic'
 import TicketingInternational from './TicketingInternational'
 import { TicketingDomesticDetail, TicketingInternationalDetail } from './TicketingRouteDetail'
+
+function RedirectLegacyDestinationDetail() {
+  const { id } = useParams();
+  return <Navigate to={`/international-holidays/${id}`} replace />;
+}
+
 function RouterPage() {
   return (
     <div>
@@ -45,8 +50,8 @@ function RouterPage() {
           <Route path="/home-agency" element={<HomeThree />}></Route>
           <Route path="/home-yacht" element={<HomeFour />}></Route>
           <Route path="/about" element={<About />}></Route>
-          <Route path="/destination" element={<Destination />}></Route>
-          <Route path="/destination/:id" element={<DestinationDetails />} />
+          <Route path="/destination" element={<Navigate to="/international-holidays" replace />} />
+          <Route path="/destination/:id" element={<RedirectLegacyDestinationDetail />} />
           <Route path="/service" element={<Service />}></Route>
           <Route path="/service/:id" element={<ServiceDetails />} />
           <Route path="/activities" element={<Activities />}></Route>
@@ -60,6 +65,8 @@ function RouterPage() {
           <Route path="/gallery" element={<Gallery />}></Route>
           <Route path="/tour" element={<Tour />}></Route>
           <Route path="/tour-details" element={<TourDetails />}></Route>
+          <Route path="/international-holidays" element={<InternationalHolidays />}></Route>
+          <Route path="/international-holidays/:slug" element={<TourDetails />}></Route>
           <Route path="/resort" element={<Resort />}></Route>
           <Route path="/resort/:id" element={<ResortDetails />}></Route>
           <Route path="/tour-guide" element={<TourGuide />}></Route>

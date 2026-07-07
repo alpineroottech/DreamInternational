@@ -6,6 +6,7 @@ export const DEFAULT_PAGE_HERO_COLORS = {
   about: "#140ca9",
   tours: "#140ca9",
   "tour-details": "#140ca9",
+  "international-holidays": "#0d5c63",
   destinations: "#0d5c63",
   "destination-details": "#0d5c63",
   activities: "#c41a00",

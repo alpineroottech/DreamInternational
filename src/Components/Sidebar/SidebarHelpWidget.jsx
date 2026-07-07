@@ -8,7 +8,7 @@ export default function SidebarHelpWidget({ title = "Need Help? We Are Here To H
         <div className="offer">
           <h6 className="box-title">{title}</h6>
           <p className="small mb-3 opacity-90">Get online support from our travel team.</p>
-          <Link to="/contact" className="th-btn style2 th-icon">
+          <Link to="/contact" className="th-btn th-btn-accent th-icon">
             Contact Us
           </Link>
         </div>

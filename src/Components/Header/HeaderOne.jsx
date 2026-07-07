@@ -7,8 +7,8 @@ import { BRAND_NAME, LOGO_TITLE } from '../../brand/brandAssets';
 const DEFAULT_NAV = [
     { label: "Home", url: "/" },
     { label: "About", url: "/about" },
-    { label: "Tours", url: "/tour" },
-    { label: "Destinations", url: "/destination" },
+    { label: "Nepal Experiences", url: "/tour" },
+    { label: "International Holidays", url: "/international-holidays" },
     { label: "Activities", url: "/activities" },
     { label: "Services", url: "/service" },
     {

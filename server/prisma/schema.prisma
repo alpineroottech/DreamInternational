@@ -72,6 +72,7 @@ model Tour {
   id                 String         @id @default(cuid())
   slug               String         @unique
   title              String
+  market             String         @default("nepal") // nepal | international
   shortDescription   String?
   description        String?        // HTML
   highlights         Json?          // string[]

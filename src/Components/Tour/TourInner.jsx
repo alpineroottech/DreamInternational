@@ -6,8 +6,9 @@ import TourCardTwo from './TourCardTwo';
 import { useCollection } from '../../public-cms/hooks';
 import RecentPostsWidget from '../Sidebar/RecentPostsWidget';
 import SidebarHelpWidget from '../Sidebar/SidebarHelpWidget';
+import { tourDetailPath } from '../../lib/tourUrls';
 
-function TourInner() {
+function TourInner({ market = 'nepal' }) {
     const [activeTab, setActiveTab] = useState('tab-grid');
     const [currentPage, setCurrentPage] = useState(1);
     const [searchParams, setSearchParams] = useSearchParams();
@@ -19,7 +20,7 @@ function TourInner() {
     const filterDuration   = searchParams.get('duration') || '';
     const [localSearch, setLocalSearch] = useState(searchParams.get('q') || '');
 
-    const cms = useCollection('/public/tours');
+    const cms = useCollection('/public/tours', { market });
     const cmsCategories = useCollection('/public/categories');
 
     // Support multiple category filters via comma-separated query param
@@ -30,7 +31,7 @@ function TourInner() {
         return (
             <section className="space">
                 <div className="container text-center py-5">
-                    <p className="mb-0">Loading tours…</p>
+                    <p className="mb-0">Loading {market === 'international' ? 'packages' : 'tours'}…</p>
                 </div>
             </section>
         );
@@ -47,8 +48,11 @@ function TourInner() {
             categorySlug: t.category?.slug || t.categorySlug || '',
             categoryName: t.category?.name || '',
             raw: t,
+            market: t.market || market,
         }))
-        : jsonPosts.map((p) => ({ ...p, durationDays: null, categorySlug: '', categoryName: '', raw: p }));
+        : market === 'nepal'
+        ? jsonPosts.map((p) => ({ ...p, durationDays: null, categorySlug: '', categoryName: '', raw: p, market: 'nepal' }))
+        : [];
 
     // Apply filters from URL params (homepage booking bar + sidebar)
     const posts = allPosts.filter((p) => {
@@ -148,7 +152,7 @@ function TourInner() {
                                 <form className="search-form" onSubmit={(e) => { e.preventDefault(); setCurrentPage(1); }}>
                                     <input
                                         type="text"
-                                        placeholder="Search tours…"
+                                        placeholder={market === 'international' ? 'Search holidays…' : 'Search tours…'}
                                         value={localSearch}
                                         onChange={(e) => { setLocalSearch(e.target.value); setCurrentPage(1); }}
                                     />
@@ -225,7 +229,7 @@ function TourInner() {
                                                 tourPrice={data.price}
                                                 tourDuration={data.durationDays}
                                                 tourCategory={data.categoryName}
-                                                tourLink={data.slug ? `/tour-details?slug=${data.slug}` : undefined}
+                                                tourLink={data.slug ? tourDetailPath(data, market) : undefined}
                                             />
                                         </div>
                                     ))}
@@ -242,7 +246,7 @@ function TourInner() {
                                                 tourImage={`${data.image}`}
                                                 tourTitle={data.title}
                                                 tourPrice={data.price}
-                                                tourLink={data.slug ? `/tour-details?slug=${data.slug}` : undefined}
+                                                tourLink={data.slug ? tourDetailPath(data, market) : undefined}
                                             />
                                         </div>
                                     ))}
@@ -276,7 +280,7 @@ function TourInner() {
                         <aside className="sidebar-area">
                             {/* Tour categories from CMS */}
                             <div className="widget widget_categories">
-                                <h3 className="widget_title">Tour Categories</h3>
+                                <h3 className="widget_title">{market === 'international' ? 'Holiday Types' : 'Tour Categories'}</h3>
                                 <ul>
                                     {(cmsCategories && cmsCategories.length ? cmsCategories : []).map((cat) => (
                                         <li key={cat.slug}>
