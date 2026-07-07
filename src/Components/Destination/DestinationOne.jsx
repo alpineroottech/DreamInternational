@@ -11,16 +11,25 @@ function DestinationOne({ data = {} }) {
     let active = true;
     const req = specificSlug
       ? publicApi.get(`/public/tours/${specificSlug}`)
-      : publicApi.get("/public/tours", { params: { featured: "true", market: "international" } });
+      : publicApi.get("/public/tours", { params: { featured: "true", market: "nepal" } });
 
     req
       .then(({ data: payload }) => {
         if (!active) return;
         if (Array.isArray(payload)) {
-          const match = payload.find((t) => t.market === "international") || payload[0];
-          if (match) setTour(match);
+          // Ensure homepage picks exactly ONE deterministic featured item.
+          const sorted = [...payload].sort((a, b) => {
+            const ap = a.publishedAt ? new Date(a.publishedAt).getTime() : 0;
+            const bp = b.publishedAt ? new Date(b.publishedAt).getTime() : 0;
+            if (bp !== ap) return bp - ap;
+            const au = a.updatedAt ? new Date(a.updatedAt).getTime() : 0;
+            const bu = b.updatedAt ? new Date(b.updatedAt).getTime() : 0;
+            return bu - au;
+          });
+          if (sorted[0]) setTour(sorted[0]);
         } else if (payload?.slug) {
-          setTour(payload);
+          // Only render Nepal market items in the "featured destination" slot.
+          if (!payload.market || payload.market === "nepal") setTour(payload);
         }
       })
       .catch(() => {});
@@ -29,14 +38,14 @@ function DestinationOne({ data = {} }) {
     };
   }, [specificSlug]);
 
-  const title = tour?.title || "Thailand — Bangkok & Phuket Escape";
-  const slug = tour?.slug || "thailand-bangkok-phuket";
+  const title = tour?.title || "Everest Base Camp Trek";
+  const slug = tour?.slug || "everest-base-camp-trek";
   const image =
     resolveAssetUrl(tour?.cardImageUrl || tour?.featuredImageUrl) ||
     "/assets/img/destination/destination_4_2.jpg";
   const summary =
     tour?.shortDescription ||
-    "Beach and city escapes from Kathmandu — Thailand, Dubai, Maldives, Bali, and more, with flights and hotels arranged for you.";
+    "Classic Nepal trekking adventure from Kathmandu — explore iconic routes with licensed guides, permits, and full support.";
 
   const highlights = Array.isArray(tour?.highlights) ? tour.highlights : [];
 
@@ -44,8 +53,8 @@ function DestinationOne({ data = {} }) {
     <section className="space" style={{ background: "var(--smoke-color, #f7f9fc)" }}>
       <div className="container">
         <div className="title-area text-center mb-40">
-          <span className="sub-title">{data.subTitle || "Travel Abroad"}</span>
-          <h2 className="sec-title">{data.title || "International Holidays"}</h2>
+          <span className="sub-title">{data.subTitle || "Nepal Experiences"}</span>
+          <h2 className="sec-title">{data.title || "Featured Nepal Experience"}</h2>
         </div>
         <div className="row g-4 align-items-start">
           <div className="col-lg-6">
@@ -59,7 +68,7 @@ function DestinationOne({ data = {} }) {
           </div>
           <div className="col-lg-6">
             <h3 className="sec-title mb-10">
-              <Link to={tourDetailPath({ slug, market: "international" })}>{title}</Link>
+              <Link to={tourDetailPath({ slug, market: "nepal" })}>{title}</Link>
             </h3>
             <p className="mb-20" style={{ lineHeight: 1.8 }}>{summary}</p>
             {highlights.length > 0 && (
@@ -74,11 +83,11 @@ function DestinationOne({ data = {} }) {
                 </div>
               </>
             )}
-            <Link to={tourDetailPath({ slug, market: "international" })} className="th-btn th-icon me-3">
-              View package
+            <Link to={tourDetailPath({ slug, market: "nepal" })} className="th-btn th-icon me-3">
+              View tour
             </Link>
-            <Link to="/international-holidays" className="th-btn style3 th-icon">
-              All international holidays
+            <Link to="/tour" className="th-btn style3 th-icon">
+              Explore Nepal tours
             </Link>
           </div>
         </div>

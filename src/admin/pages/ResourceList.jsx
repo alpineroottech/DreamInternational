@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 import { Icon } from "@iconify/react";
 import api from "../api/client";
 import { RESOURCE_CONFIG } from "../resourceConfig";
@@ -8,6 +8,9 @@ export default function ResourceList({ resource: resourceProp }) {
   const params = useParams();
   const resource = resourceProp || params.resource;
   const cfg = RESOURCE_CONFIG[resource];
+  const [searchParams] = useSearchParams();
+  const marketFilter = (searchParams.get("market") || "").trim();
+  const qsSuffix = marketFilter ? `?market=${encodeURIComponent(marketFilter)}` : "";
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -16,10 +19,10 @@ export default function ResourceList({ resource: resourceProp }) {
     setLoading(true);
     setSearch("");
     api
-      .get(`/admin/${cfg.apiPath}`)
+      .get(`/admin/${cfg.apiPath}`, marketFilter ? { params: { market: marketFilter } } : undefined)
       .then(({ data }) => setItems(data))
       .finally(() => setLoading(false));
-  }, [cfg.apiPath]);
+  }, [cfg.apiPath, marketFilter]);
 
   const remove = async (id, label) => {
     if (!window.confirm(`Delete "${label}"? This cannot be undone.`)) return;
@@ -57,7 +60,7 @@ export default function ResourceList({ resource: resourceProp }) {
           <h4 className="fw-bold mb-1">{cfg.label}</h4>
           <p className="text-muted mb-0">Manage {cfg.label.toLowerCase()} shown on your website.</p>
         </div>
-        <Link to={`/admin/${resource}/new`} className="btn di-btn-primary">
+        <Link to={`/admin/${resource}/new${qsSuffix}`} className="btn di-btn-primary">
           <Icon icon="solar:add-circle-outline" className="me-1" /> New {cfg.singular.toLowerCase()}
         </Link>
       </div>
@@ -101,7 +104,7 @@ export default function ResourceList({ resource: resourceProp }) {
                       </td>
                     ))}
                     <td className="text-end">
-                      <Link to={`/admin/${resource}/${row.id}/edit`} className="btn btn-sm btn-outline-secondary me-1">
+                      <Link to={`/admin/${resource}/${row.id}/edit${qsSuffix}`} className="btn btn-sm btn-outline-secondary me-1">
                         <Icon icon="solar:pen-outline" />
                       </Link>
                       <button className="btn btn-sm btn-outline-danger" onClick={() => remove(row.id, row[cfg.titleField])}>

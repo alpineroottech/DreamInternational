@@ -21,26 +21,34 @@ function BrandOne({ className, data = {} }) {
     .map((b) => (b.name || "").trim())
     .filter(Boolean);
 
-  const track = names.length ? [...names, ...names] : FALLBACK.map((b) => b.name);
+  const base = names.length ? names : FALLBACK.map((b) => b.name);
+  // Duplicate for seamless marquee loop.
+  const track = base.length ? [...base, ...base] : [];
+
+  const durationSec = Math.max(18, Math.min(70, track.length * 2.2));
+  const ariaLabel = data.title || data.subTitle || "Partner brands";
 
   return (
     <div className={`brand-area di-brand-marquee overflow-hidden ${className || ""}`}>
       <div className="container-fluid px-0">
-        {(data.subTitle || data.title) && (
-          <div className="container th-container">
-            <div className="title-area text-center mb-20">
-              {data.subTitle && <span className="sub-title">{data.subTitle}</span>}
-              {data.title && <h2 className="sec-title">{data.title}</h2>}
+        <div className="container th-container">
+          <div className="di-brand-marquee__row" aria-label={ariaLabel} role="region">
+            <span className="di-brand-marquee__label">
+              {data.subTitle || data.title || "Recognised by"}
+            </span>
+
+            <div className="di-brand-marquee__viewport">
+              <div
+                className="di-brand-marquee__track"
+                style={{ animationDuration: `${durationSec}s` }}
+              >
+                {track.map((name, index) => (
+                  <span key={`${name}-${index}`} className="di-brand-marquee__item">
+                    {name}
+                  </span>
+                ))}
+              </div>
             </div>
-          </div>
-        )}
-        <div className="di-brand-marquee__viewport" aria-hidden={false}>
-          <div className="di-brand-marquee__track">
-            {track.map((name, index) => (
-              <span key={`${name}-${index}`} className="di-brand-marquee__item">
-                {name}
-              </span>
-            ))}
           </div>
         </div>
       </div>

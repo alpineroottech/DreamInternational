@@ -64,10 +64,11 @@ const FIELDS = [
 /** Keys used by <Breadcrumb pageKey="…" /> across the public site. */
 export const PAGE_HERO_FIELDS = [
   { key: "about", label: "About" },
-  { key: "tours", label: "Tours listing" },
-  { key: "tour-details", label: "Tour details (fallback)" },
-  { key: "destinations", label: "Destinations listing" },
-  { key: "destination-details", label: "Destination details (fallback)" },
+  { key: "tours", label: "Nepal Experiences listing" },
+  { key: "tour-details", label: "Nepal Experience details (fallback)" },
+  { key: "international-holidays", label: "International Holidays listing" },
+  { key: "destinations", label: "Destinations listing (legacy)" },
+  { key: "destination-details", label: "Destination details (fallback, legacy)" },
   { key: "activities", label: "Activities listing" },
   { key: "activity-details", label: "Activity details (fallback)" },
   { key: "services", label: "Services listing" },

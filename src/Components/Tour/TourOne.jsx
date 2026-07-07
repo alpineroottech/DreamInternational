@@ -3,7 +3,9 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
+import 'swiper/css/autoplay';
 import { Link } from 'react-router-dom';
+import { Autoplay, Navigation } from 'swiper/modules';
 import { useCollection, resolveAssetUrl, resolveCmsList } from '../../public-cms/hooks';
 import { tourDetailPath } from '../../lib/tourUrls';
 
@@ -32,14 +34,27 @@ function TourOne({ data = {} }) {
           </div>
         </div>
         <div className="slider-area tour-slider">
+          <div className="tour-swiper-custom d-none d-md-flex">
+            <button className="slider-arrow style3 tour-slider-prev" type="button">
+              <img src="/assets/img/icon/hero-arrow-left.svg" alt="Prev" />
+            </button>
+            <button className="slider-arrow style3 tour-slider-next" type="button">
+              <img src="/assets/img/icon/hero-arrow-right.svg" alt="Next" />
+            </button>
+          </div>
           <Swiper
+            modules={[Autoplay, Navigation]}
+            navigation={{ nextEl: '.tour-slider-next', prevEl: '.tour-slider-prev' }}
+            autoplay={{ delay: 3200, disableOnInteraction: false, pauseOnMouseEnter: true }}
+            loop={tours.length > 1}
             breakpoints={{
               0: { slidesPerView: 1 },
-              576: { slidesPerView: 1 },
+              576: { slidesPerView: 2 },
               768: { slidesPerView: 2 },
-              992: { slidesPerView: 2 },
-              1200: { slidesPerView: 3 },
-              1300: { slidesPerView: 4 },
+              992: { slidesPerView: 3 },
+              1200: { slidesPerView: 4 },
+              1400: { slidesPerView: 5 },
+              1600: { slidesPerView: 6 },
             }}
             spaceBetween={24}
             grabCursor

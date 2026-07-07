@@ -85,12 +85,21 @@ export function buildResource(config) {
   // ---------- Admin ----------
   adminRouter.use(verifyJwt, requireRole(...roles));
 
-  adminRouter.get("/", async (_req, res, next) => {
+  adminRouter.get("/", async (req, res, next) => {
     try {
-      res.json(await model.findMany({
+      const where = {};
+      for (const field of filterQueryFields) {
+        const val = req.query[field];
+        if (val !== undefined && val !== "") where[field] = String(val);
+      }
+
+      res.json(
+        await model.findMany({
+          where,
         orderBy: adminOrderBy,
         ...(adminInclude ? { include: adminInclude } : {}),
-      }));
+        })
+      );
     } catch (e) {
       next(e);
     }

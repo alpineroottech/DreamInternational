@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useParams, useNavigate, Link, useSearchParams } from "react-router-dom";
 import { Icon } from "@iconify/react";
 import api from "../api/client";
 import { RESOURCE_CONFIG } from "../resourceConfig";
@@ -11,6 +11,8 @@ export default function ResourceEditor({ resource: resourceProp }) {
   const resource = resourceProp || params.resource;
   const { id } = params;
   const cfg = RESOURCE_CONFIG[resource];
+  const [searchParams] = useSearchParams();
+  const marketPrefill = (searchParams.get("market") || "").trim();
   const navigate = useNavigate();
   const isNew = !id;
 
@@ -45,7 +47,7 @@ export default function ResourceEditor({ resource: resourceProp }) {
   useEffect(() => {
     setActiveTab(cfg.tabs[0].name);
     if (isNew) {
-      setForm({});
+      setForm(marketPrefill ? { market: marketPrefill } : {});
       setSlugTouched(false);
       setLoading(false);
       return;
@@ -125,7 +127,11 @@ export default function ResourceEditor({ resource: resourceProp }) {
 
   if (loading) return <div className="text-muted">Loading…</div>;
 
-  const title = isNew ? `New ${cfg.singular.toLowerCase()}` : form[cfg.titleField] || cfg.singular;
+  const title = isNew
+    ? marketPrefill
+      ? `New ${cfg.singular.toLowerCase()} (${marketPrefill === "nepal" ? "Nepal" : "International"})`
+      : `New ${cfg.singular.toLowerCase()}`
+    : form[cfg.titleField] || cfg.singular;
 
   return (
     <form onSubmit={save}>
