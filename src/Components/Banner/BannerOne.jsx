@@ -1,35 +1,34 @@
 import React, { useEffect, useRef } from 'react'
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/swiper-bundle.css';
-import { Pagination, EffectFade, Navigation } from 'swiper/modules';
+import { Pagination, EffectFade } from 'swiper/modules';
 import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/scrollbar';
+import 'swiper/css/pagination';
 import { Link } from 'react-router-dom';
 import { resolveAssetUrl } from '../../public-cms/hooks';
 
 const FALLBACK_SLIDES = [
     {
         image: "/assets/img/hero/Hero2.jpg",
-        subtitle: "Dream International Travel and Tours",
-        title: "Explore Nepal's Natural Wonders",
+        subtitle: "Welcome to Dream International",
+        title: "Discover the Himalayas of Nepal",
         primaryCta: { label: "Explore Tours", url: "/tour" },
-        secondaryCta: { label: "Plan Custom Trip", url: "/service" },
+        secondaryCta: { label: "Contact Us", url: "/contact" },
     },
     {
         image: "/assets/img/hero/R.jpg",
         subtitle: "Trusted Local Experts in Nepal",
-        title: "Trekking, Cultural, and Luxury Journeys",
+        title: "Trekking, Culture & Tailor-Made Journeys",
         primaryCta: { label: "Explore Tours", url: "/tour" },
-        secondaryCta: { label: "Plan Custom Trip", url: "/service" },
+        secondaryCta: { label: "Contact Us", url: "/contact" },
     },
 ];
 
 function HeroCta({ to, label, className }) {
     return (
-        <Link to={to} className={`th-btn th-icon-plane ${className}`}>
+        <Link to={to} className={`th-btn th-icon-plane ${className || ""}`}>
             {label}
-            <i className="fa-regular fa-plane" aria-hidden="true" />
+            <i className="fa-regular fa-arrow-right" aria-hidden="true" />
         </Link>
     );
 }
@@ -47,23 +46,15 @@ function BannerOne({ data = {} }) {
         });
     }, [slides]);
 
-    const handleSliderNavigation = (direction) => {
-        const swiper = swiperRef.current?.swiper;
-        if (!swiper) return;
-        if (direction === "prev") swiper.slidePrev();
-        else swiper.slideNext();
-    };
-
     return (
-        <div className="th-hero-wrapper hero-1" id="hero">
+        <div className="th-hero-wrapper hero-1 di-hero-mockup" id="hero">
             <Swiper
                 ref={swiperRef}
-                modules={[Navigation, Pagination, EffectFade]}
+                modules={[Pagination, EffectFade]}
                 effect="fade"
                 loop
                 speed={1000}
-                pagination={{ el: ".swiper-pagination", clickable: true }}
-                navigation={{ nextEl: ".slider-next", prevEl: ".slider-prev" }}
+                pagination={{ el: ".di-hero-pagination", clickable: true }}
                 className="th-slider hero-slider-1"
                 id="heroSlide1"
             >
@@ -76,16 +67,18 @@ function BannerOne({ data = {} }) {
                                     backgroundImage: `url(${resolveAssetUrl(slide.image)})`,
                                     backgroundRepeat: "no-repeat",
                                     backgroundSize: "cover",
+                                    backgroundPosition: "center",
                                 }}
                             />
+                            <div className="di-hero-overlay" aria-hidden="true" />
                             <div className="container">
-                                <div className="hero-style1">
+                                <div className="hero-style1 di-hero-content">
                                     {slide.subtitle && (
-                                        <span className="sub-title style1" data-ani="slideinup" data-ani-delay="0.2s">
+                                        <span className="sub-title style1 di-hero-script" data-ani="slideinup" data-ani-delay="0.2s">
                                             {slide.subtitle}
                                         </span>
                                     )}
-                                    <h1 className="hero-title" data-ani="slideinup" data-ani-delay="0.4s">
+                                    <h1 className="hero-title di-hero-title" data-ani="slideinup" data-ani-delay="0.4s">
                                         {slide.title}
                                     </h1>
                                     {slide.text && (
@@ -93,11 +86,12 @@ function BannerOne({ data = {} }) {
                                             {slide.text}
                                         </p>
                                     )}
-                                    <div className="btn-group" data-ani="slideinup" data-ani-delay="0.6s">
+                                    <div className="btn-group di-hero-cta" data-ani="slideinup" data-ani-delay="0.6s">
                                         {slide.primaryCta?.label && (
                                             <HeroCta
                                                 to={slide.primaryCta.url || "/tour"}
                                                 label={slide.primaryCta.label}
+                                                className="di-hero-btn-primary"
                                             />
                                         )}
                                         {slide.secondaryCta?.label && (
@@ -113,14 +107,8 @@ function BannerOne({ data = {} }) {
                         </div>
                     </SwiperSlide>
                 ))}
-                <div className="th-swiper-custom">
-                    <button className="slider-arrow slider-prev" onClick={() => handleSliderNavigation("prev")}>
-                        <img src="/assets/img/icon/right-arrow.svg" alt="Prev" />
-                    </button>
-                    <div className="swiper-pagination" />
-                    <button className="slider-arrow slider-next" onClick={() => handleSliderNavigation("next")}>
-                        <img src="/assets/img/icon/left-arrow.svg" alt="Next" />
-                    </button>
+                <div className="di-hero-pagination-wrap">
+                    <div className="swiper-pagination di-hero-pagination" />
                 </div>
             </Swiper>
         </div>

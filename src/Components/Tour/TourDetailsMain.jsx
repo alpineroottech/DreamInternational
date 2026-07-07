@@ -269,7 +269,7 @@ function TourDetailsMain({ market: marketProp }) {
                     <div className="col-xxl-4 col-lg-5">
                         <aside className="sidebar-area">
                             {/* Booking widget */}
-                            <div className="widget widget_offer mb-4" style={{ background: 'linear-gradient(135deg,#0a074f,#140ca9)', borderRadius: 16, padding: '28px 24px' }}>
+                            <div className="widget widget_offer mb-4" style={{ background: 'linear-gradient(135deg,#000f3d,#001a57)', borderRadius: 16, padding: '28px 24px' }}>
                                 <h4 className="text-white mb-1">{tour.basePrice ? `From $${tour.basePrice}` : 'On request'}</h4>
                                 <p className="text-white opacity-75 small mb-4">{tour.basePrice ? 'per person' : 'contact us for pricing'}</p>
                                 <ul className="list-unstyled text-white mb-4" style={{ fontSize: 14 }}>

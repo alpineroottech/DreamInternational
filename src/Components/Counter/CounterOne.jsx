@@ -4,10 +4,10 @@ import { useInView } from "react-intersection-observer";
 import { useCollection, resolveCmsList } from "../../public-cms/hooks";
 
 const FALLBACK = [
-    { value: 12, suffix: "", title: "Years Experience" },
-    { value: 97, suffix: "%", title: "Retention Rate" },
-    { value: 8, suffix: "k", title: "Tour Completed" },
-    { value: 19, suffix: "k", title: "Happy Travellers" }
+    { value: 12, suffix: "+", title: "Years of Experience", icon: "fa-light fa-award" },
+    { value: 3568, suffix: "", title: "Happy Customers", icon: "fa-light fa-face-smile" },
+    { value: 20, suffix: "+", title: "Tour Destinations", icon: "fa-light fa-map-location-dot" },
+    { value: 25, suffix: "", title: "Professional Guides", icon: "fa-light fa-user-group" },
 ];
 
 const CounterOne = () => {
@@ -15,78 +15,56 @@ const CounterOne = () => {
     const { loading, items: fallbackCounters } = resolveCmsList(cms, FALLBACK);
     const counters =
         cms && cms.length
-            ? cms.map((c) => {
+            ? cms.map((c, i) => {
                 const num = parseInt(String(c.value).replace(/[^0-9]/g, ""), 10);
-                return { value: Number.isNaN(num) ? 0 : num, suffix: c.suffix || "", title: c.label };
+                const fb = FALLBACK[i % FALLBACK.length];
+                return {
+                    value: Number.isNaN(num) ? 0 : num,
+                    suffix: c.suffix || "",
+                    title: c.label,
+                    icon: c.icon || fb.icon,
+                };
             })
             : fallbackCounters;
 
-    // Use intersection observer to detect when component is in view
     const { ref, inView } = useInView({ triggerOnce: true });
 
     if (loading) return null;
 
     return (
-        <div className="counter-area space" ref={ref}>
-            <div className="container shape-mockup-wrap">
-                <div className="row">
+        <section className="counter-area space di-stats-section" ref={ref}>
+            <div className="container">
+                <div className="row g-4 justify-content-center">
                     {counters.map((counter, index) => (
-                        <div key={index} className="col-sm-6 col-xl-3 counter-card-wrap">
-                            <div className="counter-card">
-                                <div className="counter-shape"><span></span></div>
-                                <div className="media-body">
-                                    <h3 className="box-number">
-                                        {inView && (
-                                            <CountUp
-                                                start={0}
-                                                end={counter.value}
-                                                duration={2} // Matches your jQuery settings
-                                                delay={0}
-                                            />
-                                        )}
-                                        {counter.suffix}
-                                    </h3>
-                                    <h6 className="counter-title">{counter.title}</h6>
+                        <div key={index} className="col-6 col-lg-3">
+                            <div className="di-stat-card">
+                                <div className="di-stat-card__icon" aria-hidden="true">
+                                    {String(counter.icon || "").startsWith("fa") ? (
+                                        <i className={counter.icon} />
+                                    ) : counter.icon ? (
+                                        <img src={counter.icon} alt="" />
+                                    ) : (
+                                        <i className="fa-light fa-star" />
+                                    )}
                                 </div>
+                                <div className="di-stat-card__value">
+                                    {inView && (
+                                        <CountUp
+                                            start={0}
+                                            end={counter.value}
+                                            duration={2}
+                                            separator=","
+                                        />
+                                    )}
+                                    {counter.suffix}
+                                </div>
+                                <p className="di-stat-card__label">{counter.title}</p>
                             </div>
                         </div>
                     ))}
                 </div>
-                <div
-                    className="shape-mockup shape1 d-none d-xl-block"
-                    data-top="30%"
-                    data-left="-15%"
-                >
-                    <img src="assets/img/shape/shape_1.png" alt="shape" />
-                </div>
-                <div
-                    className="shape-mockup shape2 d-none d-xl-block"
-                    style={{top:"45%", left:"-13%"}}
-                >
-                    <img src="assets/img/shape/shape_2.png" alt="shape" />
-                </div>
-                <div
-                    className="shape-mockup shape3 d-none d-xl-block"
-                    style={{top:"32%", left:"-7%"}}
-                >
-                    <img src="assets/img/shape/shape_3.png" alt="shape" />
-                </div>
-                <div
-                    className="shape-mockup d-none d-xl-block"
-                    style={{bottom:"-24%", left:"-15%"}}
-                >
-                    <img src="assets/img/shape/shape_6.png" alt="shape" />
-                </div>
-                <div
-                    className="shape-mockup jump d-none d-xl-block"
-                    data-top="5%"
-                    data-right="-10%"
-                    style={{top:"5%", right:"-10%"}}
-                >
-                    <img src="assets/img/shape/shape_5.png" alt="shape" />
-                </div>
             </div>
-        </div>
+        </section>
     );
 };
 

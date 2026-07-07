@@ -87,8 +87,8 @@ const CategoryOne = ({ data = {} }) => {
     <section className="category-area bg-top-center">
       <div className="container th-container">
         <div className="title-area text-center">
-          <span className="sub-title">{data.subTitle || "Wonderful Place For You"}</span>
-          <h2 className="sec-title">{data.title || "Tour Categories"}</h2>
+          <span className="sub-title di-section-script">{data.subTitle || "Tour Categories"}</span>
+          <h2 className="sec-title">{data.title || "Browse by Experience"}</h2>
         </div>
 
         <Swiper

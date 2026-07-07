@@ -1,8 +1,8 @@
 /* Dream International CMS — admin styling (built on Bootstrap 5) */
 
 :root {
-  --di-primary: #140ca9;
-  --di-primary-dark: #0a074f;
+  --di-primary: #001a57;
+  --di-primary-dark: #000f3d;
   --di-sidebar-w: 260px;
   --di-bg: #f5f5fc;
 }
@@ -147,8 +147,8 @@
   color: #fff;
 }
 .di-btn-primary:hover {
-  background: #0a074f;
-  border-color: #0a074f;
+  background: #000f3d;
+  border-color: #000f3d;
   color: #fff;
 }
 
@@ -181,7 +181,7 @@
   min-height: 100vh;
   display: grid;
   place-items: center;
-  background: linear-gradient(135deg, #0a074f, #140ca9);
+  background: linear-gradient(135deg, #000f3d, #001a57);
   padding: 20px;
 }
 .di-auth__card {
@@ -284,8 +284,8 @@
 .di-admin .form-switch .form-check-input:checked {
   background-position: right center !important;
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e") !important;
-  background-color: #140ca9 !important;
-  border-color: #140ca9 !important;
+  background-color: #001a57 !important;
+  border-color: #001a57 !important;
 }
 
 .di-admin .form-switch .form-check-input:focus {
@@ -318,7 +318,7 @@
   line-height: 1;
 }
 
-.di-switch-label--on  { color: #140ca9; }
+.di-switch-label--on  { color: #001a57; }
 .di-switch-label--off { color: #9aa6b2; }
 
 /* Fix template's height:56px on .form-control inside admin */

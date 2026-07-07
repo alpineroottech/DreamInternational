@@ -1,7 +1,7 @@
 /*
   ================================================================
   Dream International Travel and Tours — Brand Theme Override
-  Colors: Blue #140ca9 | Red #ff2300 | White #ffffff
+  Colors: Navy #001a57 | Red #e30613 | White #ffffff
   ================================================================
   This file loads AFTER style.css (injected by React), so every
   declaration here wins over the template defaults via the cascade.
@@ -10,31 +10,33 @@
 
 /* ─── 1. CSS VARIABLE OVERRIDES ─────────────────────────────── */
 :root {
-  /* Primary brand blue */
-  --theme-color:       #140ca9;
-  --primary-color:     #140ca9;
+  /* Primary brand navy (mockup palette) */
+  --theme-color:       #001a57;
+  --primary-color:     #001a57;
 
-  /* Dark navy — used for headings and button hover fill */
-  --title-color:       #0a074f;
+  /* Headings, footer, dark panels */
+  --title-color:       #001a57;
 
-  /* Light backgrounds with a subtle blue tint */
-  --smoke-color:       #edeef8;
-  --smoke-color2:      #f5f5fc;
+  /* Light section backgrounds */
+  --smoke-color:       #f4f6fb;
+  --smoke-color2:      #eef1f8;
 
   /* Border tint */
-  --th-border-color:   #d4d5ef;
+  --th-border-color:   #d8deeb;
 
-  /* Keep white and body-text untouched */
   --white-color:       #ffffff;
-  --body-color:        #6e7070;
+  --body-color:        #5c6478;
 
-  /* Red accent — use sparingly on key CTAs */
-  --brand-red:         #ff2300;
+  /* Red accent — key CTAs */
+  --brand-red:         #e30613;
 
-  /* Deeper blues for hovers and depth */
-  --brand-blue-dark:   #0a074f;
-  --brand-blue-mid:    #1a14c4;
-  --brand-blue-light:  #4a55d4;
+  /* Navy scale */
+  --brand-blue-dark:   #000f3d;
+  --brand-blue-mid:    #002878;
+  --brand-blue-light:  #1a3d8f;
+
+  /* Stats / icon gold */
+  --brand-gold:        #d4a017;
 }
 
 /* ─── 2. BUTTON HOVER — keep text white on ALL button variants ── */
@@ -182,8 +184,8 @@
   background-position: center;
   background-image: linear-gradient(
     135deg,
-    var(--hero-banner-color, #140ca9) 0%,
-    color-mix(in srgb, var(--hero-banner-color, #140ca9) 72%, #000) 100%
+    var(--hero-banner-color, #001a57) 0%,
+    color-mix(in srgb, var(--hero-banner-color, #001a57) 72%, #000) 100%
   );
 }
 
@@ -311,7 +313,7 @@
 
 /* Sidebar help widget — solid brand panel */
 .di-sidebar-help.widget_offer {
-  background: var(--title-color, #0a074f) !important;
+  background: var(--title-color, #000f3d) !important;
   background-image: none !important;
   border-radius: 16px;
   overflow: hidden;
@@ -516,32 +518,21 @@
   background-color: var(--brand-red);
   border-color: var(--brand-red);
 }
-.hero-1 .hero-style1 {
-  text-align: left;
-  margin-left: 0;
-  margin-right: auto;
-  max-width: 760px;
-}
-
-.hero-1 .hero-style1 .btn-group {
-  justify-content: flex-start;
-}
-
-.hero-1 .hero-style1 .hero-text {
-  margin-left: 0;
+/* Hero: centered mockup layout */
+.di-hero-mockup .hero-style1 {
+  text-align: center;
+  margin-left: auto;
   margin-right: auto;
 }
 
-@media (max-width: 767px) {
-  .hero-1 .hero-style1 {
-    text-align: center;
-    margin-left: auto;
-    margin-right: auto;
-  }
+.di-hero-mockup .hero-style1 .btn-group {
+  justify-content: center;
+}
 
-  .hero-1 .hero-style1 .btn-group {
-    justify-content: center;
-  }
+.di-hero-mockup .hero-style1 .hero-text {
+  margin-left: auto;
+  margin-right: auto;
+  color: rgba(255, 255, 255, 0.88);
 }
 
 /* ─── 3. SUB-TITLE ACCENT → brand blue (not red) ────────────── */
@@ -813,20 +804,200 @@ a:not(.th-btn):not(.nav-link):hover {
   color: var(--theme-color);
 }
 
-/* ─── 12. BOOKING WIDGET ────────────────────────────────────── */
-.booking-sec {
-  background: linear-gradient(135deg, var(--title-color) 0%, #1a11c9 100%);
-  padding-top: 30px;
-  padding-bottom: 30px;
+/* ─── 12. HERO + BOOKING BAR (mockup layout) ───────────────── */
+.di-hero-booking-wrap {
+  position: relative;
+  background: var(--title-color);
+  padding-bottom: 28px;
 }
 
-.booking-form {
-  border-color: var(--theme-color);
+.di-hero-booking-wrap + .category-area {
+  padding-top: 56px !important;
 }
 
-.booking-sec .booking-form label,
-.booking-sec .booking-form .search-input label {
-  color: rgba(255, 255, 255, 0.75);
+.di-hero-mockup .hero-inner {
+  min-height: clamp(520px, 72vh, 680px);
+}
+
+.di-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 26, 87, 0.55) 0%,
+    rgba(0, 26, 87, 0.72) 55%,
+    rgba(0, 26, 87, 0.92) 100%
+  );
+  z-index: 1;
+  pointer-events: none;
+}
+
+.di-hero-mockup .hero-inner .container {
+  position: relative;
+  z-index: 2;
+}
+
+.di-hero-content {
+  text-align: center !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  max-width: 820px;
+  padding-top: clamp(48px, 8vw, 100px);
+  padding-bottom: clamp(100px, 14vw, 160px);
+}
+
+.di-hero-script {
+  font-family: var(--style-font, cursive) !important;
+  color: rgba(255, 255, 255, 0.95) !important;
+  font-size: clamp(1.1rem, 2.2vw, 1.45rem) !important;
+  letter-spacing: 0.02em;
+}
+
+.di-hero-title {
+  color: #fff !important;
+  font-size: clamp(2.2rem, 5.5vw, 3.75rem) !important;
+  line-height: 1.12 !important;
+  margin-bottom: 1.5rem !important;
+}
+
+.di-hero-cta {
+  justify-content: center !important;
+  gap: 14px !important;
+  flex-wrap: wrap;
+}
+
+.di-hero-btn-primary {
+  background-color: var(--title-color) !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+}
+
+.di-hero-pagination-wrap {
+  position: absolute;
+  bottom: 28px;
+  left: 0;
+  right: 0;
+  z-index: 3;
+  display: flex;
+  justify-content: center;
+}
+
+.di-hero-pagination .swiper-pagination-bullet {
+  background: rgba(255, 255, 255, 0.45);
+  opacity: 1;
+}
+
+.di-hero-pagination .swiper-pagination-bullet-active {
+  background: #fff;
+  width: 22px;
+  border-radius: 6px;
+}
+
+/* White search bar overlapping hero */
+.booking-sec.di-booking-bar {
+  background: transparent;
+  padding: 0;
+  margin-top: -56px;
+  position: relative;
+  z-index: 10;
+  margin-bottom: 0;
+}
+
+.di-booking-form {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 18px 48px rgba(0, 26, 87, 0.18);
+  border: 1px solid rgba(0, 26, 87, 0.08);
+  padding: 0;
+  overflow: hidden;
+}
+
+.di-booking-form__inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+}
+
+.di-booking-field {
+  flex: 1 1 160px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 20px;
+  border-right: 1px solid rgba(0, 26, 87, 0.08);
+  min-width: 0;
+}
+
+.di-booking-field:last-of-type {
+  border-right: none;
+}
+
+.di-booking-field__icon {
+  color: var(--brand-red);
+  font-size: 1.15rem;
+  flex-shrink: 0;
+  width: 28px;
+  text-align: center;
+}
+
+.di-booking-field__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.di-booking-field__label {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(0, 26, 87, 0.45);
+  margin-bottom: 2px;
+}
+
+.di-booking-field .nice-select,
+.di-booking-field .nice-select .current {
+  border: none !important;
+  padding: 0 !important;
+  height: auto !important;
+  line-height: 1.35 !important;
+  font-weight: 600;
+  color: var(--title-color) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.di-booking-submit {
+  flex: 0 0 auto;
+  align-self: stretch;
+  border-radius: 0 16px 16px 0 !important;
+  min-width: 130px;
+  padding: 0 28px !important;
+  gap: 10px;
+  background: var(--title-color) !important;
+  border-color: var(--title-color) !important;
+}
+
+.di-booking-submit:after {
+  display: none !important;
+}
+
+@media (max-width: 991px) {
+  .di-booking-form__inner {
+    flex-direction: column;
+  }
+  .di-booking-field {
+    border-right: none;
+    border-bottom: 1px solid rgba(0, 26, 87, 0.08);
+  }
+  .di-booking-submit {
+    width: 100%;
+    border-radius: 0 0 16px 16px !important;
+    min-height: 52px;
+  }
+}
+
+.booking-sec__lead {
+  display: none;
 }
 
 /* ─── 13. CATEGORY AREA SPACING (kept from App.css) ─────────── */
@@ -878,7 +1049,7 @@ select:focus,
 .form-control:focus,
 .form-select:focus {
   border-color: var(--theme-color) !important;
-  box-shadow: 0 0 0 3px rgba(20, 12, 169, 0.12) !important;
+  box-shadow: 0 0 0 3px rgba(0, 26, 87, 0.12) !important;
 }
 
 /* ─── 19. SCROLL-TO-TOP BUTTON ───────────────────────────────── */
@@ -892,23 +1063,23 @@ select:focus,
 
 /* ─── 20. ADMIN PANEL BRAND COLORS ──────────────────────────── */
 .di-admin {
-  --di-primary:      #140ca9;
-  --di-primary-dark: #0a074f;
+  --di-primary:      #001a57;
+  --di-primary-dark: #000f3d;
   --di-bg:           #f5f5fc;
 }
 
 .di-nav a.active {
-  background: #140ca9 !important;
+  background: #001a57 !important;
 }
 
 .di-nav a:hover {
   background: #edeef8 !important;
-  color: #140ca9 !important;
+  color: #001a57 !important;
 }
 
 .di-btn-primary {
-  background: #140ca9 !important;
-  border-color: #140ca9 !important;
+  background: #001a57 !important;
+  border-color: #001a57 !important;
 }
 
 .di-btn-primary:hover {
@@ -918,7 +1089,7 @@ select:focus,
 
 .di-stat__icon {
   background: #edeef8 !important;
-  color: #140ca9 !important;
+  color: #001a57 !important;
 }
 
 /* ─── 21. HERO CTA — airplane icon instead of arrow ─────────── */
@@ -955,7 +1126,7 @@ select:focus,
 }
 
 .di-testimonial-card__quote {
-  color: #1ca8cb;
+  color: var(--brand-gold);
   font-size: 1.5rem;
   margin-bottom: 12px;
 }
@@ -997,7 +1168,7 @@ select:focus,
 }
 
 .di-testimonial-card__role {
-  color: #1ca8cb;
+  color: var(--brand-gold);
   font-size: 0.9rem;
 }
 
@@ -1006,7 +1177,7 @@ select:focus,
 }
 
 .di-testimonials__slider .swiper-pagination-bullet-active {
-  background: #140ca9;
+  background: #001a57;
 }
 
 /* ─── 23. ABOUT SECTION — clean responsive collage ──────────── */
@@ -1022,7 +1193,7 @@ select:focus,
   width: 58%;
   height: 420px;
   object-fit: cover;
-  border-radius: 20px;
+  border-radius: 999px 999px 24px 24px;
   flex-shrink: 0;
 }
 
@@ -1062,17 +1233,29 @@ select:focus,
   }
 }
 
-/* ─── 24. ALTERNATING SECTION BACKGROUNDS ────────────────────── */
-/* Every section that sits directly in the homepage gets alternating colors.
-   We target key section wrappers explicitly so only homepage sections alternate. */
-.category-area { background: #88beda !important; }
-.tour-area       { background: #ffffff !important; background-image: none !important; }
-.about-area      { background: #88beda !important; }
-.tour-offer-area { background: #ffffff !important; }
-.gallery-area    { background: #88beda !important; }
-.counter-area    { background: #ffffff !important; }
-.di-testimonials { background: #88beda !important; }
-.brand-area      { background: #ffffff !important; padding-top: 18px; padding-bottom: 18px; }
+/* ─── 24. MOCKUP SECTION PALETTE (navy / white alternation) ─── */
+.category-area,
+.di-about-section,
+.gallery-area,
+.di-testimonials {
+  background: var(--title-color) !important;
+  background-image: none !important;
+}
+
+.tour-area,
+.tour-offer-area,
+.counter-area,
+.di-stats-section,
+.blog-area,
+.brand-area {
+  background: #ffffff !important;
+  background-image: none !important;
+}
+
+.brand-area {
+  padding-top: 18px;
+  padding-bottom: 18px;
+}
 
 @media (max-width: 991px) {
   .brand-area {
@@ -1080,22 +1263,158 @@ select:focus,
     padding-bottom: 14px;
   }
 }
-.blog-area       { background: #88beda !important; }
 
-/* Ensure counter section doesn't get the theme-color override */
-.counter-area,
 .cta-area {
   background-color: #ffffff !important;
   background-image: none !important;
 }
 
-/* Sub-title stays readable on teal background */
-.category-area .sub-title,
-.about-area .sub-title,
-.gallery-area .sub-title,
-.di-testimonials .sub-title,
-.blog-area .sub-title {
+/* Navy sections — white headings */
+.category-area .sec-title,
+.di-about-section .sec-title,
+.gallery-area .sec-title,
+.di-testimonials .sec-title {
+  color: #fff !important;
+}
+
+.di-section-script {
+  font-family: var(--style-font, cursive) !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+  font-size: clamp(1rem, 2vw, 1.25rem) !important;
+}
+
+.category-area .category-card {
+  background: #fff;
+  border-radius: 20px;
+  padding-bottom: 18px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+}
+
+.category-area .category-card .box-title a {
   color: var(--title-color) !important;
+}
+
+.category-area .line-btn {
+  color: var(--body-color) !important;
+}
+
+/* About on navy */
+.di-about-section .sec-title,
+.di-about-section .sec-text,
+.di-about-section .about-item_text,
+.di-about-section .box-title {
+  color: #fff !important;
+}
+
+.di-about-section .about-item_img img {
+  filter: brightness(0) invert(1);
+}
+
+.di-about-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: #fff !important;
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.35);
+  padding-bottom: 4px;
+  transition: gap 0.2s ease, border-color 0.2s ease;
+}
+
+.di-about-link:hover {
+  gap: 14px;
+  border-color: #fff;
+  color: #fff !important;
+}
+
+/* Statistics — mockup cards */
+.di-stat-card {
+  text-align: center;
+  padding: 12px 8px;
+}
+
+.di-stat-card__icon {
+  color: var(--brand-gold);
+  font-size: 1.75rem;
+  margin-bottom: 12px;
+  line-height: 1;
+}
+
+.di-stat-card__icon img {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+}
+
+.di-stat-card__value {
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  font-weight: 800;
+  color: var(--title-color);
+  line-height: 1.1;
+  margin-bottom: 6px;
+}
+
+.di-stat-card__label {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--body-color);
+  font-weight: 500;
+}
+
+.di-stats-section .counter-shape,
+.di-stats-section .shape-mockup {
+  display: none !important;
+}
+
+/* Featured tours — visible slider arrows */
+.di-tour-slider-wrap {
+  position: relative;
+  padding: 0 52px;
+}
+
+.di-tour-slider-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 5;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 26, 87, 0.15);
+  background: #fff;
+  color: var(--title-color);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 24px rgba(0, 26, 87, 0.12);
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.di-tour-slider-arrow:hover {
+  background: var(--title-color);
+  color: #fff;
+  border-color: var(--title-color);
+}
+
+.di-tour-slider-arrow--prev {
+  left: 0;
+}
+
+.di-tour-slider-arrow--next {
+  right: 0;
+}
+
+@media (max-width: 575px) {
+  .di-tour-slider-wrap {
+    padding: 0 40px;
+  }
+  .di-tour-slider-arrow {
+    width: 36px;
+    height: 36px;
+    font-size: 0.85rem;
+  }
 }
 
 /* Homepage responsive */
@@ -1111,7 +1430,7 @@ select:focus,
   position: absolute;
   top: 14px;
   left: 14px;
-  background: rgba(20, 12, 169, 0.88);
+  background: rgba(0, 26, 87, 0.88);
   color: #fff;
   font-size: 0.72rem;
   font-weight: 600;
@@ -1126,7 +1445,7 @@ select:focus,
 }
 
 .di-tour-tag:hover {
-  background: var(--theme-color, #140ca9);
+  background: var(--theme-color, #001a57);
   color: #fff;
 }
 
@@ -1184,13 +1503,13 @@ select:focus,
 }
 
 .di-category-filter-btn:hover {
-  border-color: #140ca9;
-  color: #140ca9;
+  border-color: #001a57;
+  color: #001a57;
 }
 
 .di-category-filter-btn.active {
-  background: #140ca9;
-  border-color: #140ca9;
+  background: #001a57;
+  border-color: #001a57;
   color: #fff;
 }
 
@@ -1206,14 +1525,14 @@ select:focus,
 }
 
 .di-auth {
-  background: linear-gradient(135deg, #0a074f, #140ca9) !important;
+  background: linear-gradient(135deg, #000f3d, #001a57) !important;
 }
 
 .di-tabs .nav-link.active {
-  color: #140ca9 !important;
-  border-bottom-color: #140ca9 !important;
+  color: #001a57 !important;
+  border-bottom-color: #001a57 !important;
 }
 
 .di-sidebar__brand .script {
-  color: #140ca9 !important;
+  color: #001a57 !important;
 }

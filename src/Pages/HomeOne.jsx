@@ -50,10 +50,10 @@ function HomeOne() {
                 // The booking widget always sits directly under the hero.
                 if (key === "hero") {
                     return (
-                        <React.Fragment key="hero-group">
+                        <div className="di-hero-booking-wrap" key="hero-group">
                             {el}
                             <Booking />
-                        </React.Fragment>
+                        </div>
                     );
                 }
                 return el;

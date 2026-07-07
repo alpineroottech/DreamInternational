@@ -32,7 +32,7 @@ function TestimonialOne({ data = {} }) {
     <section className="di-testimonials space" id="testi-sec">
       <div className="container">
         <div className="title-area text-center mb-40">
-          <span className="sub-title">{data.subTitle || "Testimonials"}</span>
+          <span className="sub-title di-section-script">{data.subTitle || "Testimonials"}</span>
           <h2 className="sec-title">{data.title || "What Clients Say About Us"}</h2>
         </div>
 

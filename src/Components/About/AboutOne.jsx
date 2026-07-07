@@ -22,7 +22,7 @@ function AboutOne({ data = {} }) {
     const featureTwoText = data.featureTwoText || "Explore with knowledgeable, safety-focused guides who know Nepal deeply.";
 
     return (
-        <div className="about-area position-relative overflow-hidden space" id="about-sec">
+        <div className="about-area di-about-section position-relative overflow-hidden space" id="about-sec">
             <div className="container">
                 <div className="row gy-4 align-items-center">
                     {hasCollage && (
@@ -49,7 +49,7 @@ function AboutOne({ data = {} }) {
                         </div>
                     )}
                     <div className={hasCollage ? "col-lg-6" : "col-lg-10 col-xl-9 mx-auto"}>
-                        <span className="sub-title style1">{data.subTitle || "About Dream International"}</span>
+                        <span className="sub-title style1 di-section-script">{data.subTitle || "About Dream International"}</span>
                         <h2 className="sec-title mb-20">
                             {data.title || "Your Trusted Travel Partner in Nepal"}
                         </h2>
@@ -82,8 +82,8 @@ function AboutOne({ data = {} }) {
                                 </div>
                             </div>
                         </div>
-                        <Link to={ctaUrl} className="th-btn style3 th-icon">
-                            {ctaLabel}
+                        <Link to={ctaUrl} className="di-about-link">
+                            {ctaLabel} <i className="fa-regular fa-arrow-right" aria-hidden="true" />
                         </Link>
                     </div>
                 </div>

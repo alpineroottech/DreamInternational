@@ -1,11 +1,9 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
 import 'swiper/css/autoplay';
 import { Link } from 'react-router-dom';
-import { Autoplay, Navigation } from 'swiper/modules';
+import { Autoplay } from 'swiper/modules';
 import { useCollection, resolveAssetUrl, resolveCmsList } from '../../public-cms/hooks';
 import { tourDetailPath } from '../../lib/tourUrls';
 
@@ -17,9 +15,17 @@ const FALLBACK = [
 ];
 
 function TourOne({ data = {} }) {
+  const swiperRef = useRef(null);
   const cms = useCollection('/public/tours', { featured: true, market: 'nepal' });
   const { loading, items: tours } = resolveCmsList(cms, FALLBACK);
   if (loading) return null;
+
+  const slide = (dir) => {
+    const swiper = swiperRef.current?.swiper;
+    if (!swiper) return;
+    if (dir === 'prev') swiper.slidePrev();
+    else swiper.slideNext();
+  };
 
   return (
     <section className="tour-area position-relative overflow-hidden space" id="service-sec">
@@ -33,18 +39,19 @@ function TourOne({ data = {} }) {
             </div>
           </div>
         </div>
-        <div className="slider-area tour-slider">
-          <div className="tour-swiper-custom d-none d-md-flex">
-            <button className="slider-arrow style3 tour-slider-prev" type="button">
-              <img src="/assets/img/icon/hero-arrow-left.svg" alt="Prev" />
-            </button>
-            <button className="slider-arrow style3 tour-slider-next" type="button">
-              <img src="/assets/img/icon/hero-arrow-right.svg" alt="Next" />
-            </button>
-          </div>
+        <div className="slider-area tour-slider di-tour-slider-wrap">
+          <button
+            type="button"
+            className="di-tour-slider-arrow di-tour-slider-arrow--prev"
+            onClick={() => slide('prev')}
+            aria-label="Previous tours"
+          >
+            <i className="fa-regular fa-arrow-left" aria-hidden="true" />
+          </button>
+
           <Swiper
-            modules={[Autoplay, Navigation]}
-            navigation={{ nextEl: '.tour-slider-next', prevEl: '.tour-slider-prev' }}
+            ref={swiperRef}
+            modules={[Autoplay]}
             autoplay={{ delay: 3200, disableOnInteraction: false, pauseOnMouseEnter: true }}
             loop={tours.length > 1}
             breakpoints={{
@@ -52,13 +59,12 @@ function TourOne({ data = {} }) {
               576: { slidesPerView: 2 },
               768: { slidesPerView: 2 },
               992: { slidesPerView: 3 },
-              1200: { slidesPerView: 4 },
-              1400: { slidesPerView: 5 },
-              1600: { slidesPerView: 6 },
+              1200: { slidesPerView: 3 },
+              1400: { slidesPerView: 4 },
             }}
             spaceBetween={24}
             grabCursor
-            className="swiper th-slider has-shadow slider-drag-wrap"
+            className="swiper th-slider has-shadow slider-drag-wrap di-tour-swiper"
           >
             {tours.map((tour) => {
               const to = tourDetailPath(tour);
@@ -104,6 +110,15 @@ function TourOne({ data = {} }) {
               );
             })}
           </Swiper>
+
+          <button
+            type="button"
+            className="di-tour-slider-arrow di-tour-slider-arrow--next"
+            onClick={() => slide('next')}
+            aria-label="Next tours"
+          >
+            <i className="fa-regular fa-arrow-right" aria-hidden="true" />
+          </button>
         </div>
       </div>
     </section>

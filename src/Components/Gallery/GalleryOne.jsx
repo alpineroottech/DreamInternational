@@ -23,7 +23,7 @@ function GalleryOne({ data = {} }) {
         <div className="gallery-area space">
             <div className="container th-container shape-mockup-wrap">
                 <div className="title-area text-center">
-                    <span className="sub-title">{data.subTitle || 'Make Your Tour More Pleasure'}</span>
+                    <span className="sub-title di-section-script">{data.subTitle || 'Make Your Tour More Pleasure'}</span>
                     <h2 className="sec-title">{data.title || 'Recent Gallery'}</h2>
                 </div>
                 <div className="row gy-10 gx-10 justify-content-center align-items-center">

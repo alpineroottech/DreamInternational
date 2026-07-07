@@ -42,13 +42,4 @@
    content section below the hero have proper breathing room.
    Background and accent colours live in brand-theme.css
 ------------------------------------------------------- */
-.booking-sec {
-  padding-top: 30px;
-  padding-bottom: 30px;
-}
-
-/* Add top-space to the category section that follows the booking bar */
-.category-area {
-  padding-top: 80px;
-  padding-bottom: 60px;
-}
+/* Booking overlap layout handled in brand-theme.css */

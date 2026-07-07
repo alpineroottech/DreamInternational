@@ -158,7 +158,7 @@ function DestinationDetailsMain() {
                     <div className="col-xxl-4 col-lg-5">
                         <aside className="sidebar-area">
                             {/* Quick info widget */}
-                            <div className="widget widget_offer mb-4" style={{ background: 'linear-gradient(135deg,#0a074f,#140ca9)', borderRadius: 16, padding: '28px 24px' }}>
+                            <div className="widget widget_offer mb-4" style={{ background: 'linear-gradient(135deg,#000f3d,#001a57)', borderRadius: 16, padding: '28px 24px' }}>
                                 <h4 className="text-white mb-3">{dest.name}</h4>
                                 {dest.price && (
                                     <p className="text-white mb-4">

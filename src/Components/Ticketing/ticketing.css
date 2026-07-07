@@ -12,8 +12,8 @@
   inset: 0;
   background: linear-gradient(
     120deg,
-    color-mix(in srgb, var(--hero-banner-color, #140ca9) 88%, #000),
-    color-mix(in srgb, var(--hero-banner-color, #140ca9) 55%, #1ca8cb)
+    color-mix(in srgb, var(--hero-banner-color, #001a57) 88%, #000),
+    color-mix(in srgb, var(--hero-banner-color, #001a57) 55%, var(--brand-red))
   );
   opacity: 1;
 }
@@ -80,7 +80,7 @@
 }
 
 .ticketing-trust i {
-  color: #1ca8cb;
+  color: var(--brand-red);
   margin-right: 8px;
 }
 
@@ -139,7 +139,7 @@
   position: absolute;
   top: 14px;
   left: 14px;
-  background: #1ca8cb;
+  background: var(--brand-red);
   color: #fff;
   font-size: 12px;
   font-weight: 700;
@@ -177,7 +177,7 @@
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.08em;
-  color: #1ca8cb;
+  color: var(--brand-red);
 }
 
 .ticketing-card__city strong {
@@ -192,7 +192,7 @@
   display: grid;
   place-items: center;
   background: #eef9fc;
-  color: #1ca8cb;
+  color: var(--brand-red);
 }
 
 .ticketing-card__title {
@@ -223,7 +223,7 @@
 }
 
 .ticketing-card__meta i {
-  color: #1ca8cb;
+  color: var(--brand-red);
   margin-right: 6px;
 }
 
@@ -239,7 +239,7 @@
 .ticketing-card__price {
   font-size: 1.1rem;
   font-weight: 800;
-  color: #0a074f;
+  color: #000f3d;
 }
 
 .ticketing-empty {
@@ -249,7 +249,7 @@
 
 .ticketing-empty i {
   font-size: 2.5rem;
-  color: #1ca8cb;
+  color: var(--brand-red);
   margin-bottom: 12px;
 }
 
@@ -261,7 +261,7 @@
   gap: 16px;
   padding: 28px 32px;
   border-radius: 18px;
-  background: linear-gradient(135deg, #0a074f, #1ca8cb);
+  background: linear-gradient(135deg, #000f3d, var(--brand-red));
   color: #fff;
 }
 
@@ -282,7 +282,7 @@
 }
 
 .ticketing-detail-hero--no-image {
-  background: linear-gradient(135deg, var(--title-color, #0a074f) 0%, #1a1570 100%);
+  background: linear-gradient(135deg, var(--title-color, #000f3d) 0%, #002878 100%);
   min-height: 180px;
 }
 
@@ -303,7 +303,7 @@
   right: 0;
   bottom: 0;
   padding: 24px;
-  background: linear-gradient(180deg, transparent, rgba(10, 7, 79, 0.88));
+  background: linear-gradient(180deg, transparent, rgba(0, 15, 61, 0.88));
 }
 
 .ticketing-detail-hero__overlay .ticketing-card__city strong {
@@ -361,7 +361,7 @@
 }
 
 .ticketing-highlights li i {
-  color: #1ca8cb;
+  color: var(--brand-red);
   margin-right: 8px;
 }
 
@@ -399,7 +399,7 @@
 
 .ticketing-sidebar__price strong {
   font-size: 1.8rem;
-  color: #0a074f;
+  color: #000f3d;
 }
 
 .ticketing-sidebar__facts {
@@ -423,7 +423,7 @@
 }
 
 .ticketing-back-link {
-  color: #1ca8cb;
+  color: var(--brand-red);
   font-weight: 600;
   text-decoration: none;
 }
@@ -442,7 +442,7 @@
 .flight-booking-form__title {
   font-size: 1.2rem;
   font-weight: 700;
-  color: #0a074f;
+  color: #000f3d;
   margin-bottom: 20px;
   padding-bottom: 14px;
   border-bottom: 2px solid #e2e8f0;
@@ -485,7 +485,7 @@
 
 .flight-booking-form .form-control:focus,
 .flight-booking-form .form-select:focus {
-  border-color: #140ca9;
+  border-color: #001a57;
   box-shadow: 0 0 0 3px rgba(20, 12, 169, 0.12);
 }
 
@@ -509,8 +509,8 @@
 }
 
 .flight-trip-btn.active {
-  background: #140ca9;
-  border-color: #140ca9;
+  background: #001a57;
+  border-color: #001a57;
   color: #fff;
   font-weight: 600;
 }
@@ -532,7 +532,7 @@
 }
 
 .flight-form-success h3 {
-  color: #0a074f;
+  color: #000f3d;
   margin-bottom: 10px;
 }
 

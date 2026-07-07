@@ -9,12 +9,12 @@ function Booking() {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
         destination: "",
-        category: "",
+        type: "",
         duration: "",
+        category: "",
     });
 
     const cmsCategories = useCollection("/public/categories");
-
     const catResolved = resolveCmsList(cmsCategories, []);
 
     const destinationOptions = [
@@ -25,6 +25,15 @@ function Booking() {
         { value: "kathmandu", label: "Kathmandu Valley" },
         { value: "chitwan", label: "Chitwan" },
         { value: "lumbini", label: "Lumbini" },
+    ];
+
+    const typeOptions = [
+        ANY,
+        { value: "adventure", label: "Adventure" },
+        { value: "trekking", label: "Trekking" },
+        { value: "cultural-tours", label: "Cultural" },
+        { value: "jungle-safari", label: "Jungle Safari" },
+        { value: "pilgrimage", label: "Pilgrimage" },
     ];
 
     const categoryOptions = [
@@ -56,6 +65,7 @@ function Booking() {
         e.preventDefault();
         const params = new URLSearchParams();
         if (formData.destination) params.set("destination", formData.destination);
+        if (formData.type) params.set("type", formData.type);
         if (formData.category) params.set("category", formData.category);
         if (formData.duration) params.set("duration", formData.duration);
         const qs = params.toString();
@@ -63,60 +73,70 @@ function Booking() {
     };
 
     return (
-        <div className="booking-sec">
+        <div className="booking-sec di-booking-bar">
             <div className="container">
-                <p className="booking-sec__lead text-center mb-3">
-                    Find a Nepal experience by <strong>region</strong>, <strong>experience type</strong>, and <strong>trip length</strong>.
-                </p>
-                <form onSubmit={handleSubmit} className="booking-form">
-                    <div className="input-wrap">
-                        <div className="row align-items-center justify-content-between g-3">
-                            <div className="form-group col-md-6 col-lg">
-                                <div className="icon">
-                                    <i className="fa-light fa-map-location-dot" />
-                                </div>
-                                <div className="search-input">
-                                    <label>Where to go?</label>
-                                    <NiceSelect
-                                        options={destinationOptions}
-                                        placeholder="Any region"
-                                        onChange={(value) => handleChange("destination", value)}
-                                    />
-                                </div>
+                <form onSubmit={handleSubmit} className="booking-form di-booking-form">
+                    <div className="di-booking-form__inner">
+                        <div className="di-booking-field">
+                            <div className="di-booking-field__icon" aria-hidden="true">
+                                <i className="fa-light fa-map-location-dot" />
                             </div>
-                            <div className="form-group col-md-6 col-lg">
-                                <div className="icon">
-                                    <i className="fa-regular fa-person-hiking" />
-                                </div>
-                                <div className="search-input">
-                                    <label>Experience</label>
-                                    <NiceSelect
-                                        options={categoryOptions}
-                                        placeholder="Any experience"
-                                        onChange={(value) => handleChange("category", value)}
-                                    />
-                                </div>
-                            </div>
-                            <div className="form-group col-md-6 col-lg">
-                                <div className="icon">
-                                    <i className="fa-light fa-clock" />
-                                </div>
-                                <div className="search-input">
-                                    <label>Trip length</label>
-                                    <NiceSelect
-                                        options={durationOptions}
-                                        placeholder="Any duration"
-                                        onChange={(value) => handleChange("duration", value)}
-                                    />
-                                </div>
-                            </div>
-                            <div className="form-btn col-md-12 col-lg-auto">
-                                <button className="th-btn" type="submit">
-                                    <img src="/assets/img/icon/search.svg" alt="" />
-                                    Find tours
-                                </button>
+                            <div className="di-booking-field__body">
+                                <span className="di-booking-field__label">Destination</span>
+                                <NiceSelect
+                                    options={destinationOptions}
+                                    placeholder="Select destination"
+                                    onChange={(value) => handleChange("destination", value)}
+                                />
                             </div>
                         </div>
+
+                        <div className="di-booking-field">
+                            <div className="di-booking-field__icon" aria-hidden="true">
+                                <i className="fa-regular fa-compass" />
+                            </div>
+                            <div className="di-booking-field__body">
+                                <span className="di-booking-field__label">Type</span>
+                                <NiceSelect
+                                    options={typeOptions}
+                                    placeholder="Adventure"
+                                    onChange={(value) => handleChange("type", value)}
+                                />
+                            </div>
+                        </div>
+
+                        <div className="di-booking-field">
+                            <div className="di-booking-field__icon" aria-hidden="true">
+                                <i className="fa-light fa-clock" />
+                            </div>
+                            <div className="di-booking-field__body">
+                                <span className="di-booking-field__label">Duration</span>
+                                <NiceSelect
+                                    options={durationOptions}
+                                    placeholder="Duration"
+                                    onChange={(value) => handleChange("duration", value)}
+                                />
+                            </div>
+                        </div>
+
+                        <div className="di-booking-field">
+                            <div className="di-booking-field__icon" aria-hidden="true">
+                                <i className="fa-light fa-grid-2" />
+                            </div>
+                            <div className="di-booking-field__body">
+                                <span className="di-booking-field__label">Tour category</span>
+                                <NiceSelect
+                                    options={categoryOptions}
+                                    placeholder="Select category"
+                                    onChange={(value) => handleChange("category", value)}
+                                />
+                            </div>
+                        </div>
+
+                        <button className="th-btn di-booking-submit" type="submit">
+                            Search
+                            <i className="fa-light fa-magnifying-glass" aria-hidden="true" />
+                        </button>
                     </div>
                 </form>
             </div>

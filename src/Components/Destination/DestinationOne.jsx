@@ -50,7 +50,7 @@ function DestinationOne({ data = {} }) {
   const highlights = Array.isArray(tour?.highlights) ? tour.highlights : [];
 
   return (
-    <section className="space" style={{ background: "var(--smoke-color, #f7f9fc)" }}>
+    <section className="space di-featured-destination" style={{ background: "#ffffff" }}>
       <div className="container">
         <div className="title-area text-center mb-40">
           <span className="sub-title">{data.subTitle || "Nepal Experiences"}</span>
