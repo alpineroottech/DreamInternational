@@ -1,25 +1,48 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { publicApi, useSettings } from "../../public-cms/hooks";
-
-const TOUR_TYPES = [
-  "Trekking",
-  "Cultural Tour",
-  "Adventure",
-  "Custom Trip",
-  "Flight Ticketing",
-  "Other",
-];
-
-const emptyForm = { name: "", email: "", tourType: "", message: "" };
+import { EMPTY_INQUIRY_FORM } from "./inquiryFormConfig";
+import { buildInquiryPayload } from "./buildInquiryPayload";
+import InquiryFormFields from "./InquiryFormFields";
+import { useInquirySubjectOptions } from "./useInquirySubjectOptions";
 
 const DEFAULT_MAP =
   "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3532.0205!2d85.3123!3d27.7154!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39eb190a74aa1f23%3A0x74ebef82ad0e5c15!2sThamel%2C%20Kathmandu%2044600!5e0!3m2!1sen!2snp!4v1700000000000!5m2!1sen!2snp";
 
 function BookATour() {
   const settings = useSettings();
-  const [form, setForm] = useState(emptyForm);
+  const [searchParams] = useSearchParams();
+  const [form, setForm] = useState({ ...EMPTY_INQUIRY_FORM });
   const [status, setStatus] = useState({ state: "idle", msg: "" });
   const statusRef = useRef(null);
+  const prefilledRef = useRef(false);
+
+  const urlCategory = searchParams.get("category") || searchParams.get("about") || "";
+  const urlItem = searchParams.get("item") || searchParams.get("slug") || "";
+
+  const { options } = useInquirySubjectOptions(
+    urlCategory && !prefilledRef.current ? urlCategory : form.inquiryCategory
+  );
+
+  useEffect(() => {
+    if (prefilledRef.current || !urlCategory) return;
+    setForm((f) => ({ ...f, inquiryCategory: urlCategory }));
+  }, [urlCategory]);
+
+  useEffect(() => {
+    if (prefilledRef.current || !urlCategory || !urlItem || !options.length) return;
+    const match = options.find((o) => o.slug === urlItem);
+    if (match) {
+      setForm((f) => ({
+        ...f,
+        inquiryCategory: urlCategory,
+        subjectSlug: match.slug,
+        subjectLabel: match.label,
+        subjectId: match.id || "",
+      }));
+      prefilledRef.current = true;
+    }
+  }, [urlCategory, urlItem, options]);
 
   const setField = (key, value) => setForm((f) => ({ ...f, [key]: value }));
   const mapSrc = settings.mapEmbedUrl || settings.googleMapsEmbed || DEFAULT_MAP;
@@ -28,21 +51,13 @@ function BookATour() {
     e.preventDefault();
     setStatus({ state: "sending", msg: "" });
     try {
-      await publicApi.post("/public/inquiries", {
-        name: form.name.trim(),
-        email: form.email.trim(),
-        message: [
-          form.tourType ? `Tour type: ${form.tourType}` : "",
-          form.message.trim(),
-        ]
-          .filter(Boolean)
-          .join("\n"),
-      });
+      await publicApi.post("/public/inquiries", buildInquiryPayload(form));
       setStatus({
         state: "success",
         msg: "Thank you! Your message has been sent. We'll get back to you shortly.",
       });
-      setForm(emptyForm);
+      setForm({ ...EMPTY_INQUIRY_FORM });
+      prefilledRef.current = false;
       requestAnimationFrame(() => {
         statusRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
       });
@@ -62,7 +77,10 @@ function BookATour() {
         <div className="row g-4 align-items-stretch">
           <div className="col-lg-6">
             <form onSubmit={submit} className="contact-form style2 di-contact-form-card h-100" noValidate>
-              <h3 className="sec-title mb-30 text-capitalize">Book a tour</h3>
+              <h3 className="sec-title mb-30 text-capitalize">Send us an inquiry</h3>
+              <p className="text-muted small mb-3">
+                Tours, destinations, activities, services, flights, or a custom trip — tell us what you need.
+              </p>
 
               <div ref={statusRef}>
                 {status.state === "success" && (
@@ -78,67 +96,7 @@ function BookATour() {
               </div>
 
               <div className="row">
-                <div className="col-12 form-group">
-                  <input
-                    type="text"
-                    className="form-control"
-                    name="name"
-                    id="contact-name"
-                    placeholder="Your Name"
-                    value={form.name}
-                    onChange={(e) => setField("name", e.target.value)}
-                    required
-                    maxLength={120}
-                    autoComplete="name"
-                  />
-                  <img src="/assets/img/icon/user.svg" alt="" />
-                </div>
-                <div className="col-12 form-group">
-                  <input
-                    type="email"
-                    className="form-control"
-                    name="email"
-                    id="contact-email"
-                    placeholder="Your Email"
-                    value={form.email}
-                    onChange={(e) => setField("email", e.target.value)}
-                    required
-                    maxLength={200}
-                    autoComplete="email"
-                  />
-                  <img src="/assets/img/icon/mail.svg" alt="" />
-                </div>
-                <div className="form-group col-12">
-                  <select
-                    className="form-control form-select"
-                    name="tourType"
-                    id="contact-tour-type"
-                    value={form.tourType}
-                    onChange={(e) => setField("tourType", e.target.value)}
-                    aria-label="Tour type"
-                  >
-                    <option value="">Select Tour Type</option>
-                    {TOUR_TYPES.map((t) => (
-                      <option key={t} value={t}>
-                        {t}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div className="form-group col-12">
-                  <textarea
-                    name="message"
-                    id="contact-message"
-                    cols={30}
-                    rows={4}
-                    className="form-control"
-                    placeholder="Your Message"
-                    value={form.message}
-                    onChange={(e) => setField("message", e.target.value)}
-                    maxLength={5000}
-                  />
-                  <img src="/assets/img/icon/chat.svg" alt="" />
-                </div>
+                <InquiryFormFields form={form} setField={setField} />
                 <div className="form-btn col-12 mt-24">
                   <button
                     type="submit"

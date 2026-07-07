@@ -94,7 +94,31 @@ export default function Inquiries() {
                 <dt className="col-4 text-muted">Email</dt><dd className="col-8">{selected.email}</dd>
                 <dt className="col-4 text-muted">Phone</dt><dd className="col-8">{selected.phone || "—"}</dd>
                 <dt className="col-4 text-muted">Type</dt><dd className="col-8">{selected.type}</dd>
-                <dt className="col-4 text-muted">Message</dt><dd className="col-8">{selected.message || "—"}</dd>
+                {selected.customDetails?.subjectCategoryLabel && (
+                  <>
+                    <dt className="col-4 text-muted">About</dt>
+                    <dd className="col-8">{selected.customDetails.subjectCategoryLabel}</dd>
+                  </>
+                )}
+                {selected.customDetails?.subjectLabel && (
+                  <>
+                    <dt className="col-4 text-muted">Selected</dt>
+                    <dd className="col-8">{selected.customDetails.subjectLabel}</dd>
+                  </>
+                )}
+                {selected.travelDates && (
+                  <>
+                    <dt className="col-4 text-muted">Travel dates</dt>
+                    <dd className="col-8">{selected.travelDates}</dd>
+                  </>
+                )}
+                {selected.groupSize != null && (
+                  <>
+                    <dt className="col-4 text-muted">Group size</dt>
+                    <dd className="col-8">{selected.groupSize}</dd>
+                  </>
+                )}
+                <dt className="col-4 text-muted">Message</dt><dd className="col-8" style={{ whiteSpace: "pre-wrap" }}>{selected.message || "—"}</dd>
               </dl>
               <label className="form-label small fw-semibold">Status</label>
               <select className="form-select mb-3" value={selected.status} onChange={(e) => update(selected.id, { status: e.target.value })}>

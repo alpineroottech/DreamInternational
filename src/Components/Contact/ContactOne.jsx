@@ -1,12 +1,12 @@
 import React, { useState, useRef } from "react";
-import { Link } from "react-router-dom";
 import { publicApi, useSettings } from "../../public-cms/hooks";
-
-const emptyForm = { name: "", email: "", tourType: "", message: "" };
+import { EMPTY_INQUIRY_FORM } from "./inquiryFormConfig";
+import { buildInquiryPayload } from "./buildInquiryPayload";
+import InquiryFormFields from "./InquiryFormFields";
 
 function ContactOne() {
   const settings = useSettings();
-  const [form, setForm] = useState(emptyForm);
+  const [form, setForm] = useState({ ...EMPTY_INQUIRY_FORM });
   const [status, setStatus] = useState({ state: "idle", msg: "" });
   const statusRef = useRef(null);
 
@@ -16,21 +16,12 @@ function ContactOne() {
     e.preventDefault();
     setStatus({ state: "sending", msg: "" });
     try {
-      await publicApi.post("/public/inquiries", {
-        name: form.name.trim(),
-        email: form.email.trim(),
-        message: [
-          form.tourType ? `Tour type: ${form.tourType}` : "",
-          form.message.trim(),
-        ]
-          .filter(Boolean)
-          .join("\n"),
-      });
+      await publicApi.post("/public/inquiries", buildInquiryPayload(form));
       setStatus({
         state: "success",
         msg: "Thank you! Your message has been sent. We'll get back to you shortly.",
       });
-      setForm(emptyForm);
+      setForm({ ...EMPTY_INQUIRY_FORM });
       requestAnimationFrame(() => {
         statusRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
       });
@@ -85,58 +76,7 @@ function ContactOne() {
                 </div>
 
                 <div className="row">
-                  <div className="form-group col-12">
-                    <input
-                      type="text"
-                      className="form-control"
-                      name="name"
-                      placeholder="Your Name"
-                      value={form.name}
-                      onChange={(e) => setField("name", e.target.value)}
-                      required
-                      maxLength={120}
-                      autoComplete="name"
-                    />
-                    <img src="/assets/img/icon/user.svg" alt="" />
-                  </div>
-                  <div className="form-group col-12">
-                    <input
-                      type="email"
-                      className="form-control"
-                      name="email"
-                      placeholder="Your Mail"
-                      value={form.email}
-                      onChange={(e) => setField("email", e.target.value)}
-                      required
-                      maxLength={200}
-                      autoComplete="email"
-                    />
-                    <img src="/assets/img/icon/mail.svg" alt="" />
-                  </div>
-                  <div className="form-group col-12">
-                    <input
-                      type="text"
-                      className="form-control"
-                      name="tourType"
-                      placeholder="Tour type (e.g. Trekking, Cultural)"
-                      value={form.tourType}
-                      onChange={(e) => setField("tourType", e.target.value)}
-                      maxLength={80}
-                    />
-                  </div>
-                  <div className="form-group col-12">
-                    <textarea
-                      name="message"
-                      cols={30}
-                      rows={3}
-                      className="form-control"
-                      placeholder="Your Message"
-                      value={form.message}
-                      onChange={(e) => setField("message", e.target.value)}
-                      maxLength={5000}
-                    />
-                    <img src="/assets/img/icon/chat.svg" alt="" />
-                  </div>
+                  <InquiryFormFields form={form} setField={setField} />
                 </div>
                 <div className="form-btn-wrapp">
                   <div className="form-btn">

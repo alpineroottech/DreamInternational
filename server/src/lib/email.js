@@ -109,6 +109,10 @@ export function deliverInquiryEmails(inquiry) {
 }
 
 async function sendInquiryEmails(inquiry) {
+  const details = inquiry.customDetails && typeof inquiry.customDetails === "object"
+    ? inquiry.customDetails
+    : {};
+
   const fields = [
     ["Name", inquiry.name],
     ["Email", inquiry.email],
@@ -117,6 +121,8 @@ async function sendInquiryEmails(inquiry) {
     ["Travel dates", inquiry.travelDates],
     ["Group size", inquiry.groupSize],
     ["Inquiry type", inquiry.type || "STANDARD"],
+    ["Subject category", details.subjectCategoryLabel || details.subjectCategory],
+    ["Selected item", details.subjectLabel],
     ["Message", inquiry.message],
   ];
 
