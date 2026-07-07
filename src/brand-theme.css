@@ -545,6 +545,133 @@
   color: rgba(255, 255, 255, 0.65);
 }
 
+/* ─── Footer layout refinements ─────────────────────────────── */
+.di-footer .widget-area {
+  padding: 72px 0 56px;
+}
+
+.di-footer__grid {
+  --di-footer-gap: 2rem;
+}
+
+.di-footer__brand .about-text {
+  text-align: left;
+  max-width: 340px;
+  line-height: 1.7;
+  margin-bottom: 1.25rem;
+}
+
+.di-footer__brand .about-logo {
+  margin-bottom: 1.5rem;
+}
+
+.di-footer__social {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.di-footer__social a {
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.di-footer .widget_title {
+  margin-bottom: 1.25rem;
+  text-align: left;
+}
+
+.di-footer__menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.di-footer__menu li {
+  margin-bottom: 0.65rem;
+}
+
+.di-footer__menu a {
+  display: inline-block;
+  text-align: left;
+}
+
+.di-footer__contact-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.di-footer__contact-list .info-box_text {
+  align-items: flex-start;
+  margin: 0;
+}
+
+.di-footer__contact-list .details {
+  text-align: left;
+  flex: 1;
+  min-width: 0;
+}
+
+.di-footer__contact-list .details p {
+  margin-bottom: 0.15rem;
+  text-align: left;
+}
+
+.di-footer__contact-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5) !important;
+  margin-bottom: 0.2rem !important;
+}
+
+.di-footer__payments {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.di-footer__payments .title {
+  white-space: nowrap;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.di-footer__payments img {
+  max-height: 28px;
+  width: auto;
+}
+
+.di-footer .copyright-text {
+  text-align: left;
+}
+
+@media (max-width: 767.98px) {
+  .di-footer__payments {
+    justify-content: flex-start;
+  }
+
+  .di-footer .copyright-text {
+    text-align: left;
+  }
+}
+
+/* About page — team section */
+.di-team-section {
+  background: #ffffff;
+}
+
+.di-team-section .title-area {
+  margin-bottom: 2.5rem;
+}
+
 /* ─── 7. BREADCRUMB / PAGE HERO ─────────────────────────────── */
 .breadcumb-wrapper {
   background-color: var(--title-color);

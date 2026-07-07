@@ -314,6 +314,44 @@
   margin-bottom: 12px;
 }
 
+.ticketing-detail-page .ticketing-detail-layout {
+  margin-top: 2rem;
+}
+
+.ticketing-detail-content,
+.ticketing-detail-content .lead,
+.ticketing-detail-content p,
+.ticketing-detail-content li,
+.ticketing-detail-content h2,
+.ticketing-detail-content h4,
+.ticketing-detail-prose {
+  text-align: left;
+}
+
+.ticketing-detail-prose p,
+.ticketing-detail-prose ul,
+.ticketing-detail-prose ol {
+  text-align: left;
+}
+
+.ticketing-booking-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+@media (min-width: 992px) {
+  .ticketing-booking-panel {
+    position: sticky;
+    top: 96px;
+    align-self: flex-start;
+  }
+}
+
+.ticketing-sidebar--compact {
+  margin-bottom: 0;
+}
+
 .ticketing-highlights ul {
   list-style: none;
   margin: 0;
@@ -424,6 +462,25 @@
   padding: 10px 14px;
   font-size: 0.9rem;
   transition: border-color 0.18s;
+  width: 100%;
+  min-width: 0;
+}
+
+.flight-booking-form .form-select {
+  padding-right: 2.5rem;
+  background-position: right 0.85rem center;
+  background-size: 14px 10px;
+  text-overflow: ellipsis;
+}
+
+.flight-booking-form--detail {
+  padding: 28px 24px;
+}
+
+.flight-booking-form--detail .form-label {
+  font-size: 0.8rem;
+  line-height: 1.35;
+  white-space: normal;
 }
 
 .flight-booking-form .form-control:focus,

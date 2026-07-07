@@ -7,10 +7,10 @@ import { Link } from "react-router-dom";
 import { useCollection, resolveAssetUrl, resolveCmsList } from "../../public-cms/hooks";
 
 const FALLBACK = [
-  { id: 1, name: "Jacob Jones", photoUrl: "/assets/img/team/team_1_1.jpg", role: "Tourist Guide" },
-  { id: 2, name: "Jane Cooper", photoUrl: "/assets/img/team/team_1_2.jpg", role: "Tourist Guide" },
-  { id: 3, name: "Guy Hawkins", photoUrl: "/assets/img/team/team_1_3.jpg", role: "Tourist Guide" },
-  { id: 4, name: "Jenny Wilson", photoUrl: "/assets/img/team/team_1_4.jpg", role: "Tourist Guide" },
+  { id: 1, name: "Jacob Jones", photoUrl: "/assets/img/team/team_1_1.jpg", role: "Team Member" },
+  { id: 2, name: "Jane Cooper", photoUrl: "/assets/img/team/team_1_2.jpg", role: "Team Member" },
+  { id: 3, name: "Guy Hawkins", photoUrl: "/assets/img/team/team_1_3.jpg", role: "Team Member" },
+  { id: 4, name: "Jenny Wilson", photoUrl: "/assets/img/team/team_1_4.jpg", role: "Team Member" },
 ];
 
 function TourGuide({ data = {} }) {
@@ -30,14 +30,11 @@ function TourGuide({ data = {} }) {
   if (loading) return null;
 
   return (
-    <section
-      className="bg-smoke space overflow-hidden"
-      style={{ backgroundImage: "url(/assets/img/bg/team_bg_1.png)" }}
-    >
+    <section className="di-team-section space overflow-hidden">
       <div className="container z-index-common">
         <div className="title-area text-center">
-          <span className="sub-title">{data.subTitle || "Meet with Guide"}</span>
-          <h2 className="sec-title">{data.title || "Tour Guide"}</h2>
+          <span className="sub-title">{data.subTitle || "Our Team"}</span>
+          <h2 className="sec-title">{data.title || "Meet Our Team"}</h2>
         </div>
         <div className="slider-area">
           <Swiper
@@ -54,7 +51,7 @@ function TourGuide({ data = {} }) {
             pagination={{ clickable: true }}
             autoplay={{ delay: 3000 }}
             className="th-slider teamSlider1 has-shadow"
-            onSwiper={setSwiperInstance} // Save Swiper instance
+            onSwiper={setSwiperInstance}
           >
             {guides.map((guide) => {
               const socials = guide.socials || {};
@@ -69,7 +66,7 @@ function TourGuide({ data = {} }) {
                         <h3 className="box-title">
                           <Link to={guide.slug ? `/tour-guide/${guide.slug}` : "/tour-guide/1"}>{guide.name}</Link>
                         </h3>
-                        <span className="team-desig">{guide.role || "Tourist Guide"}</span>
+                        <span className="team-desig">{guide.role || "Team Member"}</span>
                         <div className="th-social">
                           {["facebook", "twitter", "instagram", "linkedin"].map((platform) => (
                             <Link key={platform} target="_blank" rel="noopener noreferrer" to={socials[platform] || `https://${platform}.com/`}>

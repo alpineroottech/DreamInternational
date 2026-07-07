@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { publicApi } from "../../public-cms/hooks";
 
 const CABIN_CLASSES = ["Economy", "Business", "First"];
@@ -30,6 +30,7 @@ const INTERNATIONAL_AIRLINES = [
   "China Southern",
   "Korean Air",
 ];
+
 const NEPAL_CITIES = [
   "Kathmandu", "Pokhara", "Lukla", "Biratnagar", "Bhairahawa", "Nepalgunj",
   "Dhangadhi", "Tumlingtar", "Jomsom", "Manang", "Simara", "Bharatpur",
@@ -47,17 +48,62 @@ const emptyForm = {
   name: "", email: "", phone: "", nationality: "", message: "",
 };
 
-export default function FlightBookingForm({ ticketType = "domestic", routeTitle = "" }) {
-  const [form, setForm] = useState({ ...emptyForm });
+function matchAirline(name, list) {
+  if (!name) return null;
+  const lower = name.toLowerCase();
+  return list.find((a) => a.toLowerCase() === lower || lower.includes(a.toLowerCase())) || null;
+}
+
+function buildInitialForm({
+  ticketType,
+  defaultFromCity,
+  defaultToCity,
+  defaultAirline,
+}) {
+  const airlines = ticketType === "domestic" ? DOMESTIC_AIRLINES : INTERNATIONAL_AIRLINES;
+  const matched = matchAirline(defaultAirline, airlines);
+  return {
+    ...emptyForm,
+    fromCity: defaultFromCity || "",
+    toCity: defaultToCity || "",
+    preferredAirline: matched || "any",
+  };
+}
+
+/** Cities from the route that are not in the preset list — shown as extra options. */
+function extraCityOptions(city, presetList) {
+  if (!city || presetList.includes(city)) return null;
+  return <option key={`extra-${city}`} value={city}>{city}</option>;
+}
+
+export default function FlightBookingForm({
+  ticketType = "domestic",
+  routeTitle = "",
+  variant = "default",
+  defaultFromCity = "",
+  defaultToCity = "",
+  defaultAirline = "",
+}) {
+  const isDetail = variant === "detail";
+  const initial = useMemo(
+    () => buildInitialForm({ ticketType, defaultFromCity, defaultToCity, defaultAirline }),
+    [ticketType, defaultFromCity, defaultToCity, defaultAirline]
+  );
+
+  const [form, setForm] = useState(initial);
   const [tripType, setTripType] = useState("one-way");
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
 
+  useEffect(() => {
+    setForm(initial);
+  }, [initial]);
+
   const cities = ticketType === "domestic" ? NEPAL_CITIES : INTL_CITIES;
   const airlines = ticketType === "domestic" ? DOMESTIC_AIRLINES : INTERNATIONAL_AIRLINES;
 
-  const set = (field, val) => setForm(f => ({ ...f, [field]: val }));
+  const set = (field, val) => setForm((f) => ({ ...f, [field]: val }));
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -87,21 +133,25 @@ export default function FlightBookingForm({ ticketType = "domestic", routeTitle 
     }
   };
 
+  const routeCol = isDetail ? "col-12 col-md-6" : "col-sm-6";
+  const metaCol = isDetail ? "col-12 col-md-6" : "col-sm-4";
+  const airlineCol = isDetail ? "col-12" : "col-sm-4";
+
   if (submitted) {
     return (
-      <div className="flight-form-success">
+      <div className={`flight-form-success${isDetail ? " flight-form-success--detail" : ""}`}>
         <div className="flight-form-success__icon">
           <i className="fa-solid fa-circle-check" />
         </div>
         <h3>Enquiry Received!</h3>
         <p>
-          Thank you, <strong>{form.name}</strong>. We've received your flight enquiry and
+          Thank you, <strong>{form.name}</strong>. We&apos;ve received your flight enquiry and
           will get back to you at <strong>{form.email}</strong> within 24 hours.
         </p>
         <button
           type="button"
           className="th-btn style3 mt-3"
-          onClick={() => { setSubmitted(false); setForm({ ...emptyForm }); }}
+          onClick={() => { setSubmitted(false); setForm({ ...initial }); }}
         >
           Submit Another Enquiry
         </button>
@@ -110,13 +160,16 @@ export default function FlightBookingForm({ ticketType = "domestic", routeTitle 
   }
 
   return (
-    <form className="flight-booking-form" onSubmit={handleSubmit} noValidate>
+    <form
+      className={`flight-booking-form${isDetail ? " flight-booking-form--detail" : ""}`}
+      onSubmit={handleSubmit}
+      noValidate
+    >
       <h3 className="flight-booking-form__title">
         <i className="fa-light fa-paper-plane-top me-2" />
         {ticketType === "domestic" ? "Domestic Flight Enquiry" : "International Flight Enquiry"}
       </h3>
 
-      {/* Trip type */}
       <div className="flight-booking-form__trip-toggle mb-4">
         {["one-way", "return"].map((t) => (
           <button
@@ -130,106 +183,113 @@ export default function FlightBookingForm({ ticketType = "domestic", routeTitle 
         ))}
       </div>
 
-      {/* Route */}
       <div className="row g-3 mb-3">
-        <div className="col-sm-6">
-          <label className="form-label">
+        <div className={routeCol}>
+          <label className="form-label" htmlFor="flight-from">
             <i className="fa-light fa-plane-departure me-1" /> From *
           </label>
           <select
+            id="flight-from"
             className="form-select"
             value={form.fromCity}
-            onChange={e => set("fromCity", e.target.value)}
+            onChange={(e) => set("fromCity", e.target.value)}
             required
           >
             <option value="">Select departure city</option>
-            {cities.map(c => <option key={c} value={c}>{c}</option>)}
+            {extraCityOptions(form.fromCity, cities)}
+            {cities.map((c) => <option key={c} value={c}>{c}</option>)}
             <option value="__other__">Other (specify in message)</option>
           </select>
         </div>
-        <div className="col-sm-6">
-          <label className="form-label">
+        <div className={routeCol}>
+          <label className="form-label" htmlFor="flight-to">
             <i className="fa-light fa-plane-arrival me-1" /> To *
           </label>
           <select
+            id="flight-to"
             className="form-select"
             value={form.toCity}
-            onChange={e => set("toCity", e.target.value)}
+            onChange={(e) => set("toCity", e.target.value)}
             required
           >
             <option value="">Select destination city</option>
-            {cities.map(c => <option key={c} value={c}>{c}</option>)}
+            {extraCityOptions(form.toCity, cities)}
+            {cities.map((c) => <option key={c} value={c}>{c}</option>)}
             <option value="__other__">Other (specify in message)</option>
           </select>
         </div>
       </div>
 
-      {/* Dates */}
       <div className="row g-3 mb-3">
-        <div className={tripType === "return" ? "col-sm-6" : "col-12"}>
-          <label className="form-label">
+        <div className={tripType === "return" ? routeCol : "col-12"}>
+          <label className="form-label" htmlFor="flight-depart">
             <i className="fa-light fa-calendar me-1" /> Departure date *
           </label>
           <input
+            id="flight-depart"
             type="date"
             className="form-control"
             value={form.travelDate}
             min={new Date().toISOString().split("T")[0]}
-            onChange={e => set("travelDate", e.target.value)}
+            onChange={(e) => set("travelDate", e.target.value)}
             required
           />
         </div>
         {tripType === "return" && (
-          <div className="col-sm-6">
-            <label className="form-label">
+          <div className={routeCol}>
+            <label className="form-label" htmlFor="flight-return">
               <i className="fa-light fa-calendar-check me-1" /> Return date
             </label>
             <input
+              id="flight-return"
               type="date"
               className="form-control"
               value={form.returnDate}
               min={form.travelDate || new Date().toISOString().split("T")[0]}
-              onChange={e => set("returnDate", e.target.value)}
+              onChange={(e) => set("returnDate", e.target.value)}
             />
           </div>
         )}
       </div>
 
-      {/* Passengers, class & airline */}
       <div className="row g-3 mb-4">
-        <div className="col-sm-4">
-          <label className="form-label">
+        <div className={metaCol}>
+          <label className="form-label" htmlFor="flight-passengers">
             <i className="fa-light fa-users me-1" /> Passengers *
           </label>
           <input
+            id="flight-passengers"
             type="number"
             className="form-control"
-            min={1} max={20}
+            min={1}
+            max={20}
             value={form.passengers}
-            onChange={e => set("passengers", e.target.value)}
+            onChange={(e) => set("passengers", e.target.value)}
             required
           />
         </div>
-        <div className="col-sm-4">
-          <label className="form-label">
+        <div className={metaCol}>
+          <label className="form-label" htmlFor="flight-cabin">
             <i className="fa-light fa-chair-office me-1" /> Cabin class
           </label>
           <select
+            id="flight-cabin"
             className="form-select"
             value={form.cabinClass}
-            onChange={e => set("cabinClass", e.target.value)}
+            onChange={(e) => set("cabinClass", e.target.value)}
           >
-            {CABIN_CLASSES.map(c => <option key={c} value={c}>{c}</option>)}
+            {CABIN_CLASSES.map((c) => <option key={c} value={c}>{c}</option>)}
           </select>
         </div>
-        <div className="col-sm-4">
-          <label className="form-label">
+        <div className={airlineCol}>
+          <label className="form-label" htmlFor="flight-airline">
             <i className="fa-light fa-plane me-1" /> Preferred airline
           </label>
           <select
+            id="flight-airline"
             className="form-select"
             value={form.preferredAirline}
-            onChange={e => set("preferredAirline", e.target.value)}
+            onChange={(e) => set("preferredAirline", e.target.value)}
           >
             <option value={ANY_AIRLINE.value}>{ANY_AIRLINE.label}</option>
             {airlines.map((a) => (
@@ -242,64 +302,68 @@ export default function FlightBookingForm({ ticketType = "domestic", routeTitle 
       <hr className="my-4" />
       <p className="small text-muted mb-3">
         <i className="fa-light fa-circle-info me-1" />
-        Your contact details — we'll send you available options and pricing.
+        Your contact details — we&apos;ll send you available options and pricing.
       </p>
 
-      {/* Contact */}
       <div className="row g-3 mb-3">
-        <div className="col-sm-6">
-          <label className="form-label">Full name *</label>
+        <div className={routeCol}>
+          <label className="form-label" htmlFor="flight-name">Full name *</label>
           <input
+            id="flight-name"
             type="text"
             className="form-control"
             placeholder="Your full name"
             value={form.name}
-            onChange={e => set("name", e.target.value)}
+            onChange={(e) => set("name", e.target.value)}
             required
           />
         </div>
-        <div className="col-sm-6">
-          <label className="form-label">Email *</label>
+        <div className={routeCol}>
+          <label className="form-label" htmlFor="flight-email">Email *</label>
           <input
+            id="flight-email"
             type="email"
             className="form-control"
             placeholder="you@example.com"
             value={form.email}
-            onChange={e => set("email", e.target.value)}
+            onChange={(e) => set("email", e.target.value)}
             required
           />
         </div>
       </div>
       <div className="row g-3 mb-3">
-        <div className="col-sm-6">
-          <label className="form-label">Phone number</label>
+        <div className={routeCol}>
+          <label className="form-label" htmlFor="flight-phone">Phone number</label>
           <input
+            id="flight-phone"
             type="tel"
             className="form-control"
             placeholder="+977 ..."
             value={form.phone}
-            onChange={e => set("phone", e.target.value)}
+            onChange={(e) => set("phone", e.target.value)}
           />
         </div>
-        <div className="col-sm-6">
-          <label className="form-label">Nationality</label>
+        <div className={routeCol}>
+          <label className="form-label" htmlFor="flight-nationality">Nationality</label>
           <input
+            id="flight-nationality"
             type="text"
             className="form-control"
             placeholder="e.g. Nepali"
             value={form.nationality}
-            onChange={e => set("nationality", e.target.value)}
+            onChange={(e) => set("nationality", e.target.value)}
           />
         </div>
       </div>
       <div className="mb-4">
-        <label className="form-label">Additional notes / special requests</label>
+        <label className="form-label" htmlFor="flight-notes">Additional notes / special requests</label>
         <textarea
+          id="flight-notes"
           className="form-control"
           rows={3}
-          placeholder="E.g. preferred airline, special meal, wheelchair access..."
+          placeholder="E.g. special meal, wheelchair access, flexible dates..."
           value={form.message}
-          onChange={e => set("message", e.target.value)}
+          onChange={(e) => set("message", e.target.value)}
         />
       </div>
 
