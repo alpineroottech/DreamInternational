@@ -22,6 +22,7 @@ const Schema = z.object({
   returnDate: z.string().max(40).optional().nullable(),
   passengers: z.number().int().min(1).max(99).default(1),
   cabinClass: z.enum(["Economy", "Business", "First"]).default("Economy"),
+  preferredAirline: z.string().max(120).optional().nullable(),
   name:       z.string().min(1, "Full name is required").max(120),
   email:      z.string().email("A valid email is required"),
   phone:      z.string().max(40).optional().nullable(),

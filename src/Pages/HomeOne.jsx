@@ -37,13 +37,13 @@ const DEFAULT_ORDER = [
 ];
 
 function HomeOne() {
-    const { byKey, order, loaded } = useHomeSections();
-    const keys = loaded && order?.length ? order : DEFAULT_ORDER;
+    const { byKey, order } = useHomeSections();
+    const keys = order?.length ? order : DEFAULT_ORDER;
 
     return (
         <div>
             <HeaderOne />
-            {loaded && keys.map((key) => {
+            {keys.map((key) => {
                 const Comp = SECTION_COMPONENTS[key];
                 if (!Comp) return null;
                 const el = <Comp key={key} data={byKey[key] || {}} />;

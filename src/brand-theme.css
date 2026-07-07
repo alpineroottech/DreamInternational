@@ -309,6 +309,54 @@
   }
 }
 
+/* Sidebar help widget — solid brand panel */
+.di-sidebar-help.widget_offer {
+  background: var(--title-color, #0a074f) !important;
+  background-image: none !important;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.di-sidebar-help .box-title,
+.di-sidebar-help .offer-title,
+.di-sidebar-help p {
+  color: #fff;
+}
+
+.di-sidebar-help .th-btn.style2 {
+  background: #fff;
+  color: var(--title-color, #0a074f);
+}
+
+/* Service listing tiles — equal height, no images */
+.di-service-tile {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 28px 24px;
+  border-radius: 16px;
+  background: #fff;
+  border: 1px solid rgba(10, 7, 79, 0.08);
+  box-shadow: 0 8px 28px rgba(10, 7, 79, 0.06);
+  min-height: 220px;
+}
+
+.di-service-tile .box-title {
+  margin-bottom: 12px;
+  font-size: 1.25rem;
+}
+
+.di-service-tile__text {
+  flex: 1;
+  color: var(--body-color, #555);
+  margin-bottom: 20px;
+}
+
+.booking-sec__lead {
+  color: var(--body-color, #555);
+  font-size: 0.95rem;
+}
+
 .header-layout1 .di-header-bar .header-button .th-btn {
   margin-left: 0;
   padding: 12px 26px;

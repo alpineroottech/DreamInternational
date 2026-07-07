@@ -1,12 +1,19 @@
 import { Link } from 'react-router-dom'
-import { resolveAssetUrl, useSettings } from '../../public-cms/hooks'
+import { useSettings } from '../../public-cms/hooks'
 import SafeHtml from '../../public-cms/SafeHtml'
+import { cmsImage } from '../../public-cms/cmsImage'
+
+const DEFAULT_IMAGES = {
+   aboutImage1: "/assets/img/normal/about_3_1.jpg",
+   aboutImage2: "/assets/img/normal/about_3_2.jpg",
+   aboutImage3: "/assets/img/normal/about_3_3.jpg",
+};
 
 function AboutFour() {
    const settings = useSettings();
-   const img1 = settings.aboutImage1 ? resolveAssetUrl(settings.aboutImage1) : "";
-   const img2 = settings.aboutImage2 ? resolveAssetUrl(settings.aboutImage2) : "";
-   const img3 = settings.aboutImage3 ? resolveAssetUrl(settings.aboutImage3) : "";
+   const img1 = cmsImage(settings.aboutImage1, DEFAULT_IMAGES.aboutImage1);
+   const img2 = cmsImage(settings.aboutImage2, DEFAULT_IMAGES.aboutImage2);
+   const img3 = cmsImage(settings.aboutImage3, DEFAULT_IMAGES.aboutImage3);
    const hasCollage = Boolean(img1 || img2 || img3);
    const subTitle = settings.aboutSubtitle || "Welcome To Dream International";
    const title = settings.aboutTitle || "Trusted Nepal travel specialists for adventure, culture, and comfort";

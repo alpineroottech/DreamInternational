@@ -1,14 +1,17 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import DestinationCard from './DestinationCard';
 import staticPosts from '../data/data-destination.json';
 import DestinationCardTwo from './DestinationCardTwo';
-import { BRAND_NAME, LOGO_FULL } from '../../brand/brandAssets';
 import { useCollection, resolveAssetUrl } from '../../public-cms/hooks';
+import RecentPostsWidget from '../Sidebar/RecentPostsWidget';
+import SidebarHelpWidget from '../Sidebar/SidebarHelpWidget';
 
 function DestinationInner() {
     const [activeTab, setActiveTab] = useState('tab-grid');
     const [currentPage, setCurrentPage] = useState(1);
+    const [searchParams, setSearchParams] = useSearchParams();
+    const filterSlug = searchParams.get('destination') || '';
     const postsPerPage = 9;
 
     const cmsDestinations = useCollection('/public/destinations');
@@ -23,318 +26,170 @@ function DestinationInner() {
         );
     }
 
-    // Normalise CMS destinations to the same shape expected by DestinationCard.
-    const posts = cmsDestinations && cmsDestinations.length
+    const allPosts = cmsDestinations && cmsDestinations.length
         ? cmsDestinations.map((d) => ({
             id: d.slug,
             slug: d.slug,
             title: d.name,
-            image: resolveAssetUrl(d.cardImage?.url || d.heroImage?.url) || '/assets/img/destination/destination_4_1.jpg',
+            image: resolveAssetUrl(d.cardImageUrl || d.cardImage?.url || d.heroImageUrl || d.heroImage?.url) || '',
             price: d.price || (d.basePrice != null ? `From $${d.basePrice}` : null),
             shortDescription: d.shortDescription,
           }))
         : staticPosts.map((p) => ({ ...p, slug: String(p.id), image: `/assets/img/tour/${p.image}` }));
 
-    const totalPages = Math.ceil(posts.length / postsPerPage);
+    const posts = filterSlug
+        ? allPosts.filter((p) => p.slug === filterSlug)
+        : allPosts;
+
+    const totalPages = Math.max(1, Math.ceil(posts.length / postsPerPage));
     const indexOfLastPost = currentPage * postsPerPage;
     const indexOfFirstPost = indexOfLastPost - postsPerPage;
     const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
 
+    const setDestinationFilter = (slug) => {
+        const p = new URLSearchParams(searchParams);
+        if (slug) p.set('destination', slug);
+        else p.delete('destination');
+        setSearchParams(p);
+        setCurrentPage(1);
+    };
+
     const handlePageChange = (page) => {
         setCurrentPage(page);
     };
+
     return (
         <section className="space">
             <div className="container">
                 <div className="th-sort-bar">
                     <div className="row justify-content-between align-items-center">
                         <div className="col-md-4">
-                            <div className="search-form-area">
-                                <form className="search-form">
-                                    <input type="text" placeholder="Search" />
-                                    <button type="submit">
-                                        <i className="fa-light fa-magnifying-glass" />
-                                    </button>
-                                </form>
-                            </div>
+                            {filterSlug && (
+                                <button
+                                    type="button"
+                                    className="btn btn-sm btn-outline-secondary"
+                                    onClick={() => setDestinationFilter('')}
+                                >
+                                    Clear filter
+                                </button>
+                            )}
                         </div>
                         <div className="col-md-auto">
                             <div className="sorting-filter-wrap">
                                 <div className="nav" role="tablist">
                                     <Link
                                         to="#"
-                                        id="tab-destination-grid"
-                                        data-bs-toggle="tab"
-                                        data-bs-target="#tab-grid"
-                                        role="tab"
-                                        aria-controls="tab-grid"
-                                        aria-selected="true"
                                         className={`${activeTab === 'tab-grid' ? 'active' : ''}`}
-                                        type="button"
-                                        onClick={() => setActiveTab('tab-grid')}
+                                        onClick={(e) => { e.preventDefault(); setActiveTab('tab-grid'); }}
                                     >
                                         <i className="fa-light fa-grid-2" />
                                     </Link>
                                     <Link
                                         to="#"
-                                        id="tab-destination-list"
-                                        data-bs-toggle="tab"
-                                        data-bs-target="#tab-list"
-                                        role="tab"
-                                        aria-controls="tab-list"
-                                        aria-selected="false"
                                         className={`${activeTab === 'tab-list' ? 'active' : ''}`}
-                                        onClick={() => setActiveTab('tab-list')}
+                                        onClick={(e) => { e.preventDefault(); setActiveTab('tab-list'); }}
                                     >
                                         <i className="fa-solid fa-list" />
                                     </Link>
                                 </div>
-                                <form className="woocommerce-ordering" method="get">
-                                    <select
-                                        name="orderby"
-                                        className="orderby"
-                                        aria-label="destination order"
-                                    >
-                                        <option value="menu_order" >
-                                            Default Sorting
-                                        </option>
-                                        <option value="popularity">Sort by popularity</option>
-                                        <option value="rating">Sort by average rating</option>
-                                        <option value="date">Sort by latest</option>
-                                        <option value="price">Sort by price: low to high</option>
-                                        <option value="price-desc">Sort by price: high to low</option>
-                                    </select>
-                                </form>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div className="row">
                     <div className="col-xxl-9 col-lg-8">
-                        <div className="tab-content" id="nav-tabContent">
-                            <div className={`tab-pane fade ${activeTab === 'tab-grid' ? 'show active' : ''}`} id="tab-grid" role="tabpanel"
-                            >
-                                <div className="row gy-30">
-                                    {currentPosts.map((data, index) => (
-                                        <div key={index} className="col-xxl-4 col-xl-6">
-                                            <DestinationCard
-                                                destinationID={data.slug || data.id}
-                                                destinationImage={data.image}
-                                                destinationTitle={data.title}
-                                                destinationPrice={data.price}
-                                                destinationSubtitle={data.shortDescription}
-                                            />
+                        {posts.length === 0 ? (
+                            <p className="text-muted py-4">No destinations match this filter.</p>
+                        ) : (
+                            <>
+                                <div className="tab-content" id="nav-tabContent">
+                                    <div className={`tab-pane fade ${activeTab === 'tab-grid' ? 'show active' : ''}`} id="tab-grid" role="tabpanel">
+                                        <div className="row gy-30">
+                                            {currentPosts.map((data) => (
+                                                <div key={data.slug || data.id} className="col-xxl-4 col-xl-6">
+                                                    <DestinationCard
+                                                        destinationID={data.slug || data.id}
+                                                        destinationImage={data.image}
+                                                        destinationTitle={data.title}
+                                                        destinationPrice={data.price}
+                                                        destinationSubtitle={data.shortDescription}
+                                                    />
+                                                </div>
+                                            ))}
                                         </div>
-                                    ))}
-                                </div>
-                            </div>
-                            <div className={`tab-pane fade ${activeTab === 'tab-list' ? 'show active' : ''}`} id="tab-list" role="tabpanel"
-                            >
-                                <div className="row gy-30">
-                                    {currentPosts.map((data, index) => (
-                                        <div key={index} className="col-12">
-                                            <DestinationCardTwo
-                                                destinationID={data.slug || data.id}
-                                                destinationImage={data.image}
-                                                destinationTitle={data.title}
-                                                destinationPrice={data.price}
-                                                destinationSubtitle={data.shortDescription}
-                                            />
+                                    </div>
+                                    <div className={`tab-pane fade ${activeTab === 'tab-list' ? 'show active' : ''}`} id="tab-list" role="tabpanel">
+                                        <div className="row gy-30">
+                                            {currentPosts.map((data) => (
+                                                <div key={data.slug || data.id} className="col-12">
+                                                    <DestinationCardTwo
+                                                        destinationID={data.slug || data.id}
+                                                        destinationImage={data.image}
+                                                        destinationTitle={data.title}
+                                                        destinationPrice={data.price}
+                                                        destinationSubtitle={data.shortDescription}
+                                                    />
+                                                </div>
+                                            ))}
                                         </div>
-                                    ))}
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div className="th-pagination text-center mt-60 mb-0">
-                            <ul>
-                                {Array.from({ length: totalPages }, (_, i) => (
-                                    <li key={i}>
-                                        <Link
-                                            className={currentPage === i + 1 ? 'active' : ''}
-                                            to="#"
-                                            onClick={() => handlePageChange(i + 1)}
-                                        >
-                                            {i + 1}
-                                        </Link>
-                                    </li>
-                                ))}
-                                {currentPage < totalPages && (
-                                    <li>
-                                        <Link className="next-page" to="#" onClick={() => handlePageChange(currentPage + 1)}>
-                                            Next <img src="/assets/img/icon/arrow-right4.svg" alt="" />
-                                        </Link>
-                                    </li>
+                                {totalPages > 1 && (
+                                    <div className="th-pagination text-center mt-60 mb-0">
+                                        <ul>
+                                            {Array.from({ length: totalPages }, (_, i) => (
+                                                <li key={i}>
+                                                    <Link
+                                                        className={currentPage === i + 1 ? 'active' : ''}
+                                                        to="#"
+                                                        onClick={(e) => { e.preventDefault(); handlePageChange(i + 1); }}
+                                                    >
+                                                        {i + 1}
+                                                    </Link>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
                                 )}
-                            </ul>
-                        </div>
+                            </>
+                        )}
                     </div>
                     <div className="col-xxl-3 col-lg-4">
                         <aside className="sidebar-area style2">
-                            <div className="widget widget_categories  ">
-                                <h3 className="widget_title">Categories</h3>
+                            <div className="widget widget_categories">
+                                <h3 className="widget_title">Destinations</h3>
                                 <ul>
                                     <li>
-                                        <Link to="/blog">
+                                        <Link
+                                            to="#"
+                                            onClick={(e) => { e.preventDefault(); setDestinationFilter(''); }}
+                                            className={!filterSlug ? 'fw-semibold' : ''}
+                                        >
                                             <img src="/assets/img/theme-img/map.svg" alt="" />
-                                            City Tour
+                                            All destinations
                                         </Link>
-                                        <span>(8)</span>
                                     </li>
-                                    <li>
-                                        <Link to="/blog">
-                                            <img src="/assets/img/theme-img/map.svg" alt="" />
-                                            Beach Tours
-                                        </Link>
-                                        <span>(6)</span>
-                                    </li>
-                                    <li>
-                                        <Link to="/blog">
-                                            <img src="/assets/img/theme-img/map.svg" alt="" />
-                                            Wildlife Tours
-                                        </Link>
-                                        <span>(2)</span>
-                                    </li>
-                                    <li>
-                                        <Link to="/blog">
-                                            <img src="/assets/img/theme-img/map.svg" alt="" />
-                                            News &amp; Tips
-                                        </Link>
-                                        <span>(7)</span>
-                                    </li>
-                                    <li>
-                                        <Link to="/blog">
-                                            <img src="/assets/img/theme-img/map.svg" alt="" />
-                                            Adventure Tours
-                                        </Link>
-                                        <span>(9)</span>
-                                    </li>
-                                    <li>
-                                        <Link to="/blog">
-                                            <img src="/assets/img/theme-img/map.svg" alt="" />
-                                            Mountain Tours
-                                        </Link>
-                                        <span>(10)</span>
-                                    </li>
+                                    {allPosts.map((d) => (
+                                        <li key={d.slug}>
+                                            <Link
+                                                to="#"
+                                                onClick={(e) => { e.preventDefault(); setDestinationFilter(d.slug); }}
+                                                className={filterSlug === d.slug ? 'fw-semibold' : ''}
+                                            >
+                                                <img src="/assets/img/theme-img/map.svg" alt="" />
+                                                {d.title}
+                                            </Link>
+                                        </li>
+                                    ))}
                                 </ul>
                             </div>
-                            <div className="widget  ">
-                                <h3 className="widget_title">Recent Posts</h3>
-                                <div className="recent-post-wrap">
-                                    <div className="recent-post">
-                                        <div className="media-img">
-                                            <Link to="/blog/1">
-                                                <img
-                                                    src="/assets/img/blog/recent-post-1-1.jpg"
-                                                    alt="Blog"
-                                                />
-                                            </Link>
-                                        </div>
-                                        <div className="media-body">
-                                            <h4 className="post-title">
-                                                <Link className="text-inherit" to="/blog/1">
-                                                    Best time to visit Pokhara: weather and festivals
-                                                </Link>
-                                            </h4>
-                                            <div className="recent-post-meta">
-                                                <Link to="/blog">
-                                                    <i className="fa-regular fa-calendar" />
-                                                    22/6/ 2025
-                                                </Link>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="recent-post">
-                                        <div className="media-img">
-                                            <Link to="/blog/1">
-                                                <img
-                                                    src="/assets/img/blog/recent-post-1-2.jpg"
-                                                    alt="Blog"
-                                                />
-                                            </Link>
-                                        </div>
-                                        <div className="media-body">
-                                            <h4 className="post-title">
-                                                <Link className="text-inherit" to="/blog/1">
-                                                    Harmony With Nature Of Belgium Tour and travle
-                                                </Link>
-                                            </h4>
-                                            <div className="recent-post-meta">
-                                                <Link to="/blog">
-                                                    <i className="fa-regular fa-calendar" />
-                                                    25/6/ 2025
-                                                </Link>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="recent-post">
-                                        <div className="media-img">
-                                            <Link to="/blog/1">
-                                                <img
-                                                    src="/assets/img/blog/recent-post-1-3.jpg"
-                                                    alt="Blog"
-                                                />
-                                            </Link>
-                                        </div>
-                                        <div className="media-body">
-                                            <h4 className="post-title">
-                                                <Link className="text-inherit" to="/blog/1">
-                                                    Exploring The Green Spaces Of Realar Residence
-                                                </Link>
-                                            </h4>
-                                            <div className="recent-post-meta">
-                                                <Link to="/blog">
-                                                    <i className="fa-regular fa-calendar" />
-                                                    27/6/ 2025
-                                                </Link>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="widget widget_tag_cloud  ">
-                                <h3 className="widget_title">Popular Tags</h3>
-                                <div className="tagcloud">
-                                    <Link to="/blog">Tour</Link>
-                                    <Link to="/blog">Adventure</Link>
-                                    <Link to="/blog">Rent</Link>
-                                    <Link to="/blog">Innovate</Link>
-                                    <Link to="/blog">Hotel</Link>
-                                    <Link to="/blog">Modern</Link>
-                                    <Link to="/blog">Luxury</Link>
-                                    <Link to="/blog">Travel</Link>
-                                </div>
-                            </div>
-                            <div
-                                className="widget widget_offer  "
-                                data-bg-src="/assets/img/bg/widget_bg_1.jpg"
-                                style={{ backgroundImage: "url(/assets/img/bg/widget_bg_1.jpg)" }}
-                            >
-                                <div className="offer-banner">
-                                    <div className="offer">
-                                        <h6 className="box-title">
-                                            Need Help? We Are Here To Help You
-                                        </h6>
-                                        <div className="banner-logo">
-                                            <img src={LOGO_FULL} alt={BRAND_NAME} className="di-logo-full" />
-                                        </div>
-                                        <div className="offer">
-                                            <h6 className="offer-title">You Get Online support</h6>
-                                            <Link className="offter-num" to={+256214203215}>
-                                                +256 214 203 215
-                                            </Link>
-                                        </div>
-                                        <Link to="/contact" className="th-btn style2 th-icon">
-                                            Read More
-                                        </Link>
-                                    </div>
-                                </div>
-                            </div>
+                            <RecentPostsWidget />
+                            <SidebarHelpWidget />
                         </aside>
                     </div>
                 </div>
             </div>
         </section>
-
     )
 }
 

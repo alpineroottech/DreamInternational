@@ -178,6 +178,7 @@ export default function FlightInquiries() {
                   <div className="col-6"><span className="text-muted">Return</span><br /><strong>{selected.returnDate || "One-way"}</strong></div>
                   <div className="col-6"><span className="text-muted">Passengers</span><br /><strong>{selected.passengers}</strong></div>
                   <div className="col-6"><span className="text-muted">Cabin</span><br /><strong>{selected.cabinClass}</strong></div>
+                  <div className="col-6"><span className="text-muted">Preferred airline</span><br /><strong>{selected.preferredAirline || "Any / Not sure"}</strong></div>
                   <div className="col-6"><span className="text-muted">Type</span><br /><strong className="text-capitalize">{selected.ticketType}</strong></div>
                 </div>
 

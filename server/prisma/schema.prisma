@@ -412,6 +412,7 @@ model FlightInquiry {
   email           String
   phone           String?
   nationality     String?
+  preferredAirline String?
   message         String?
   status          String   @default("NEW") // NEW | IN_PROGRESS | RESPONDED | CLOSED
   internalNotes   String?

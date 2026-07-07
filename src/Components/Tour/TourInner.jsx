@@ -3,7 +3,9 @@ import { Link, useSearchParams } from 'react-router-dom'
 import TourCard from './TourCard';
 import jsonPosts from '../data/data-tour.json';
 import TourCardTwo from './TourCardTwo';
-import { useCollection, resolveAssetUrl } from '../../public-cms/hooks';
+import { useCollection } from '../../public-cms/hooks';
+import RecentPostsWidget from '../Sidebar/RecentPostsWidget';
+import SidebarHelpWidget from '../Sidebar/SidebarHelpWidget';
 
 function TourInner() {
     const [activeTab, setActiveTab] = useState('tab-grid');
@@ -19,7 +21,6 @@ function TourInner() {
 
     const cms = useCollection('/public/tours');
     const cmsCategories = useCollection('/public/categories');
-    const cmsBlogs = useCollection('/public/blog');
 
     // Support multiple category filters via comma-separated query param
     const filterCategoriesRaw = searchParams.get('category') || '';
@@ -291,50 +292,8 @@ function TourInner() {
                                 </ul>
                             </div>
                             {/* Recent blog posts from CMS */}
-                            {cmsBlogs && cmsBlogs.length > 0 && (
-                                <div className="widget">
-                                    <h3 className="widget_title">Recent Posts</h3>
-                                    <div className="recent-post-wrap">
-                                        {cmsBlogs.slice(0, 3).map((post) => (
-                                            <div className="recent-post" key={post.slug || post.id}>
-                                                {post.coverImageUrl && (
-                                                    <div className="media-img">
-                                                        <Link to={`/blog/${post.slug || post.id}`}>
-                                                            <img src={resolveAssetUrl(post.coverImageUrl)} alt={post.title} />
-                                                        </Link>
-                                                    </div>
-                                                )}
-                                                <div className="media-body">
-                                                    <h4 className="post-title">
-                                                        <Link className="text-inherit" to={`/blog/${post.slug || post.id}`}>{post.title}</Link>
-                                                    </h4>
-                                                    <div className="recent-post-meta">
-                                                        <Link to="/blog">
-                                                            <i className="fa-regular fa-calendar" />
-                                                            {post.publishedAt ? new Date(post.publishedAt).toLocaleDateString() : ''}
-                                                        </Link>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-                            {/* Help widget */}
-                            <div
-                                className="widget widget_offer"
-                                style={{ backgroundImage: "url(/assets/img/bg/widget_bg_1.jpg)", backgroundSize: "cover" }}
-                            >
-                                <div className="offer-banner">
-                                    <div className="offer">
-                                        <h6 className="box-title">Need Help? We Are Here To Help You</h6>
-                                        <div className="offer">
-                                            <h6 className="offer-title">Get Online Support</h6>
-                                        </div>
-                                        <Link to="/contact" className="th-btn style2 th-icon">Contact Us</Link>
-                                    </div>
-                                </div>
-                            </div>
+                            <RecentPostsWidget />
+                            <SidebarHelpWidget />
                         </aside>
                     </div>
                 </div>

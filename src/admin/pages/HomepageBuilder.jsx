@@ -216,7 +216,7 @@ export default function HomepageBuilder() {
     <div>
       <div className="mb-4">
         <h4 className="fw-bold mb-1">Homepage Builder</h4>
-        <p className="text-muted mb-0">Reorder sections, turn them on/off, and edit their content.</p>
+        <p className="text-muted mb-0">Reorder sections, turn them on/off, and edit their content. Use <strong>About Section</strong> to change the homepage about collage (3 photos + text).</p>
       </div>
       {sections.map((s, i) => (
         <SectionRow

@@ -2,6 +2,34 @@ import React, { useState } from "react";
 import { publicApi } from "../../public-cms/hooks";
 
 const CABIN_CLASSES = ["Economy", "Business", "First"];
+const ANY_AIRLINE = { value: "any", label: "Any airline / Not sure" };
+
+const DOMESTIC_AIRLINES = [
+  "Buddha Air",
+  "Yeti Airlines",
+  "Shree Airlines",
+  "Nepal Airlines",
+  "Summit Air",
+  "Tara Air",
+  "Saurya Airlines",
+  "Simrik Airlines",
+];
+
+const INTERNATIONAL_AIRLINES = [
+  "Nepal Airlines",
+  "Qatar Airways",
+  "Emirates",
+  "Turkish Airlines",
+  "Singapore Airlines",
+  "Air India",
+  "IndiGo",
+  "Thai Airways",
+  "Cathay Pacific",
+  "Etihad Airways",
+  "Malaysia Airlines",
+  "China Southern",
+  "Korean Air",
+];
 const NEPAL_CITIES = [
   "Kathmandu", "Pokhara", "Lukla", "Biratnagar", "Bhairahawa", "Nepalgunj",
   "Dhangadhi", "Tumlingtar", "Jomsom", "Manang", "Simara", "Bharatpur",
@@ -15,7 +43,7 @@ const INTL_CITIES = [
 
 const emptyForm = {
   fromCity: "", toCity: "", travelDate: "", returnDate: "",
-  passengers: 1, cabinClass: "Economy",
+  passengers: 1, cabinClass: "Economy", preferredAirline: "any",
   name: "", email: "", phone: "", nationality: "", message: "",
 };
 
@@ -27,6 +55,7 @@ export default function FlightBookingForm({ ticketType = "domestic", routeTitle 
   const [error, setError] = useState("");
 
   const cities = ticketType === "domestic" ? NEPAL_CITIES : INTL_CITIES;
+  const airlines = ticketType === "domestic" ? DOMESTIC_AIRLINES : INTERNATIONAL_AIRLINES;
 
   const set = (field, val) => setForm(f => ({ ...f, [field]: val }));
 
@@ -35,9 +64,11 @@ export default function FlightBookingForm({ ticketType = "domestic", routeTitle 
     setError("");
     setLoading(true);
     try {
+      const preferredAirline = form.preferredAirline === "any" ? null : form.preferredAirline;
       await publicApi.post("/public/flight-inquiries", {
         ...form,
         ticketType,
+        preferredAirline,
         returnDate: tripType === "return" ? form.returnDate : null,
         passengers: Number(form.passengers) || 1,
         message: [
@@ -164,9 +195,9 @@ export default function FlightBookingForm({ ticketType = "domestic", routeTitle 
         )}
       </div>
 
-      {/* Passengers & Class */}
+      {/* Passengers, class & airline */}
       <div className="row g-3 mb-4">
-        <div className="col-sm-6">
+        <div className="col-sm-4">
           <label className="form-label">
             <i className="fa-light fa-users me-1" /> Passengers *
           </label>
@@ -179,7 +210,7 @@ export default function FlightBookingForm({ ticketType = "domestic", routeTitle 
             required
           />
         </div>
-        <div className="col-sm-6">
+        <div className="col-sm-4">
           <label className="form-label">
             <i className="fa-light fa-chair-office me-1" /> Cabin class
           </label>
@@ -189,6 +220,21 @@ export default function FlightBookingForm({ ticketType = "domestic", routeTitle 
             onChange={e => set("cabinClass", e.target.value)}
           >
             {CABIN_CLASSES.map(c => <option key={c} value={c}>{c}</option>)}
+          </select>
+        </div>
+        <div className="col-sm-4">
+          <label className="form-label">
+            <i className="fa-light fa-plane me-1" /> Preferred airline
+          </label>
+          <select
+            className="form-select"
+            value={form.preferredAirline}
+            onChange={e => set("preferredAirline", e.target.value)}
+          >
+            <option value={ANY_AIRLINE.value}>{ANY_AIRLINE.label}</option>
+            {airlines.map((a) => (
+              <option key={a} value={a}>{a}</option>
+            ))}
           </select>
         </div>
       </div>

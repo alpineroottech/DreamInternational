@@ -3,58 +3,54 @@ import { useNavigate } from "react-router-dom";
 import NiceSelect from "../Header/NiceSelect";
 import { useCollection, resolveCmsList } from "../../public-cms/hooks";
 
+const ANY = { value: "", label: "Any / All" };
+
 function Booking() {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
         destination: "",
-        adventureType: "",
+        category: "",
         duration: "",
-        category: ""
     });
 
-    // Pull real destinations and categories from CMS so the dropdowns stay
-    // in sync with what's actually in the database.
     const cmsDestinations = useCollection("/public/destinations");
     const cmsCategories = useCollection("/public/categories");
-
-    const FALLBACK_DESTINATIONS = [
-        { value: "pokhara", label: "Pokhara" },
-        { value: "kathmandu", label: "Kathmandu" },
-        { value: "chitwan", label: "Chitwan" },
-    ];
-    const FALLBACK_CATEGORIES = [
-        { value: "trekking", label: "Trekking" },
-        { value: "cultural-tours", label: "Cultural Tours" },
-        { value: "adventure", label: "Adventure" },
-    ];
 
     const destResolved = resolveCmsList(cmsDestinations, []);
     const catResolved = resolveCmsList(cmsCategories, []);
 
-    const destinationOptions = destResolved.loading
-        ? []
-        : (cmsDestinations && cmsDestinations.length
-            ? cmsDestinations.map((d) => ({ value: d.slug, label: d.name }))
-            : FALLBACK_DESTINATIONS);
+    const destinationOptions = [
+        ANY,
+        ...(destResolved.loading
+            ? []
+            : cmsDestinations && cmsDestinations.length
+                ? cmsDestinations.map((d) => ({ value: d.slug, label: d.name }))
+                : [
+                    { value: "pokhara", label: "Pokhara" },
+                    { value: "kathmandu", label: "Kathmandu" },
+                    { value: "chitwan", label: "Chitwan" },
+                ]),
+    ];
 
-    const categoryOptions = catResolved.loading
-        ? []
-        : (cmsCategories && cmsCategories.length
-            ? cmsCategories.map((c) => ({ value: c.slug, label: c.name }))
-            : FALLBACK_CATEGORIES);
-
-    const adventureOptions = [
-        { value: "trekking", label: "Trekking" },
-        { value: "cultural", label: "Cultural Tour" },
-        { value: "adventure", label: "Adventure" },
-        { value: "jungle-safari", label: "Jungle Safari" },
+    const categoryOptions = [
+        ANY,
+        ...(catResolved.loading
+            ? []
+            : cmsCategories && cmsCategories.length
+                ? cmsCategories.map((c) => ({ value: c.slug, label: c.name }))
+                : [
+                    { value: "trekking", label: "Trekking" },
+                    { value: "cultural-tours", label: "Cultural Tours" },
+                    { value: "adventure", label: "Adventure" },
+                ]),
     ];
 
     const durationOptions = [
-        { value: "1-3", label: "1–3 Days" },
-        { value: "4-7", label: "4–7 Days" },
-        { value: "8-14", label: "8–14 Days" },
-        { value: "15+", label: "15+ Days" },
+        ANY,
+        { value: "1-3", label: "1–3 days" },
+        { value: "4-7", label: "4–7 days" },
+        { value: "8-14", label: "8–14 days" },
+        { value: "15+", label: "15+ days" },
     ];
 
     const handleChange = (name, value) => {
@@ -63,82 +59,69 @@ function Booking() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Build query string from whatever the user filled in and navigate to
-        // the Tours listing page, which will read and apply these filters.
         const params = new URLSearchParams();
         if (formData.destination) params.set("destination", formData.destination);
-        if (formData.adventureType) params.set("type", formData.adventureType);
-        if (formData.duration) params.set("duration", formData.duration);
         if (formData.category) params.set("category", formData.category);
-        navigate(`/tour?${params.toString()}`);
+        if (formData.duration) params.set("duration", formData.duration);
+        const qs = params.toString();
+        navigate(qs ? `/tour?${qs}` : "/tour");
     };
 
     return (
         <div className="booking-sec">
             <div className="container">
+                <p className="booking-sec__lead text-center mb-3">
+                    Find a tour by <strong>where</strong> you want to go, <strong>experience type</strong>, and <strong>trip length</strong>.
+                </p>
                 <form onSubmit={handleSubmit} className="booking-form">
                     <div className="input-wrap">
-                        <div className="row align-items-center justify-content-between">
-                            <div className="form-group col-md-6 col-lg-auto">
-                                <div className="icon">
-                                    <i className="fa-light fa-route" />
-                                </div>
-                                <div className="search-input">
-                                    <label>Destination</label>
-                                    <NiceSelect
-                                        options={destinationOptions}
-                                        defaultValue="Select Destination"
-                                        onChange={(value) => handleChange("destination", value)}
-                                    />
-                                </div>
-                            </div>
-                            <div className="form-group col-md-6 col-lg-auto">
-                                <div className="icon">
-                                    <i className="fa-regular fa-person-hiking" />
-                                </div>
-                                <div className="search-input">
-                                    <label>Type</label>
-                                    <NiceSelect
-                                        options={adventureOptions}
-                                        defaultValue="Adventure"
-                                        onChange={(value) => handleChange("adventureType", value)}
-                                    />
-                                </div>
-                            </div>
-                            <div className="form-group col-md-6 col-lg-auto">
-                                <div className="icon">
-                                    <i className="fa-light fa-clock" />
-                                </div>
-                                <div className="search-input">
-                                    <label>Duration</label>
-                                    <NiceSelect
-                                        options={durationOptions}
-                                        defaultValue="Duration"
-                                        onChange={(value) => handleChange("duration", value)}
-                                    />
-                                </div>
-                            </div>
-                            <div className="form-group col-md-6 col-lg-auto">
+                        <div className="row align-items-center justify-content-between g-3">
+                            <div className="form-group col-md-6 col-lg">
                                 <div className="icon">
                                     <i className="fa-light fa-map-location-dot" />
                                 </div>
                                 <div className="search-input">
-                                    <label>Tour Category</label>
+                                    <label>Where to go?</label>
+                                    <NiceSelect
+                                        options={destinationOptions}
+                                        placeholder="Any destination"
+                                        onChange={(value) => handleChange("destination", value)}
+                                    />
+                                </div>
+                            </div>
+                            <div className="form-group col-md-6 col-lg">
+                                <div className="icon">
+                                    <i className="fa-regular fa-person-hiking" />
+                                </div>
+                                <div className="search-input">
+                                    <label>Experience</label>
                                     <NiceSelect
                                         options={categoryOptions}
-                                        defaultValue="Select Category"
+                                        placeholder="Any experience"
                                         onChange={(value) => handleChange("category", value)}
+                                    />
+                                </div>
+                            </div>
+                            <div className="form-group col-md-6 col-lg">
+                                <div className="icon">
+                                    <i className="fa-light fa-clock" />
+                                </div>
+                                <div className="search-input">
+                                    <label>Trip length</label>
+                                    <NiceSelect
+                                        options={durationOptions}
+                                        placeholder="Any duration"
+                                        onChange={(value) => handleChange("duration", value)}
                                     />
                                 </div>
                             </div>
                             <div className="form-btn col-md-12 col-lg-auto">
                                 <button className="th-btn" type="submit">
                                     <img src="/assets/img/icon/search.svg" alt="" />
-                                    Search
+                                    Find tours
                                 </button>
                             </div>
                         </div>
-
                     </div>
                 </form>
             </div>

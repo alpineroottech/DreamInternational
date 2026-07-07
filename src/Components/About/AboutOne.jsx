@@ -1,12 +1,18 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { resolveAssetUrl } from '../../public-cms/hooks'
 import SafeHtml from '../../public-cms/SafeHtml'
+import { cmsImage } from '../../public-cms/cmsImage'
+
+const DEFAULT_IMAGES = {
+    image: "/assets/img/normal/temple.webp",
+    image2: "/assets/img/normal/lake.jpg",
+    image3: "/assets/img/normal/boudha.jpg",
+};
 
 function AboutOne({ data = {} }) {
-    const img1 = data.image ? resolveAssetUrl(data.image) : "";
-    const img2 = data.image2 ? resolveAssetUrl(data.image2) : "";
-    const img3 = data.image3 ? resolveAssetUrl(data.image3) : "";
+    const img1 = cmsImage(data.image, DEFAULT_IMAGES.image);
+    const img2 = cmsImage(data.image2, DEFAULT_IMAGES.image2);
+    const img3 = cmsImage(data.image3, DEFAULT_IMAGES.image3);
     const hasCollage = Boolean(img1 || img2 || img3);
     const ctaLabel = data.ctaLabel || "Learn More";
     const ctaUrl = data.ctaUrl || "/about";

@@ -1,9 +1,13 @@
 import React, { useState, useRef, useEffect } from "react";
 
-const NiceSelect = ({ options = [], defaultValue, onChange }) => {
-  const [selected, setSelected] = useState(defaultValue || options[0]?.label || "");
+const NiceSelect = ({ options = [], placeholder = "Select", onChange }) => {
+  const [selected, setSelected] = useState(placeholder);
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    setSelected(placeholder);
+  }, [placeholder]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
