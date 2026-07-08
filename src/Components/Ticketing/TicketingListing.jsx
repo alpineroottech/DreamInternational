@@ -35,6 +35,11 @@ export default function TicketingListing({ ticketType, pageKey, breadcrumbTitle,
   };
   const [query, setQuery] = useState("");
 
+  const scrollToEnquiry = () => {
+    const el = document.getElementById("enquiry-form");
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
   const routes = useMemo(() => {
     if (cms === undefined) return [];
     const list = Array.isArray(cms) ? cms : [];
@@ -64,7 +69,13 @@ export default function TicketingListing({ ticketType, pageKey, breadcrumbTitle,
             <h1>{hero.title}</h1>
             <p>{hero.intro}</p>
             <div className="ticketing-hero__actions">
-              <Link to="#enquiry-form" className="th-btn th-btn-accent">Request a Quote</Link>
+              <button
+                type="button"
+                className="th-btn th-btn-accent"
+                onClick={scrollToEnquiry}
+              >
+                Request a Quote
+              </button>
               {siblingUrl && (
                 <Link to={siblingUrl} className="th-btn style2 th-icon">{siblingLabel}</Link>
               )}

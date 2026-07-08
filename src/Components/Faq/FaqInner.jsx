@@ -1,74 +1,55 @@
 import React, { useState, useRef, useEffect } from "react";
+import { useCollection, resolveCmsList } from "../../public-cms/hooks";
+import SafeHtml from "../../public-cms/SafeHtml";
+
+const FALLBACK = [
+    {
+        question: "How do I book a tour or trek with Dream International?",
+        answer:
+            "You can send us an enquiry through the contact form, email, or phone. Our team will confirm availability, share a tailored itinerary, and guide you through booking and payment.",
+    },
+    {
+        question: "Do I need travel insurance for trekking in Nepal?",
+        answer:
+            "Yes. We strongly recommend comprehensive travel insurance that covers high-altitude trekking, medical treatment, and emergency helicopter evacuation for mountain trips.",
+    },
+    {
+        question: "What is the best time of year to visit Nepal?",
+        answer:
+            "Spring (March–May) and autumn (September–November) offer the clearest skies and most stable weather for trekking and sightseeing, though Nepal can be visited year-round depending on your itinerary.",
+    },
+    {
+        question: "Can you arrange custom or private itineraries?",
+        answer:
+            "Absolutely. We specialise in bespoke trips designed around your interests, schedule, fitness level, and budget — from cultural tours to challenging high-altitude expeditions.",
+    },
+    {
+        question: "Do you handle permits, guides, and logistics?",
+        answer:
+            "Yes. Our local team arranges all necessary permits, licensed English-speaking guides, porters, transport, and accommodation so your journey stays smooth and hassle-free.",
+    },
+];
 
 function FaqInner() {
     const [activeIndex, setActiveIndex] = useState(0);
-    const contentRefs = useRef([]); // Store refs for each accordion item
+    const contentRefs = useRef([]);
 
-    const faqs = [
-        {
-            question: "How do I start the process of buying a home?",
-            answer:
-                "The open-concept layout seamlessly connects the living room with the fully equipped kitchen, boasting top-of-the-line appliances and all the essentials for preparing delicious meals.",
-        },
-        {
-            question: "What factors should I consider when choosing a neighborhood?",
-            answer:
-                "The responsibility for paying closing costs can vary depending on the terms negotiated between the buyer and the seller, as well as local customs and regulations.",
-        },
-        {
-            question: "How can I determine the right price for selling my property?",
-            answer:
-                "Research the local real estate market to understand current trends, property values, and comparable sales in the area. Knowing the market will give you leverage during negotiations.",
-        },
-        {
-            question: "What are closing costs and who is responsible for paying them?",
-            answer:
-                "Research the local real estate market to understand current trends, property values, and comparable sales in the area. Knowing the market will give you leverage during negotiations.",
-        },
-        {
-            question: "How can I negotiate the best price when buying a property?",
-            answer:
-                "Research the local real estate market to understand current trends, property values, and comparable sales in the area. Knowing the market will give you leverage during negotiations.",
-        },
-        {
-            question: "What are closing costs and who is responsible for paying them?",
-            answer:
-                "Research the local real estate market to understand current trends, property values, and comparable sales in the area. Knowing the market will give you leverage during negotiations.",
-        },
-        {
-            question: "What are closing costs and who is responsible for paying them?",
-            answer:
-                "Research the local real estate market to understand current trends, property values, and comparable sales in the area. Knowing the market will give you leverage during negotiations.",
-        },
-        {
-            question: "What are closing costs and who is responsible for paying them?",
-            answer:
-                "Research the local real estate market to understand current trends, property values, and comparable sales in the area. Knowing the market will give you leverage during negotiations.",
-        },
-        {
-            question: "What are closing costs and who is responsible for paying them?",
-            answer:
-                "Research the local real estate market to understand current trends, property values, and comparable sales in the area. Knowing the market will give you leverage during negotiations.",
-        },
-        {
-            question: "What are closing costs and who is responsible for paying them?",
-            answer:
-                "Research the local real estate market to understand current trends, property values, and comparable sales in the area. Knowing the market will give you leverage during negotiations.",
-        },
-    ];
+    const cms = useCollection("/public/faqs");
+    const { loading, items: faqs } = resolveCmsList(cms, FALLBACK);
 
     const toggleAccordion = (index) => {
         setActiveIndex(activeIndex === index ? null : index);
     };
 
     useEffect(() => {
-        // Dynamically set max-height for smooth transition
         contentRefs.current.forEach((ref, index) => {
             if (ref) {
                 ref.style.maxHeight = activeIndex === index ? `${ref.scrollHeight}px` : "0px";
             }
         });
-    }, [activeIndex]);
+    }, [activeIndex, faqs]);
+
+    if (loading) return null;
 
     return (
         <div className="space-top space-extra-bottom">
@@ -82,35 +63,43 @@ function FaqInner() {
                         </div>
                     </div>
                 </div>
-                <div className="row">
-                    <div className="col-lg-10 offset-lg-1">
-                        <div className="accordion-area mb-30">
-                            {faqs.map((faq, index) => (
-                                <div
-                                    key={index}
-                                    className={`accordion-card style2 ${activeIndex === index ? "active" : ""}`}
-                                >
-                                    <div className="accordion-header">
-                                        <button
-                                            className={`accordion-button ${activeIndex === index ? "" : "collapsed"}`}
-                                            onClick={() => toggleAccordion(index)}
-                                        >
-                                            Q{index + 1}. {faq.question}
-                                        </button>
-                                    </div>
-                                    <div
-                                        ref={(el) => (contentRefs.current[index] = el)}
-                                        className="accordion-collapse"
-                                    >
-                                        <div className="accordion-body">
-                                            <p className="faq-text">{faq.answer}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
+                {faqs.length === 0 ? (
+                    <div className="row">
+                        <div className="col-12 text-center">
+                            <p className="mb-0">No FAQs published yet.</p>
                         </div>
                     </div>
-                </div>
+                ) : (
+                    <div className="row">
+                        <div className="col-lg-10 offset-lg-1">
+                            <div className="accordion-area mb-30">
+                                {faqs.map((faq, index) => (
+                                    <div
+                                        key={faq.id || index}
+                                        className={`accordion-card style2 ${activeIndex === index ? "active" : ""}`}
+                                    >
+                                        <div className="accordion-header">
+                                            <button
+                                                className={`accordion-button ${activeIndex === index ? "" : "collapsed"}`}
+                                                onClick={() => toggleAccordion(index)}
+                                            >
+                                                Q{index + 1}. {faq.question}
+                                            </button>
+                                        </div>
+                                        <div
+                                            ref={(el) => (contentRefs.current[index] = el)}
+                                            className="accordion-collapse"
+                                        >
+                                            <div className="accordion-body">
+                                                <SafeHtml className="faq-text" html={faq.answer} />
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );

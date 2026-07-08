@@ -45,11 +45,15 @@ export function useCollection(path, params) {
   return data;
 }
 
+// In production the site must rely solely on CMS content — template/demo
+// fallback data is only used in development so the UI isn't empty locally.
+const ALLOW_FALLBACK = process.env.NODE_ENV !== "production";
+
 /** Resolve CMS list vs fallback without flashing template defaults during load. */
 export function resolveCmsList(cms, fallback = []) {
   if (cms === undefined) return { loading: true, items: [] };
   if (cms && cms.length) return { loading: false, items: cms };
-  return { loading: false, items: fallback };
+  return { loading: false, items: ALLOW_FALLBACK ? fallback : [] };
 }
 
 // Site settings, cached across the app (loaded once).
