@@ -24,7 +24,7 @@ function TourDetails() {
       <HeaderOne />
       <Breadcrumb
         title={title}
-        pageKey={market === "international" ? "international-holidays" : "tour-details"}
+        pageKey={market === "international" ? "international-holidays-details" : "tour-details"}
         parent={{ label: tourListingLabel(market), url: tourListingPath(market) }}
       />
       <TourDetailsMain market={market} />

@@ -293,6 +293,21 @@
   outline: none !important;
 }
 
+/* Per-page hero banner field (toggle + color) */
+.di-admin .di-hero-field {
+  border: 1px solid #e6e9f0;
+  border-radius: 10px;
+  padding: 12px 14px;
+  background: #fbfcfe;
+  height: 100%;
+}
+
+/* Make the hero switch a bit larger so it's easy to spot */
+.di-admin .di-hero-field .form-switch .form-check-input {
+  width: 2.75em !important;
+  height: 1.4em !important;
+}
+
 /* Switch wrapper row */
 .di-switch-wrap {
   display: flex;

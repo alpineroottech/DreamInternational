@@ -7,6 +7,7 @@ export const DEFAULT_PAGE_HERO_COLORS = {
   tours: "#001a57",
   "tour-details": "#001a57",
   "international-holidays": "#001a57",
+  "international-holidays-details": "#001a57",
   destinations: "#001a57",
   "destination-details": "#001a57",
   activities: "#001a57",
@@ -32,6 +33,9 @@ export const DEFAULT_PAGE_HERO_COLORS = {
   "ticketing-domestic": "#001a57",
   "ticketing-international": "#001a57",
   "ticketing-route": "#001a57",
+  "privacy-policy": "#001a57",
+  "terms-and-conditions": "#001a57",
+  "cancellation-policy": "#001a57",
 };
 
 const HEX_RE = /^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})$/;

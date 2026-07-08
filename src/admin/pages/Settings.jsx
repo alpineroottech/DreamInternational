@@ -85,6 +85,7 @@ export const PAGE_HERO_FIELDS = [
   { key: "tours", label: "Nepal Experiences listing" },
   { key: "tour-details", label: "Nepal Experience details (fallback)" },
   { key: "international-holidays", label: "International Holidays listing" },
+  { key: "international-holidays-details", label: "International Holiday details (fallback)" },
   { key: "destinations", label: "Destinations listing (legacy)" },
   { key: "destination-details", label: "Destination details (fallback, legacy)" },
   { key: "activities", label: "Activities listing" },
@@ -110,6 +111,9 @@ export const PAGE_HERO_FIELDS = [
   { key: "ticketing-domestic", label: "Domestic ticketing (fallback)" },
   { key: "ticketing-international", label: "International ticketing (fallback)" },
   { key: "ticketing-route", label: "Flight route details (fallback)" },
+  { key: "privacy-policy", label: "Privacy Policy" },
+  { key: "terms-and-conditions", label: "Terms & Conditions" },
+  { key: "cancellation-policy", label: "Cancellation Policy" },
 ];
 
 export default function Settings() {
@@ -232,29 +236,41 @@ export default function Settings() {
         </div>
 
         <div className="row g-3">
-          {PAGE_HERO_FIELDS.map((f) => (
-            <div className="col-md-6 col-xl-4" key={f.key}>
-              <div className="d-flex align-items-center justify-content-between mb-1">
-                <label className="form-label small fw-semibold mb-0">{f.label}</label>
-                <div className="form-check form-switch mb-0">
-                  <input
-                    className="form-check-input"
-                    type="checkbox"
-                    role="switch"
-                    checked={isHeroEnabledFor(f.key)}
-                    onChange={(e) => setHeroEnabled(f.key, e.target.checked)}
-                    aria-label={`Enable hero banner on ${f.label}`}
+          {PAGE_HERO_FIELDS.map((f) => {
+            const on = isHeroEnabledFor(f.key);
+            return (
+              <div className="col-md-6 col-xl-4" key={f.key}>
+                <div className="di-hero-field">
+                  <div className="d-flex align-items-center justify-content-between mb-2">
+                    <label className="form-label small fw-semibold mb-0">{f.label}</label>
+                    <div className="form-check form-switch mb-0 d-flex align-items-center gap-2">
+                      <input
+                        className="form-check-input mt-0"
+                        type="checkbox"
+                        role="switch"
+                        id={`hero-toggle-${f.key}`}
+                        checked={on}
+                        onChange={(e) => setHeroEnabled(f.key, e.target.checked)}
+                      />
+                      <label
+                        className="form-check-label small fw-semibold mb-0"
+                        htmlFor={`hero-toggle-${f.key}`}
+                        style={{ color: on ? "#0a7d33" : "#b02a37", minWidth: 62 }}
+                      >
+                        {on ? "Hero: On" : "Hero: Off"}
+                      </label>
+                    </div>
+                  </div>
+                  <HeroColorInput
+                    value={pageHeroColors[f.key] || DEFAULT_PAGE_HERO_COLORS[f.key] || DEFAULT_HERO_COLOR}
+                    onChange={(color) => setPageHeroColor(f.key, color)}
+                    fallback={DEFAULT_PAGE_HERO_COLORS[f.key] || DEFAULT_HERO_COLOR}
+                    disabled={!on}
                   />
                 </div>
               </div>
-              <HeroColorInput
-                value={pageHeroColors[f.key] || DEFAULT_PAGE_HERO_COLORS[f.key] || DEFAULT_HERO_COLOR}
-                onChange={(color) => setPageHeroColor(f.key, color)}
-                fallback={DEFAULT_PAGE_HERO_COLORS[f.key] || DEFAULT_HERO_COLOR}
-                disabled={!isHeroEnabledFor(f.key)}
-              />
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </form>
