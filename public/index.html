@@ -33,10 +33,8 @@
   <meta name="theme-color" content="#140ca9">
 
   <!--==============================
-	  Google Fonts
+	  Google Fonts (deduped preconnect)
 	============================== -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -44,20 +42,29 @@
     rel="stylesheet">
 
   <!--==============================
-	    All CSS File
+	    Critical CSS (render-blocking — layout + theme)
 	============================== -->
-  <!-- Bootstrap -->
+  <!-- Bootstrap (grid/layout) -->
   <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
-  <!-- Fontawesome Icon -->
-  <link rel="stylesheet" href="/assets/css/fontawesome.min.css">
-  <!-- Magnific Popup -->
-  <link rel="stylesheet" href="/assets/css/magnific-popup.min.css">
-
-  <!-- Swiper css -->
-  <link rel="stylesheet" href="/assets/css/swiper-bundle.min.css">
-
   <!-- Theme Custom CSS -->
   <link rel="stylesheet" href="/assets/css/style.css">
+
+  <!--==============================
+	    Non-critical CSS — loaded async so it doesn't block first paint.
+	    (Icons, lightbox, and the standalone swiper bundle. Swiper's own
+	    styles are also imported per-component via `swiper/css`.)
+	============================== -->
+  <link rel="preload" as="style" href="/assets/css/fontawesome.min.css"
+    onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="/assets/css/magnific-popup.min.css"
+    onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="/assets/css/swiper-bundle.min.css"
+    onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet" href="/assets/css/fontawesome.min.css">
+    <link rel="stylesheet" href="/assets/css/magnific-popup.min.css">
+    <link rel="stylesheet" href="/assets/css/swiper-bundle.min.css">
+  </noscript>
 
 </head>
 

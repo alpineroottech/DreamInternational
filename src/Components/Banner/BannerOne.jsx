@@ -36,6 +36,7 @@ function HeroCta({ to, label, className }) {
 function BannerOne({ data = {} }) {
     const swiperRef = useRef(null);
     const slides = Array.isArray(data.slides) && data.slides.length ? data.slides : FALLBACK_SLIDES;
+    const firstSlideImage = resolveAssetUrl(slides[0]?.image);
 
     useEffect(() => {
         document.querySelectorAll('[data-ani]').forEach((element) => {
@@ -45,6 +46,23 @@ function BannerOne({ data = {} }) {
             element.style.animationDelay = element.getAttribute('data-ani-delay');
         });
     }, [slides]);
+
+    // The hero background is the LCP element. It's a CSS background (so it can't
+    // carry fetchpriority), and when the hero comes from the CMS it isn't the
+    // image preloaded in index.html — so inject a high-priority preload for the
+    // actual first slide as early as possible.
+    useEffect(() => {
+        if (!firstSlideImage) return undefined;
+        const link = document.createElement('link');
+        link.rel = 'preload';
+        link.as = 'image';
+        link.href = firstSlideImage;
+        link.setAttribute('fetchpriority', 'high');
+        document.head.appendChild(link);
+        return () => {
+            if (link.parentNode) link.parentNode.removeChild(link);
+        };
+    }, [firstSlideImage]);
 
     return (
         <div className="th-hero-wrapper hero-1 di-hero-mockup" id="hero">

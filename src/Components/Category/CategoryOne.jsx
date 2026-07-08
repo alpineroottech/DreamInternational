@@ -117,14 +117,18 @@ const CategoryOne = ({ data = {} }) => {
             <SwiperSlide key={category.id}>
               <div className="category-card single">
                 <div className="box-img global-img">
-                  <img src={category.imgSrc} alt={category.title} loading="lazy" />
+                  <img src={category.imgSrc} alt={category.title} width="424" height="530" loading="lazy" decoding="async" />
                 </div>
                 <h3 className="box-title">
                   <Link to={category.slug ? `/tour?category=${category.slug}` : "/tour"}>
                     {category.title}
                   </Link>
                 </h3>
-                <Link className="line-btn" to={category.slug ? `/tour?category=${category.slug}` : "/tour"}>
+                <Link
+                  className="line-btn"
+                  to={category.slug ? `/tour?category=${category.slug}` : "/tour"}
+                  aria-label={`See more ${category.title} tours`}
+                >
                   See more
                 </Link>
               </div>

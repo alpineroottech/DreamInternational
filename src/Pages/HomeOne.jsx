@@ -43,21 +43,23 @@ function HomeOne() {
     return (
         <div>
             <HeaderOne />
-            {keys.map((key) => {
-                const Comp = SECTION_COMPONENTS[key];
-                if (!Comp) return null;
-                const el = <Comp key={key} data={byKey[key] || {}} />;
-                // The booking widget always sits directly under the hero.
-                if (key === "hero") {
-                    return (
-                        <div className="di-hero-booking-wrap" key="hero-group">
-                            {el}
-                            <Booking />
-                        </div>
-                    );
-                }
-                return el;
-            })}
+            <main id="main-content">
+                {keys.map((key) => {
+                    const Comp = SECTION_COMPONENTS[key];
+                    if (!Comp) return null;
+                    const el = <Comp key={key} data={byKey[key] || {}} />;
+                    // The booking widget always sits directly under the hero.
+                    if (key === "hero") {
+                        return (
+                            <div className="di-hero-booking-wrap" key="hero-group">
+                                {el}
+                                <Booking />
+                            </div>
+                        );
+                    }
+                    return el;
+                })}
+            </main>
             <FooterOne />
             <ScrollToTop />
         </div>

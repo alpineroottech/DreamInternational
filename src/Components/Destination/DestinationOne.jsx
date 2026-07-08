@@ -62,6 +62,10 @@ function DestinationOne({ data = {} }) {
               <img
                 src={image}
                 alt={title}
+                width="600"
+                height="420"
+                loading="lazy"
+                decoding="async"
                 style={{ width: "100%", height: "100%", objectFit: "cover" }}
               />
             </div>
@@ -73,7 +77,7 @@ function DestinationOne({ data = {} }) {
             <p className="mb-20" style={{ lineHeight: 1.8 }}>{summary}</p>
             {highlights.length > 0 && (
               <>
-                <h5 className="box-title mb-10">Package highlights</h5>
+                <h4 className="box-title mb-10">Package highlights</h4>
                 <div className="checklist mb-20">
                   <ul>
                     {highlights.slice(0, 5).map((item, i) => (

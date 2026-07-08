@@ -986,7 +986,8 @@ a:not(.th-btn):not(.nav-link):hover {
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(0, 26, 87, 0.45);
+  /* WCAG AA: darkened from rgba(0,26,87,.45) (~2.8:1) to ~7.9:1 on white */
+  color: rgba(0, 26, 87, 0.75);
   margin-bottom: 2px;
 }
 
@@ -1218,7 +1219,8 @@ select:focus,
 }
 
 .di-testimonial-card__role {
-  color: var(--brand-gold);
+  /* WCAG AA: gold (#d4a017 ~2.0:1 on white) failed contrast; use navy-grey (~5.9:1) */
+  color: #5c6478;
   font-size: 0.9rem;
 }
 
@@ -1669,4 +1671,39 @@ select:focus,
 
 .di-sidebar__brand .script {
   color: #001a57 !important;
+}
+
+/* ─── 26. ACCESSIBILITY FIXES (Lighthouse) ──────────────────── */
+
+/* Body copy contrast on light backgrounds. Navy-heavy sections that
+   need white text already override this with `!important`, so this only
+   affects `.sec-text` sitting on white/smoke backgrounds. (~8:1 on #fff) */
+.sec-text {
+  color: #46506e;
+}
+
+/* Copyright link must not rely on colour alone — keep it underlined so it
+   is distinguishable from the surrounding text. */
+.footer-wrapper.footer-layout1 .copyright-text > a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.footer-wrapper.footer-layout1 .copyright-text > a:hover,
+.footer-wrapper.footer-layout1 .copyright-text > a:focus-visible {
+  text-decoration: underline;
+  color: var(--white-color);
+}
+
+/* ─── 27. GALLERY — fixed thumbnail ratio (prevents CLS) ────── */
+/* Explicit width/height attributes on the <img> pair with this ratio so
+   the layout box is reserved before the image loads. */
+.gallery-area .gallery-card .box-img.global-img {
+  aspect-ratio: 4 / 5;
+}
+
+.gallery-area .gallery-card .box-img.global-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }

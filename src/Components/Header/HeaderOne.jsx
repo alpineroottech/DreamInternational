@@ -114,6 +114,9 @@ function HeaderOne() {
                                             src={LOGO_TITLE}
                                             alt={BRAND_NAME}
                                             className="di-header-logo-img"
+                                            width="1850"
+                                            height="303"
+                                            decoding="async"
                                         />
                                     </Link>
                                 </div>

@@ -74,7 +74,7 @@ function TourOne({ data = {} }) {
                 <SwiperSlide key={tour.slug || tour.id}>
                   <div className="tour-box th-ani gsap-cursor">
                     <div className="tour-box_img global-img">
-                      <img src={resolveAssetUrl(tour.cardImageUrl || tour.featuredImageUrl) || '/assets/img/tour/tour_box_1.jpg'} alt={tour.title} />
+                      <img src={resolveAssetUrl(tour.cardImageUrl || tour.featuredImageUrl) || '/assets/img/tour/tour_box_1.jpg'} alt={tour.title} width="424" height="274" loading="lazy" decoding="async" />
                       {catName && (
                         <Link
                           to={catSlug ? `/tour?category=${catSlug}` : '/tour'}

@@ -51,7 +51,9 @@ export async function uploadImageToSupabase(buffer, originalname, mimetype) {
   const { error } = await client.from(bucket).upload(objectPath, buffer, {
     contentType: mimetype,
     upsert: false,
-    cacheControl: "3600",
+    // Object names are timestamp-prefixed and never overwritten, so the
+    // public URL is effectively immutable — cache for a year instead of 1h.
+    cacheControl: "31536000",
   });
 
   if (error) {

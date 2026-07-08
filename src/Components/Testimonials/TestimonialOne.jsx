@@ -81,7 +81,7 @@ function TestimonialTile({ item }) {
         ))}
       </div>
       <div className="di-testimonial-card__profile">
-        <img src={item.image} alt={item.name} />
+        <img src={item.image} alt={`${item.name} — traveller`} width="52" height="52" loading="lazy" decoding="async" />
         <div>
           <h3 className="di-testimonial-card__name">{item.name}</h3>
           <span className="di-testimonial-card__role">{item.designation}</span>

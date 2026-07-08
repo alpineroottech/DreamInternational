@@ -40,6 +40,10 @@ function FooterOne() {
                                                 src={LOGO_FOOTER}
                                                 alt={BRAND_NAME}
                                                 className="di-logo-footer"
+                                                width="1080"
+                                                height="1080"
+                                                loading="lazy"
+                                                decoding="async"
                                             />
                                         </Link>
                                     </div>
@@ -85,7 +89,7 @@ function FooterOne() {
                                 <div className="th-widget-contact di-footer__contact-list">
                                     <div className="info-box_text">
                                         <div className="icon" aria-hidden="true">
-                                            <img src="/assets/img/icon/location-dot.svg" alt="" />
+                                            <img src="/assets/img/icon/location-dot.svg" alt="" width="18" height="18" loading="lazy" decoding="async" />
                                         </div>
                                         <div className="details">
                                             <p>{address}</p>
@@ -93,7 +97,7 @@ function FooterOne() {
                                     </div>
                                     <div className="info-box_text">
                                         <div className="icon" aria-hidden="true">
-                                            <img src="/assets/img/icon/envelope.svg" alt="" />
+                                            <img src="/assets/img/icon/envelope.svg" alt="" width="18" height="18" loading="lazy" decoding="async" />
                                         </div>
                                         <div className="details">
                                             <p>
@@ -105,7 +109,7 @@ function FooterOne() {
                                     </div>
                                     <div className="info-box_text">
                                         <div className="icon" aria-hidden="true">
-                                            <img src="/assets/img/icon/phone.svg" alt="" />
+                                            <img src="/assets/img/icon/phone.svg" alt="" width="18" height="18" loading="lazy" decoding="async" />
                                         </div>
                                         <div className="details">
                                             <p>
@@ -133,7 +137,7 @@ function FooterOne() {
                         </div>
                         <div className="col-md-5">
                             <div className="footer-card di-footer__payments">
-                                <img src="/assets/img/shape/cards.png" alt="Accepted payment methods" />
+                                <img src="/assets/img/shape/cards.png" alt="Accepted payment methods" width="240" height="32" loading="lazy" decoding="async" />
                             </div>
                         </div>
                     </div>

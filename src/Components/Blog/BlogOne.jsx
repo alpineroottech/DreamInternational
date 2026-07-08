@@ -38,7 +38,7 @@ function BlogOne({ data = {} }) {
               </div>
             </div>
             <div className="col-md-auto">
-              <Link to="/blog" className="th-btn style4 th-icon">
+              <Link to="/blog" className="th-btn style4 th-icon" aria-label="See more travel articles and guides">
                 See More Articles
               </Link>
             </div>
@@ -63,20 +63,26 @@ function BlogOne({ data = {} }) {
               <div className="blog-box th-ani">
                 {post.image && (
                   <div className="blog-img global-img">
-                    <img src={post.image} alt="blog" />
+                    <img src={post.image} alt={post.title || 'Dream International blog article'} width="424" height="274" loading="lazy" decoding="async" />
                   </div>
                 )}
                 <div className="blog-box_content">
-                  <div className="blog-meta">
-                    <Link className="author" to="/blog">
-                      {post.date}
-                    </Link>
-                    <Link to="/blog">{post.readTime}</Link>
-                  </div>
+                  {(post.date || post.readTime) && (
+                    <div className="blog-meta">
+                      {post.date && (
+                        <Link className="author" to={post.detailsLink} aria-label={`Published ${post.date}`}>
+                          {post.date}
+                        </Link>
+                      )}
+                      {post.readTime && (
+                        <Link to={post.detailsLink} aria-label={`Reading time ${post.readTime}`}>{post.readTime}</Link>
+                      )}
+                    </div>
+                  )}
                   <h3 className="box-title">
                     <Link to={post.detailsLink}>{post.title}</Link>
                   </h3>
-                  <Link to={post.detailsLink} className="th-btn style4 th-icon">
+                  <Link to={post.detailsLink} className="th-btn style4 th-icon" aria-label={`Read more: ${post.title}`}>
                     Read More
                   </Link>
                 </div>
@@ -86,14 +92,14 @@ function BlogOne({ data = {} }) {
         </Swiper>
 
         {/* Decorative Shapes */}
-        <div className="shape-mockup shape1 d-none d-xxl-block" style={{bottom:"20%", left:"-17%"}}>
-          <img src="/assets/img/shape/shape_1.png" alt="shape" />
+        <div className="shape-mockup shape1 d-none d-xxl-block" style={{bottom:"20%", left:"-17%"}} aria-hidden="true">
+          <img src="/assets/img/shape/shape_1.png" alt="" width="120" height="120" loading="lazy" decoding="async" />
         </div>
-        <div className="shape-mockup shape2 d-none d-xl-block" style={{bottom:"5%", left:"-17%"}}>
-          <img src="/assets/img/shape/shape_2.png" alt="shape" />
+        <div className="shape-mockup shape2 d-none d-xl-block" style={{bottom:"5%", left:"-17%"}} aria-hidden="true">
+          <img src="/assets/img/shape/shape_2.png" alt="" width="120" height="120" loading="lazy" decoding="async" />
         </div>
-        <div className="shape-mockup shape3 d-none d-xxl-block" style={{bottom:"12%", left:"-10%"}}>
-          <img src="/assets/img/shape/shape_3.png" alt="shape" />
+        <div className="shape-mockup shape3 d-none d-xxl-block" style={{bottom:"12%", left:"-10%"}} aria-hidden="true">
+          <img src="/assets/img/shape/shape_3.png" alt="" width="120" height="120" loading="lazy" decoding="async" />
         </div>
       </div>
     </section>

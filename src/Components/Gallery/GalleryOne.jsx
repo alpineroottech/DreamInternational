@@ -33,23 +33,36 @@ function GalleryOne({ data = {} }) {
                             <div className="col-md-6 col-lg-2" key={img.id || i}>
                                 <div className="gallery-card">
                                     <div className="box-img global-img">
-                                        <Link to={src} className="popup-image" onClick={(e) => openModal(src, e)}>
+                                        <Link
+                                            to={src}
+                                            className="popup-image"
+                                            aria-label={`View gallery image${img.imageAlt || img.title ? `: ${img.imageAlt || img.title}` : ''}`}
+                                            onClick={(e) => openModal(src, e)}
+                                        >
                                             <div className="icon-btn">
-                                                <i className="fal fa-magnifying-glass-plus" />
+                                                <i className="fal fa-magnifying-glass-plus" aria-hidden="true" />
                                             </div>
                                         </Link>
-                                        <img src={src} alt={img.imageAlt || img.title || 'gallery'} onClick={(e) => openModal(src, e)} />
+                                        <img
+                                            src={src}
+                                            alt={img.imageAlt || img.title || 'Dream International gallery photo'}
+                                            width="600"
+                                            height="750"
+                                            loading="lazy"
+                                            decoding="async"
+                                            onClick={(e) => openModal(src, e)}
+                                        />
                                     </div>
                                 </div>
                             </div>
                         );
                     })}
                 </div>
-                <div className="shape-mockup d-none d-xl-block" style={{ top: "-25%", left: "0%" }}>
-                    <img src="/assets/img/shape/line.png" alt="shape" />
+                <div className="shape-mockup d-none d-xl-block" style={{ top: "-25%", left: "0%" }} aria-hidden="true">
+                    <img src="/assets/img/shape/line.png" alt="" width="120" height="120" loading="lazy" decoding="async" />
                 </div>
-                <div className="shape-mockup movingX d-none d-xl-block" style={{ top: "30%", left: "-3%" }}>
-                    <img className="gmovingX" src="/assets/img/shape/shape_4.png" alt="shape" />
+                <div className="shape-mockup movingX d-none d-xl-block" style={{ top: "30%", left: "-3%" }} aria-hidden="true">
+                    <img className="gmovingX" src="/assets/img/shape/shape_4.png" alt="" width="120" height="120" loading="lazy" decoding="async" />
                 </div>
             </div>
             <Modal isOpen={isModalOpen} closeModal={closeModal} imageSrc={modalImage} />
