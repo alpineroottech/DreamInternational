@@ -629,9 +629,10 @@
 
 /* Copyright bar */
 .footer-wrapper.footer-layout1 .copyright-wrap {
-  background: rgba(0, 0, 0, 0.25) !important;
+  background: rgba(0, 0, 0, 0.32) !important;
   background-image: none !important;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 18px 0;
 }
 
 .footer-wrapper.footer-layout1 .copyright-wrap,
@@ -641,7 +642,7 @@
 
 /* ─── Footer layout refinements ─────────────────────────────── */
 .di-footer .widget-area {
-  padding: 72px 0 56px;
+  padding: 80px 0 64px;
 }
 
 .di-footer__grid {
@@ -650,33 +651,48 @@
 
 .di-footer__brand .about-text {
   text-align: left;
-  max-width: 340px;
-  line-height: 1.7;
-  margin-bottom: 1.25rem;
+  max-width: 360px;
+  line-height: 1.75;
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
 }
 
 .di-footer__brand .about-logo {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.75rem;
+}
+
+.di-footer__brand .di-logo-footer {
+  max-height: 52px;
+  width: auto;
 }
 
 .di-footer__social {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 12px;
 }
 
 .di-footer__social a {
-  width: 40px;
-  height: 40px;
+  width: 42px;
+  height: 42px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: transparent;
+}
+
+.di-footer__social a:hover {
+  border-color: rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .di-footer .widget_title {
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.5rem;
   text-align: left;
+  font-size: 1.25rem;
+  font-weight: 700;
 }
 
 .di-footer__menu {
@@ -701,8 +717,29 @@
 }
 
 .di-footer__contact-list .info-box_text {
-  align-items: flex-start;
+  display: flex;
+  align-items: center;
   margin: 0;
+  gap: 14px;
+}
+
+.di-footer__contact-list .icon {
+  flex: 0 0 42px;
+  width: 42px;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: transparent;
+}
+
+.di-footer__contact-list .icon img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  opacity: 0.85;
 }
 
 .di-footer__contact-list .details {
@@ -733,14 +770,10 @@
   flex-wrap: wrap;
 }
 
-.di-footer__payments .title {
-  white-space: nowrap;
-  color: rgba(255, 255, 255, 0.65);
-}
-
 .di-footer__payments img {
-  max-height: 28px;
+  max-height: 32px;
   width: auto;
+  opacity: 0.92;
 }
 
 .di-footer .copyright-text {
@@ -809,10 +842,13 @@ a:not(.th-btn):not(.nav-link):hover {
   position: relative;
   background: var(--title-color);
   padding-bottom: 28px;
+  z-index: 8;
 }
 
 .di-hero-booking-wrap + .category-area {
   padding-top: 56px !important;
+  position: relative;
+  z-index: 1;
 }
 
 .di-hero-mockup .hero-inner {
@@ -849,7 +885,7 @@ a:not(.th-btn):not(.nav-link):hover {
 .di-hero-script {
   font-family: var(--style-font, cursive) !important;
   color: rgba(255, 255, 255, 0.95) !important;
-  font-size: clamp(1.1rem, 2.2vw, 1.45rem) !important;
+  font-size: clamp(1.35rem, 2.8vw, 2rem) !important;
   letter-spacing: 0.02em;
 }
 
@@ -898,7 +934,7 @@ a:not(.th-btn):not(.nav-link):hover {
   padding: 0;
   margin-top: -56px;
   position: relative;
-  z-index: 10;
+  z-index: 30;
   margin-bottom: 0;
 }
 
@@ -908,7 +944,7 @@ a:not(.th-btn):not(.nav-link):hover {
   box-shadow: 0 18px 48px rgba(0, 26, 87, 0.18);
   border: 1px solid rgba(0, 26, 87, 0.08);
   padding: 0;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .di-booking-form__inner {
@@ -964,6 +1000,20 @@ a:not(.th-btn):not(.nav-link):hover {
   color: var(--title-color) !important;
   background: transparent !important;
   box-shadow: none !important;
+  position: relative;
+}
+
+.di-booking-field .nice-select:after {
+  right: 0;
+  top: 50%;
+  margin-top: -4px;
+}
+
+.di-booking-field .nice-select .list {
+  z-index: 200;
+  min-width: 100%;
+  box-shadow: 0 12px 32px rgba(0, 26, 87, 0.18);
+  border: 1px solid rgba(0, 26, 87, 0.1);
 }
 
 .di-booking-submit {
@@ -1180,56 +1230,114 @@ select:focus,
   background: #001a57;
 }
 
-/* ─── 23. ABOUT SECTION — clean responsive collage ──────────── */
+/* ─── 23. ABOUT SECTION — arch + overlapping stack (mockup) ──── */
 .di-about-imgs {
-  display: flex;
-  gap: 14px;
-  align-items: stretch;
-  max-width: 520px;
+  position: relative;
   width: 100%;
+  max-width: 520px;
+  height: clamp(360px, 40vw, 460px);
+  margin-inline: auto;
+}
+
+.di-about-imgs__main {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 62%;
 }
 
 .di-about-imgs__primary {
-  width: 58%;
-  height: 420px;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  border-radius: 999px 999px 24px 24px;
-  flex-shrink: 0;
+  display: block;
+  border-radius: 50% 50% 46% 46% / 60% 60% 26% 26%;
 }
 
-.di-about-imgs__secondary-wrap {
+.di-about-imgs__stack {
+  position: absolute;
+  top: 10%;
+  right: 0;
+  width: 52%;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 18px;
+  z-index: 2;
+}
+
+.di-about-imgs__secondary {
+  width: 100%;
+  height: clamp(150px, 17vw, 185px);
+  object-fit: cover;
+  display: block;
+  border-radius: 18px;
+  border: 5px solid #fff;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+}
+
+.di-about-content {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.di-about-section .about-item-wrap {
+  width: 100%;
+  max-width: 100%;
+}
+
+.di-about-section .about-item {
+  max-width: none;
+  width: 100%;
+}
+
+.di-about-section .about-item_centent {
+  min-width: 0;
   flex: 1;
 }
 
-.di-about-imgs__secondary-wrap img {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-  border-radius: 16px;
+.di-about-section .sec-text {
+  max-width: 100%;
+  font-size: 1.05rem;
+  line-height: 1.75;
 }
 
 @media (max-width: 991px) {
   .di-about-imgs {
-    max-width: 100%;
-  }
-  .di-about-imgs__primary {
-    height: 300px;
-  }
-  .di-about-imgs__secondary-wrap img {
-    height: 140px;
+    max-width: 460px;
+    height: clamp(320px, 62vw, 420px);
+    margin-bottom: 8px;
   }
 }
 
 @media (max-width: 575px) {
-  .di-about-imgs__secondary-wrap {
-    display: none;
+  .di-about-imgs {
+    position: static;
+    height: auto;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
   }
-  .di-about-imgs__primary {
+
+  .di-about-imgs__main {
+    position: static;
     width: 100%;
     height: 260px;
+  }
+
+  .di-about-imgs__primary {
+    border-radius: 24px 24px 90px 90px;
+  }
+
+  .di-about-imgs__stack {
+    position: static;
+    width: 100%;
+    flex-direction: row;
+  }
+
+  .di-about-imgs__secondary {
+    height: 150px;
   }
 }
 
@@ -1280,7 +1388,17 @@ select:focus,
 .di-section-script {
   font-family: var(--style-font, cursive) !important;
   color: rgba(255, 255, 255, 0.9) !important;
-  font-size: clamp(1rem, 2vw, 1.25rem) !important;
+  font-size: clamp(1.75rem, 3.2vw, 2.5rem) !important;
+  line-height: 1.15 !important;
+  margin-bottom: 0.35rem !important;
+}
+
+/* Navy sections — light script subtitles keep readable size */
+.category-area .sub-title:not(.di-section-script),
+.gallery-area .sub-title:not(.di-section-script),
+.di-testimonials .sub-title:not(.di-section-script) {
+  font-size: clamp(1.75rem, 3.2vw, 2.5rem) !important;
+  line-height: 1.15 !important;
 }
 
 .category-area .category-card {
@@ -1296,6 +1414,19 @@ select:focus,
 
 .category-area .line-btn {
   color: var(--body-color) !important;
+}
+
+/* Category carousel pagination bullets — white on navy */
+.category-area .swiper-pagination-bullet {
+  background-color: transparent !important;
+  border: 1px solid rgba(255, 255, 255, 0.55) !important;
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+.category-area .swiper-pagination-bullet.swiper-pagination-bullet-active {
+  background-color: #fff !important;
+  border-color: #fff !important;
+  color: var(--title-color, #001a57) !important;
 }
 
 /* About on navy */
@@ -1426,12 +1557,14 @@ select:focus,
 }
 
 /* ─── 25. TOUR CATEGORY TAGS & FILTER BUTTONS ───────────────── */
-.di-tour-tag {
+.di-tour-tag,
+.di-tour-tag:link,
+.di-tour-tag:visited {
   position: absolute;
   top: 14px;
   left: 14px;
   background: rgba(0, 26, 87, 0.88);
-  color: #fff;
+  color: #fff !important;
   font-size: 0.72rem;
   font-weight: 600;
   letter-spacing: 0.04em;
@@ -1444,9 +1577,10 @@ select:focus,
   transition: background 0.2s;
 }
 
-.di-tour-tag:hover {
-  background: var(--theme-color, #001a57);
-  color: #fff;
+.di-tour-tag:hover,
+.di-tour-tag:focus {
+  background: var(--brand-red, #e30613);
+  color: #fff !important;
 }
 
 .tour-box_img { position: relative; }

@@ -9,9 +9,8 @@ function Booking() {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
         destination: "",
-        type: "",
-        duration: "",
         category: "",
+        duration: "",
     });
 
     const cmsCategories = useCollection("/public/categories");
@@ -25,15 +24,6 @@ function Booking() {
         { value: "kathmandu", label: "Kathmandu Valley" },
         { value: "chitwan", label: "Chitwan" },
         { value: "lumbini", label: "Lumbini" },
-    ];
-
-    const typeOptions = [
-        ANY,
-        { value: "adventure", label: "Adventure" },
-        { value: "trekking", label: "Trekking" },
-        { value: "cultural-tours", label: "Cultural" },
-        { value: "jungle-safari", label: "Jungle Safari" },
-        { value: "pilgrimage", label: "Pilgrimage" },
     ];
 
     const categoryOptions = [
@@ -65,7 +55,6 @@ function Booking() {
         e.preventDefault();
         const params = new URLSearchParams();
         if (formData.destination) params.set("destination", formData.destination);
-        if (formData.type) params.set("type", formData.type);
         if (formData.category) params.set("category", formData.category);
         if (formData.duration) params.set("duration", formData.duration);
         const qs = params.toString();
@@ -82,10 +71,10 @@ function Booking() {
                                 <i className="fa-light fa-map-location-dot" />
                             </div>
                             <div className="di-booking-field__body">
-                                <span className="di-booking-field__label">Destination</span>
+                                <span className="di-booking-field__label">Where to go?</span>
                                 <NiceSelect
                                     options={destinationOptions}
-                                    placeholder="Select destination"
+                                    placeholder="Any region"
                                     onChange={(value) => handleChange("destination", value)}
                                 />
                             </div>
@@ -93,14 +82,14 @@ function Booking() {
 
                         <div className="di-booking-field">
                             <div className="di-booking-field__icon" aria-hidden="true">
-                                <i className="fa-regular fa-compass" />
+                                <i className="fa-regular fa-person-hiking" />
                             </div>
                             <div className="di-booking-field__body">
-                                <span className="di-booking-field__label">Type</span>
+                                <span className="di-booking-field__label">Experience</span>
                                 <NiceSelect
-                                    options={typeOptions}
-                                    placeholder="Adventure"
-                                    onChange={(value) => handleChange("type", value)}
+                                    options={categoryOptions}
+                                    placeholder="Any experience"
+                                    onChange={(value) => handleChange("category", value)}
                                 />
                             </div>
                         </div>
@@ -110,31 +99,17 @@ function Booking() {
                                 <i className="fa-light fa-clock" />
                             </div>
                             <div className="di-booking-field__body">
-                                <span className="di-booking-field__label">Duration</span>
+                                <span className="di-booking-field__label">Trip length</span>
                                 <NiceSelect
                                     options={durationOptions}
-                                    placeholder="Duration"
+                                    placeholder="Any duration"
                                     onChange={(value) => handleChange("duration", value)}
                                 />
                             </div>
                         </div>
 
-                        <div className="di-booking-field">
-                            <div className="di-booking-field__icon" aria-hidden="true">
-                                <i className="fa-light fa-grid-2" />
-                            </div>
-                            <div className="di-booking-field__body">
-                                <span className="di-booking-field__label">Tour category</span>
-                                <NiceSelect
-                                    options={categoryOptions}
-                                    placeholder="Select category"
-                                    onChange={(value) => handleChange("category", value)}
-                                />
-                            </div>
-                        </div>
-
                         <button className="th-btn di-booking-submit" type="submit">
-                            Search
+                            Find tours
                             <i className="fa-light fa-magnifying-glass" aria-hidden="true" />
                         </button>
                     </div>

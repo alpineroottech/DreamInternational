@@ -4,18 +4,32 @@ import jsonPosts from '../data/data-activities.json';
 import ActivitiesCard from './ActivitiesCard';
 import { useCollection } from '../../public-cms/hooks';
 
-function ActivitiesInner() {
-    const [value, setValue] = useState(30);
-    const handleSliderChange = (e) => {
-        setValue(e.target.value);
-    };
-    const priceFrom = ((value / 100) * 1000).toFixed(2);
-    const priceTo = 1000;
+const parsePrice = (price) => {
+    if (typeof price === 'number') return price;
+    if (typeof price === 'string') {
+        const num = parseFloat(price.replace(/[^0-9.]/g, ''));
+        return Number.isNaN(num) ? null : num;
+    }
+    return null;
+};
 
+function ActivitiesInner() {
+    const [value, setValue] = useState(100);
+    const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const postsPerPage = 8;
 
     const cms = useCollection('/public/activities');
+
+    const handleSliderChange = (e) => {
+        setValue(Number(e.target.value));
+        setCurrentPage(1);
+    };
+
+    const handleSearchChange = (e) => {
+        setSearchTerm(e.target.value);
+        setCurrentPage(1);
+    };
 
     if (cms === undefined) {
         return (
@@ -38,10 +52,26 @@ function ActivitiesInner() {
           }))
         : jsonPosts;
 
-    const totalPages = Math.ceil(posts.length / postsPerPage);
-    const indexOfLastPost = currentPage * postsPerPage;
+    const numericPrices = posts
+        .map((p) => parsePrice(p.price))
+        .filter((n) => n !== null);
+    const maxPrice = numericPrices.length ? Math.ceil(Math.max(...numericPrices)) : 1000;
+    const priceFrom = 0;
+    const priceTo = Math.round((value / 100) * maxPrice);
+
+    const term = searchTerm.trim().toLowerCase();
+    const filteredPosts = posts.filter((p) => {
+        const matchesSearch = !term || (p.title || '').toLowerCase().includes(term);
+        const num = parsePrice(p.price);
+        const matchesPrice = num === null || num <= priceTo;
+        return matchesSearch && matchesPrice;
+    });
+
+    const totalPages = Math.max(1, Math.ceil(filteredPosts.length / postsPerPage));
+    const safePage = Math.min(currentPage, totalPages);
+    const indexOfLastPost = safePage * postsPerPage;
     const indexOfFirstPost = indexOfLastPost - postsPerPage;
-    const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
+    const currentPosts = filteredPosts.slice(indexOfFirstPost, indexOfLastPost);
 
     const handlePageChange = (page) => {
         setCurrentPage(page);
@@ -52,47 +82,60 @@ function ActivitiesInner() {
                 <div className="row">
                     <div className="col-xxl-8 col-lg-7">
                         <div className="row gy-24 gx-24">
-                            {currentPosts.map((data, index) => (
-                                <div key={index} className="col-md-6">
-                                    <ActivitiesCard
-                                        activitiesID={data.id}
-                                        activitiesImage={`${data.image}`}
-                                        activitiesTitle={data.title}
-                                        activitiesPrice={data.price}
-                                        activitiesDuration={data.duration}
-                                        activitiesLink={data.slug ? `/activities-details?slug=${data.slug}` : undefined}
-                                    />
+                            {currentPosts.length === 0 ? (
+                                <div className="col-12 text-center py-5">
+                                    <p className="mb-0">No activities match your filters.</p>
                                 </div>
-                            ))}
-                            <div className="th-pagination text-center mt-60 mb-0">
-                                <ul>
-                                    {Array.from({ length: totalPages }, (_, i) => (
-                                        <li key={i}>
-                                            <Link
-                                                className={currentPage === i + 1 ? 'active' : ''}
-                                                to="#"
-                                                onClick={() => handlePageChange(i + 1)}
-                                            >
-                                                {i + 1}
-                                            </Link>
-                                        </li>
-                                    ))}
-                                    {currentPage < totalPages && (
-                                        <li>
-                                            <Link className="next-page" to="#" onClick={() => handlePageChange(currentPage + 1)}>
-                                                Next <img src="/assets/img/icon/arrow-right4.svg" alt="" />
-                                            </Link>
-                                        </li>
-                                    )}
-                                </ul>
-                            </div>
+                            ) : (
+                                currentPosts.map((data, index) => (
+                                    <div key={index} className="col-md-6">
+                                        <ActivitiesCard
+                                            activitiesID={data.id}
+                                            activitiesImage={`${data.image}`}
+                                            activitiesTitle={data.title}
+                                            activitiesPrice={data.price}
+                                            activitiesDuration={data.duration}
+                                            activitiesLink={data.slug ? `/activities-details?slug=${data.slug}` : undefined}
+                                        />
+                                    </div>
+                                ))
+                            )}
+                            {totalPages > 1 && (
+                                <div className="th-pagination text-center mt-60 mb-0">
+                                    <ul>
+                                        {Array.from({ length: totalPages }, (_, i) => (
+                                            <li key={i}>
+                                                <Link
+                                                    className={safePage === i + 1 ? 'active' : ''}
+                                                    to="#"
+                                                    onClick={() => handlePageChange(i + 1)}
+                                                >
+                                                    {i + 1}
+                                                </Link>
+                                            </li>
+                                        ))}
+                                        {safePage < totalPages && (
+                                            <li>
+                                                <Link className="next-page" to="#" onClick={() => handlePageChange(safePage + 1)}>
+                                                    Next <img src="/assets/img/icon/arrow-right4.svg" alt="" />
+                                                </Link>
+                                            </li>
+                                        )}
+                                    </ul>
+                                </div>
+                            )}
                         </div>
                     </div>
                     <div className="col-xxl-4 col-lg-5">
                         <aside className="sidebar-area">
                             <div className="widget widget_search  ">
-                                <form className="search-form">
-                                    <input type="text" placeholder="Search" />
+                                <form className="search-form" onSubmit={(e) => e.preventDefault()}>
+                                    <input
+                                        type="text"
+                                        placeholder="Search"
+                                        value={searchTerm}
+                                        onChange={handleSearchChange}
+                                    />
                                     <button type="submit">
                                         <i className="far fa-search" />
                                     </button>
@@ -149,7 +192,7 @@ function ActivitiesInner() {
                                 <h4 className="widget_title">Filter By Price</h4>
                                 <div className="price_slider_wrapper">
                                     <div className="price_label">
-                                        Price: <span className="from">${priceFrom} </span> — <span className="to">${priceTo}</span>
+                                        Price: <span className="from">${priceFrom}</span> — <span className="to">${priceTo}</span>
                                     </div>
                                     <div className="price_slider ui-slider ui-corner-all ui-slider-horizontal ui-widget ui-widget-content">
                                         {/* Slider Range */}

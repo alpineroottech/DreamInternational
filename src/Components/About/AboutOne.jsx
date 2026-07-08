@@ -22,33 +22,43 @@ function AboutOne({ data = {} }) {
     const featureTwoText = data.featureTwoText || "Explore with knowledgeable, safety-focused guides who know Nepal deeply.";
 
     return (
-        <div className="about-area di-about-section position-relative overflow-hidden space" id="about-sec">
+        <div className="about-area di-about-section position-relative space" id="about-sec">
             <div className="container">
                 <div className="row gy-4 align-items-center">
                     {hasCollage && (
-                        <div className="col-lg-6 d-flex justify-content-center">
+                        <div className="col-lg-6">
                             <div className="di-about-imgs">
                                 {img1 && (
-                                    <img
-                                        className="di-about-imgs__primary"
-                                        src={img1}
-                                        alt={data.imageAlt || "About Dream International"}
-                                    />
+                                    <div className="di-about-imgs__main">
+                                        <img
+                                            className="di-about-imgs__primary"
+                                            src={img1}
+                                            alt={data.imageAlt || "About Dream International"}
+                                        />
+                                    </div>
                                 )}
                                 {(img2 || img3) && (
-                                    <div className="di-about-imgs__secondary-wrap">
+                                    <div className="di-about-imgs__stack">
                                         {img2 && (
-                                            <img src={img2} alt={data.image2Alt || "Nepal landscape"} />
+                                            <img
+                                                className="di-about-imgs__secondary"
+                                                src={img2}
+                                                alt={data.image2Alt || "Nepal landscape"}
+                                            />
                                         )}
                                         {img3 && (
-                                            <img src={img3} alt={data.image3Alt || "Nepal culture"} />
+                                            <img
+                                                className="di-about-imgs__secondary"
+                                                src={img3}
+                                                alt={data.image3Alt || "Nepal culture"}
+                                            />
                                         )}
                                     </div>
                                 )}
                             </div>
                         </div>
                     )}
-                    <div className={hasCollage ? "col-lg-6" : "col-lg-10 col-xl-9 mx-auto"}>
+                    <div className={hasCollage ? "col-lg-6 di-about-content" : "col-lg-10 col-xl-9 mx-auto di-about-content"}>
                         <span className="sub-title style1 di-section-script">{data.subTitle || "About Dream International"}</span>
                         <h2 className="sec-title mb-20">
                             {data.title || "Your Trusted Travel Partner in Nepal"}
