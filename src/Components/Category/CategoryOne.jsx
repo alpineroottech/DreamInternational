@@ -31,6 +31,20 @@ const CategoryOne = ({ data = {} }) => {
       }))
     : categories;
 
+  // Swiper disables looping/autoplay whenever the slide track already fits
+  // every slide on screen (e.g. 5 categories at slidesPerView 6), so at
+  // larger breakpoints the carousel would sit still. Repeat the set just
+  // enough (2x the largest slidesPerView) so there are always enough
+  // slides for a smooth, continuous loop no matter the viewport or count.
+  const MIN_SLIDES_FOR_LOOP = 12;
+  let loopSlides = displayCategories;
+  if (displayCategories.length && displayCategories.length < MIN_SLIDES_FOR_LOOP) {
+    loopSlides = [];
+    while (loopSlides.length < MIN_SLIDES_FOR_LOOP) {
+      loopSlides.push(...displayCategories);
+    }
+  }
+
   useEffect(() => {
     if (!swiperRef.current) return;
 
@@ -104,6 +118,7 @@ const CategoryOne = ({ data = {} }) => {
           }}
           spaceBetween={28}
           loop={true}
+          watchOverflow={false}
           autoplay={{ delay: 3000, disableOnInteraction: false }}
           speed={1000}
           pagination={{
@@ -113,8 +128,8 @@ const CategoryOne = ({ data = {} }) => {
           }} // ✅ Defined renderBullet inside pagination
           className="th-slider has-shadow categorySlider"
         >
-          {displayCategories.map((category) => (
-            <SwiperSlide key={category.id}>
+          {loopSlides.map((category, index) => (
+            <SwiperSlide key={`${category.id}-${index}`}>
               <div className="category-card single">
                 <div className="box-img global-img">
                   <img src={category.imgSrc} alt={category.title} width="424" height="530" loading="lazy" decoding="async" />

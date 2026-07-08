@@ -291,10 +291,23 @@
   background: transparent;
 }
 
+/* No explicit height was set, so `object-fit` never actually cropped the
+   image — very tall source photos rendered at their full scaled height
+   (sometimes 1000px+, taller than the viewport). Give it a fixed, capped
+   aspect ratio instead so it always renders as a compact banner. */
 .ticketing-detail-hero img {
   width: 100%;
-  min-height: 320px;
+  height: 220px;
+  max-height: 220px;
   object-fit: cover;
+  display: block;
+}
+
+@media (max-width: 575px) {
+  .ticketing-detail-hero img {
+    height: 160px;
+    max-height: 160px;
+  }
 }
 
 .ticketing-detail-hero__overlay {

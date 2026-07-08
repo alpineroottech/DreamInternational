@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 import { useSettings, useCollection, resolveCmsList, publicApi } from '../../public-cms/hooks'
 import { BRAND_NAME, LOGO_FOOTER } from '../../brand/brandAssets'
 import { tourDetailPath } from '../../lib/tourUrls'
-import BrandOne from '../Brand/BrandOne'
 
 const POPULAR_TOURS_FALLBACK = [
     { title: 'Annapurna Base Camp Trek', slug: 'annapurna-base-camp-trek', market: 'nepal' },
@@ -251,8 +250,6 @@ function FooterOne() {
                     </div>
                 </div>
             </div>
-
-            <BrandOne className="di-footer__brands" />
 
             <div className="copyright-wrap">
                 <div className="container">

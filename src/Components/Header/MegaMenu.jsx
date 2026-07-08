@@ -48,38 +48,47 @@ export function megaColumnsToMobileChildren(columns, market, viewAllLabel, viewA
     return children;
 }
 
+function categoryFilterUrl(viewAllUrl, categorySlug) {
+    if (!categorySlug) return viewAllUrl;
+    const sep = viewAllUrl.includes('?') ? '&' : '?';
+    return `${viewAllUrl}${sep}category=${encodeURIComponent(categorySlug)}`;
+}
+
 function MegaMenu({ columns, market, viewAllLabel, viewAllUrl }) {
     if (!columns || !columns.length) return null;
     return (
         <div className="di-mega-menu">
             <div className="di-mega-menu__inner">
                 <div className="di-mega-menu__columns">
-                    {columns.map((col) => (
-                        <div className="di-mega-menu__col" key={col.name}>
-                            <div className="di-mega-menu__col-title">{col.name}</div>
-                            <ul>
-                                {col.items.slice(0, MAX_PER_COLUMN).map((item) => (
-                                    <li key={item.id || item.slug}>
-                                        <Link to={item.slug ? tourDetailPath(item, market) : viewAllUrl}>
-                                            {item.title}
-                                        </Link>
-                                    </li>
-                                ))}
-                                {col.items.length > MAX_PER_COLUMN && (
-                                    <li>
-                                        <Link to={viewAllUrl} className="di-mega-menu__more">
-                                            + {col.items.length - MAX_PER_COLUMN} more
-                                        </Link>
-                                    </li>
-                                )}
-                            </ul>
-                        </div>
-                    ))}
-                </div>
-                <div className="di-mega-menu__cta">
-                    <Link to={viewAllUrl} className="th-btn th-btn-accent">
-                        {viewAllLabel}
-                    </Link>
+                    {columns.map((col) => {
+                        const moreUrl = categoryFilterUrl(viewAllUrl, col.items[0]?.category?.slug || col.items[0]?.categorySlug);
+                        return (
+                            <div className="di-mega-menu__col" key={col.name}>
+                                <div className="di-mega-menu__col-title">{col.name}</div>
+                                <ul>
+                                    {col.items.slice(0, MAX_PER_COLUMN).map((item) => (
+                                        <li key={item.id || item.slug}>
+                                            <Link to={item.slug ? tourDetailPath(item, market) : viewAllUrl}>
+                                                {item.title}
+                                            </Link>
+                                        </li>
+                                    ))}
+                                    {col.items.length > MAX_PER_COLUMN && (
+                                        <li>
+                                            <Link to={moreUrl} className="di-mega-menu__more">
+                                                View all {col.items.length} packages
+                                            </Link>
+                                        </li>
+                                    )}
+                                </ul>
+                            </div>
+                        );
+                    })}
+                    <div className="di-mega-menu__cta-row">
+                        <Link to={viewAllUrl} className="th-btn th-btn-accent di-mega-menu__cta">
+                            {viewAllLabel}
+                        </Link>
+                    </div>
                 </div>
             </div>
         </div>

@@ -67,3 +67,17 @@ export function heroBannerStyle(color) {
     backgroundImage: "none",
   };
 }
+
+/**
+ * Whether the page hero/breadcrumb banner should render for a given page.
+ * Defaults to enabled unless explicitly turned off in CMS → Settings →
+ * Page hero banners, so existing pages keep their current look.
+ */
+export function isHeroEnabled(pageKey, settings = {}) {
+  const map =
+    settings.pageHeroEnabled && typeof settings.pageHeroEnabled === "object" && !Array.isArray(settings.pageHeroEnabled)
+      ? settings.pageHeroEnabled
+      : {};
+  if (!pageKey || !(pageKey in map)) return true;
+  return map[pageKey] !== false;
+}

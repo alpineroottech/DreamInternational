@@ -1,15 +1,18 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useSettings } from "../../public-cms/hooks";
-import { heroBannerStyle, resolveHeroColor } from "../../brand/heroColors";
+import { heroBannerStyle, resolveHeroColor, isHeroEnabled } from "../../brand/heroColors";
 
 /**
  * Page hero / breadcrumb banner — solid CMS-pickable color per page.
  * Item card images (tours, destinations, etc.) are not used here.
+ * Can be disabled per page from CMS → Settings → Page hero banners.
  */
 function Breadcrumb({ title, pageKey, parent }) {
   const settings = useSettings();
   const color = resolveHeroColor(pageKey, settings);
+
+  if (!isHeroEnabled(pageKey, settings)) return null;
 
   return (
     <div

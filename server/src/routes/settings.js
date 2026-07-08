@@ -32,6 +32,7 @@ const PUBLIC_KEYS = [
   "pageHeroes",
   "defaultHeroColor",
   "pageHeroColors",
+  "pageHeroEnabled",
   "aboutSubtitle",
   "aboutTitle",
   "aboutText1",

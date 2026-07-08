@@ -140,6 +140,17 @@ export default function Settings() {
     set("pageHeroColors", { ...pageHeroColors, [key]: color || "" });
   };
 
+  const pageHeroEnabled =
+    values.pageHeroEnabled && typeof values.pageHeroEnabled === "object" && !Array.isArray(values.pageHeroEnabled)
+      ? values.pageHeroEnabled
+      : {};
+
+  const isHeroEnabledFor = (key) => pageHeroEnabled[key] !== false;
+
+  const setHeroEnabled = (key, enabled) => {
+    set("pageHeroEnabled", { ...pageHeroEnabled, [key]: enabled });
+  };
+
   const save = async (e) => {
     e.preventDefault();
     setSaving(true);
@@ -204,10 +215,11 @@ export default function Settings() {
       </div>
 
       <div className="di-card p-4 mt-4">
-        <h6 className="fw-bold mb-1">Page hero banner colors</h6>
+        <h6 className="fw-bold mb-1">Page hero banners</h6>
         <p className="text-muted small mb-3">
-          Solid background color for each page&apos;s top banner. Tour, destination, and activity
-          <strong> card images</strong> are separate — they are not stretched into these banners.
+          Turn the top banner on or off per page — useful for A/B-testing whether a page looks
+          better with or without it — and pick its solid background color. Tour, destination, and
+          activity <strong>card images</strong> are separate and are not affected by this.
         </p>
 
         <div className="mb-4">
@@ -222,11 +234,24 @@ export default function Settings() {
         <div className="row g-3">
           {PAGE_HERO_FIELDS.map((f) => (
             <div className="col-md-6 col-xl-4" key={f.key}>
-              <label className="form-label small fw-semibold">{f.label}</label>
+              <div className="d-flex align-items-center justify-content-between mb-1">
+                <label className="form-label small fw-semibold mb-0">{f.label}</label>
+                <div className="form-check form-switch mb-0">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    role="switch"
+                    checked={isHeroEnabledFor(f.key)}
+                    onChange={(e) => setHeroEnabled(f.key, e.target.checked)}
+                    aria-label={`Enable hero banner on ${f.label}`}
+                  />
+                </div>
+              </div>
               <HeroColorInput
                 value={pageHeroColors[f.key] || DEFAULT_PAGE_HERO_COLORS[f.key] || DEFAULT_HERO_COLOR}
                 onChange={(color) => setPageHeroColor(f.key, color)}
                 fallback={DEFAULT_PAGE_HERO_COLORS[f.key] || DEFAULT_HERO_COLOR}
+                disabled={!isHeroEnabledFor(f.key)}
               />
             </div>
           ))}
@@ -236,22 +261,24 @@ export default function Settings() {
   );
 }
 
-function HeroColorInput({ value, onChange, fallback }) {
+function HeroColorInput({ value, onChange, fallback, disabled }) {
   const color = value || fallback;
   return (
-    <div className="d-flex align-items-center gap-2">
+    <div className={`d-flex align-items-center gap-2${disabled ? " opacity-50" : ""}`}>
       <input
         type="color"
         className="form-control form-control-color"
         value={color}
         onChange={(e) => onChange(e.target.value)}
         title="Pick banner color"
+        disabled={disabled}
         style={{ width: 48, height: 38, padding: 2 }}
       />
       <input
         type="text"
         className="form-control form-control-sm font-monospace"
         value={color}
+        disabled={disabled}
         onChange={(e) => {
           const next = e.target.value.trim();
           if (/^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/.test(next)) onChange(next);
