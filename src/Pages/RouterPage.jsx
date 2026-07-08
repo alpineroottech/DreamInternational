@@ -33,6 +33,9 @@ import AdminApp from '../admin/AdminApp'
 import TicketingDomestic from './TicketingDomestic'
 import TicketingInternational from './TicketingInternational'
 import { TicketingDomesticDetail, TicketingInternationalDetail } from './TicketingRouteDetail'
+import PrivacyPolicy from './PrivacyPolicy'
+import TermsAndConditions from './TermsAndConditions'
+import CancellationPolicy from './CancellationPolicy'
 
 function RedirectLegacyDestinationDetail() {
   const { id } = useParams();
@@ -77,6 +80,9 @@ function RouterPage() {
           <Route path="/blog" element={<Blog />}></Route>
           <Route path="/blog/:id" element={<BlogDetails />}></Route>
           <Route path="/contact" element={<Contact />}></Route>
+          <Route path="/privacy-policy" element={<PrivacyPolicy />}></Route>
+          <Route path="/terms-and-conditions" element={<TermsAndConditions />}></Route>
+          <Route path="/cancellation-policy" element={<CancellationPolicy />}></Route>
           <Route path="/ticketing/domestic" element={<TicketingDomestic />}></Route>
           <Route path="/ticketing/international" element={<TicketingInternational />}></Route>
           <Route path="/ticketing/domestic/:slug" element={<TicketingDomesticDetail />}></Route>

@@ -334,6 +334,22 @@
   text-align: left;
 }
 
+/* Rich-text description images were rendering at native/full size — cap
+   them at half width so they no longer dominate the description content. */
+.ticketing-detail-prose img {
+  max-width: 50%;
+  height: auto;
+  display: block;
+  margin: 12px auto;
+  border-radius: 8px;
+}
+
+@media (max-width: 575px) {
+  .ticketing-detail-prose img {
+    max-width: 80%;
+  }
+}
+
 .ticketing-booking-panel {
   display: flex;
   flex-direction: column;

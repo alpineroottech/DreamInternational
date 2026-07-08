@@ -29,7 +29,25 @@ const CounterOne = () => {
 
     const { ref, inView } = useInView({ triggerOnce: true });
 
-    if (loading) return null;
+    if (loading) {
+        return (
+            <section className="counter-area space di-stats-section" ref={ref}>
+                <div className="container">
+                    <div className="row g-4 justify-content-center">
+                        {FALLBACK.map((_, index) => (
+                            <div key={index} className="col-6 col-lg-3">
+                                <div className="di-stat-card di-skeleton-card">
+                                    <div className="di-skeleton di-skeleton-circle" />
+                                    <div className="di-skeleton di-skeleton-line di-skeleton-line--lg" />
+                                    <div className="di-skeleton di-skeleton-line di-skeleton-line--sm" />
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+        );
+    }
 
     return (
         <section className="counter-area space di-stats-section" ref={ref}>

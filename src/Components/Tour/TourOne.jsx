@@ -72,9 +72,9 @@ function TourOne({ data = {} }) {
               const catSlug = tour.category?.slug;
               return (
                 <SwiperSlide key={tour.slug || tour.id}>
-                  <div className="tour-box th-ani gsap-cursor">
+                  <div className="tour-box th-ani gsap-cursor di-card-grid">
                     <div className="tour-box_img global-img">
-                      <img src={resolveAssetUrl(tour.cardImageUrl || tour.featuredImageUrl) || '/assets/img/tour/tour_box_1.jpg'} alt={tour.title} width="424" height="274" loading="lazy" decoding="async" />
+                      <img src={resolveAssetUrl(tour.cardImageUrl || tour.featuredImageUrl) || '/assets/img/tour/tour_box_1.jpg'} alt={tour.title} width="424" height="250" loading="lazy" decoding="async" />
                       {catName && (
                         <Link
                           to={catSlug ? `/tour?category=${catSlug}` : '/tour'}
@@ -93,6 +93,16 @@ function TourOne({ data = {} }) {
                           <span style={{ width: '96%' }}>Rated <strong className="rating">4.8</strong> out of 5</span>
                         </div>
                       </div>
+                      {(tour.difficulty || tour.groupSizeMax) && (
+                        <div className="di-card-meta">
+                          {tour.difficulty && (
+                            <span><i className="fa-light fa-gauge-simple-high" /> {tour.difficulty}</span>
+                          )}
+                          {tour.groupSizeMax && (
+                            <span><i className="fa-light fa-user-group" /> Up to {tour.groupSizeMax}</span>
+                          )}
+                        </div>
+                      )}
                       <h4 className="tour-box_price">
                         <span className="currency">{tour.basePrice ? `$${tour.basePrice}` : 'On request'}</span>
                         {tour.basePrice ? <span style={{ fontWeight: 400, fontSize: '0.85em' }}>/Person</span> : ''}

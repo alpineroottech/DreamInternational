@@ -59,11 +59,23 @@ function MobileMenu({ isOpen, onClose, nav = [] }) {
                                             className="th-submenu"
                                             style={{ height: "0px", overflow: "hidden", transition: "height 0.3s ease-in-out" }}
                                         >
-                                            {item.children.map((child, ci) => (
-                                                <li key={`${child.label}-${ci}`}>
-                                                    <Link to={child.url || "#"} onClick={onClose}>{child.label}</Link>
-                                                </li>
-                                            ))}
+                                            {item.children.map((child, ci) => {
+                                                if (child.isHeading) {
+                                                    return (
+                                                        <li key={`${child.label}-${ci}`} className="di-mobile-submenu-heading">
+                                                            {child.label}
+                                                        </li>
+                                                    );
+                                                }
+                                                return (
+                                                    <li
+                                                        key={`${child.label}-${ci}`}
+                                                        className={child.isViewAll ? "di-mobile-submenu-viewall" : ""}
+                                                    >
+                                                        <Link to={child.url || "#"} onClick={onClose}>{child.label}</Link>
+                                                    </li>
+                                                );
+                                            })}
                                         </ul>
                                     )}
                                 </li>

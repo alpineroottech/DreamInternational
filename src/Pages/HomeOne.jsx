@@ -12,6 +12,7 @@ import TourGuide from '../Components/Guide/TourGuide'
 import TestimonialOne from '../Components/Testimonials/TestimonialOne'
 import BrandOne from '../Components/Brand/BrandOne'
 import BlogOne from '../Components/Blog/BlogOne'
+import HomeFaq from '../Components/Faq/HomeFaq'
 import FooterOne from '../Components/Footer/FooterOne'
 import ScrollToTop from '../Components/ScrollToTop'
 import { useHomeSections } from '../public-cms/hooks'
@@ -59,6 +60,9 @@ function HomeOne() {
                     }
                     return el;
                 })}
+                {/* Always shown — not part of the CMS section order so it doesn't
+                    depend on admins re-saving the homepage layout to appear. */}
+                <HomeFaq />
             </main>
             <FooterOne />
             <ScrollToTop />

@@ -20,6 +20,10 @@ function AboutOne({ data = {} }) {
     const featureOneText = data.featureOneText || "Tailor-made tours designed around your travel style, timeline, and comfort preference.";
     const featureTwoTitle = data.featureTwoTitle || "Licensed Local Guides";
     const featureTwoText = data.featureTwoText || "Explore with knowledgeable, safety-focused guides who know Nepal deeply.";
+    const featureThreeTitle = data.featureThreeTitle || "24/7 Traveler Support";
+    const featureThreeText = data.featureThreeText || "Round-the-clock assistance before, during, and after your trip — whenever you need us.";
+    const featureFourTitle = "Best Price Guarantee";
+    const featureFourText = "Transparent pricing with no hidden fees, matched against the best local rates.";
 
     return (
         <div className="about-area di-about-section position-relative space" id="about-sec">
@@ -101,6 +105,24 @@ function AboutOne({ data = {} }) {
                                 <div className="about-item_centent">
                                     <h3 className="box-title">{featureTwoTitle}</h3>
                                     <p className="about-item_text">{featureTwoText}</p>
+                                </div>
+                            </div>
+                            <div className="about-item">
+                                <div className="about-item_img" aria-hidden="true">
+                                    <i className="fa-light fa-headset" aria-hidden="true" />
+                                </div>
+                                <div className="about-item_centent">
+                                    <h3 className="box-title">{featureThreeTitle}</h3>
+                                    <p className="about-item_text">{featureThreeText}</p>
+                                </div>
+                            </div>
+                            <div className="about-item">
+                                <div className="about-item_img" aria-hidden="true">
+                                    <i className="fa-light fa-badge-percent" aria-hidden="true" />
+                                </div>
+                                <div className="about-item_centent">
+                                    <h3 className="box-title">{featureFourTitle}</h3>
+                                    <p className="about-item_text">{featureFourText}</p>
                                 </div>
                             </div>
                         </div>

@@ -1,8 +1,18 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import MobileMenu from './MobileMenu';
+import MegaMenu, { useTourMegaMenu, useActivitiesMegaMenu, megaColumnsToMobileChildren } from './MegaMenu';
 import { useSettings } from '../../public-cms/hooks';
 import { BRAND_NAME, LOGO_TITLE } from '../../brand/brandAssets';
+
+/** Only these three archive nav items get a mega menu; everything else is a plain link. */
+function getMegaType(item) {
+    const url = (item.url || '').replace(/\/$/, '');
+    if (url === '/tour') return 'nepal';
+    if (url === '/international-holidays') return 'international';
+    if (url === '/activities') return 'activities';
+    return null;
+}
 
 const DEFAULT_NAV = [
     { label: "Home", url: "/" },
@@ -10,7 +20,6 @@ const DEFAULT_NAV = [
     { label: "Nepal Experiences", url: "/tour" },
     { label: "International Holidays", url: "/international-holidays" },
     { label: "Activities", url: "/activities" },
-    { label: "Services", url: "/service" },
     {
         label: "Ticketing",
         url: "#",
@@ -37,13 +46,16 @@ function withTicketingNav(items) {
     return [...items.slice(0, insertAt), TICKETING_NAV, ...items.slice(insertAt)];
 }
 
-/** Contact is handled by the Book Now CTA — keep it out of the main nav. */
+/**
+ * Contact is handled by the Book Now CTA, and Services now lives in the
+ * footer's Quick Links column — keep both out of the main nav.
+ */
 function navForHeader(items) {
     return withTicketingNav(items).filter((item) => {
         if (item.children?.length) return true;
         const url = (item.url || "").replace(/\/$/, "");
         const label = (item.label || "").toLowerCase();
-        return !(url === "/contact" || label === "contact");
+        return !(url === "/contact" || label === "contact" || url === "/service" || label === "services");
     });
 }
 
@@ -54,6 +66,25 @@ function HeaderOne() {
     );
     const [isSticky, setIsSticky] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+    const nepalColumns = useTourMegaMenu('nepal');
+    const intlColumns = useTourMegaMenu('international');
+    const activityColumns = useActivitiesMegaMenu();
+    const megaDataByType = {
+        nepal: { columns: nepalColumns, market: 'nepal', viewAllLabel: 'View All Nepal Experiences', viewAllUrl: '/tour' },
+        international: { columns: intlColumns, market: 'international', viewAllLabel: 'View All International Holidays', viewAllUrl: '/international-holidays' },
+        activities: { columns: activityColumns, market: undefined, viewAllLabel: 'View All Activities', viewAllUrl: '/activities' },
+    };
+
+    const mobileNav = nav.map((item) => {
+        const type = getMegaType(item);
+        const data = type && megaDataByType[type];
+        if (!data || !data.columns.length) return item;
+        return {
+            ...item,
+            children: megaColumnsToMobileChildren(data.columns, data.market, data.viewAllLabel, data.viewAllUrl),
+        };
+    });
 
     useEffect(() => {
         const handleScroll = () => {
@@ -123,20 +154,37 @@ function HeaderOne() {
 
                                 <nav className="main-menu di-header-bar__nav d-none d-xl-block">
                                     <ul>
-                                        {nav.map((item, i) => (
-                                            <li key={i} className={item.children?.length ? "menu-item-has-children" : ""}>
-                                                <Link to={item.url || "#"}>{item.label}</Link>
-                                                {item.children?.length > 0 && (
-                                                    <ul className="sub-menu">
-                                                        {item.children.map((child, ci) => (
-                                                            <li key={ci}>
-                                                                <Link to={child.url || "#"}>{child.label}</Link>
-                                                            </li>
-                                                        ))}
-                                                    </ul>
-                                                )}
-                                            </li>
-                                        ))}
+                                        {nav.map((item, i) => {
+                                            const megaType = getMegaType(item);
+                                            const megaData = megaType && megaDataByType[megaType];
+                                            if (megaData && megaData.columns.length) {
+                                                return (
+                                                    <li key={i} className="menu-item-has-children di-mega-menu-item">
+                                                        <Link to={item.url || "#"}>{item.label}</Link>
+                                                        <MegaMenu
+                                                            columns={megaData.columns}
+                                                            market={megaData.market}
+                                                            viewAllLabel={megaData.viewAllLabel}
+                                                            viewAllUrl={megaData.viewAllUrl}
+                                                        />
+                                                    </li>
+                                                );
+                                            }
+                                            return (
+                                                <li key={i} className={item.children?.length ? "menu-item-has-children" : ""}>
+                                                    <Link to={item.url || "#"}>{item.label}</Link>
+                                                    {item.children?.length > 0 && (
+                                                        <ul className="sub-menu">
+                                                            {item.children.map((child, ci) => (
+                                                                <li key={ci}>
+                                                                    <Link to={child.url || "#"}>{child.label}</Link>
+                                                                </li>
+                                                            ))}
+                                                        </ul>
+                                                    )}
+                                                </li>
+                                            );
+                                        })}
                                     </ul>
                                 </nav>
 
@@ -167,7 +215,7 @@ function HeaderOne() {
                     </div>
                 </div>
             </header>
-            <MobileMenu isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} nav={nav} />
+            <MobileMenu isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} nav={mobileNav} />
         </>
     );
 }

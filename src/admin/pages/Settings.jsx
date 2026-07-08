@@ -38,6 +38,24 @@ const FIELDS = [
     ],
   },
   {
+    group: "Footer & map",
+    description: "Used by the site footer, header top bar, and the Contact page map embed.",
+    items: [
+      { key: "officeHours", label: "Office hours (e.g. Sun to Fri: 8:00 am - 7:00 pm)" },
+      { key: "footerAbout", label: "Footer about text", type: "textarea" },
+      { key: "mapEmbedUrl", label: "Google Maps embed URL (src of the embed iframe)", type: "textarea" },
+    ],
+  },
+  {
+    group: "Legal pages",
+    description: "Content shown on /privacy-policy, /terms-and-conditions, and /cancellation-policy. HTML is supported.",
+    items: [
+      { key: "privacyPolicyContent", label: "Privacy policy content (HTML)", type: "textarea" },
+      { key: "termsContent", label: "Terms & conditions content (HTML)", type: "textarea" },
+      { key: "cancellationPolicyContent", label: "Cancellation policy content (HTML)", type: "textarea" },
+    ],
+  },
+  {
     group: "About page content",
     description:
       "Controls the dedicated /about page. For the homepage about collage, use Homepage Builder → About Section.",
@@ -164,6 +182,13 @@ export default function Settings() {
                   <label className="form-label small fw-semibold">{f.label}</label>
                   {f.type === "image" ? (
                     <MediaInput value={values[f.key] || ""} onChange={(url) => set(f.key, url)} />
+                  ) : f.type === "textarea" ? (
+                    <textarea
+                      className="form-control"
+                      rows={4}
+                      value={values[f.key] || ""}
+                      onChange={(e) => set(f.key, e.target.value)}
+                    />
                   ) : (
                     <input
                       className="form-control"

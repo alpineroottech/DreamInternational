@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom';
 import { resolveAssetUrl } from '../../public-cms/hooks';
 
-function TourCard({ tourImage, tourTitle, tourPrice, tourLink, tourDuration, tourCategory }) {
+function TourCard({ tourImage, tourTitle, tourPrice, tourLink, tourDuration, tourCategory, tourDifficulty, tourGroupSize }) {
     const src = tourImage && (tourImage.startsWith('/') || tourImage.startsWith('http'))
         ? resolveAssetUrl(tourImage)
         : `/assets/img/tour/${tourImage}`;
@@ -31,6 +31,16 @@ function TourCard({ tourImage, tourTitle, tourPrice, tourLink, tourDuration, tou
                         (<span className="count">4.8</span> Rating)
                     </Link>
                 </div>
+                {(tourDifficulty || tourGroupSize) && (
+                    <div className="di-card-meta">
+                        {tourDifficulty && (
+                            <span><i className="fa-light fa-gauge-simple-high" /> {tourDifficulty}</span>
+                        )}
+                        {tourGroupSize && (
+                            <span><i className="fa-light fa-user-group" /> Up to {tourGroupSize}</span>
+                        )}
+                    </div>
+                )}
                 <h4 className="tour-box_price">
                     <span className="currency">{tourPrice || 'On request'}</span>
                     {tourPrice && tourPrice !== 'On request' && <span style={{ fontWeight: 400, fontSize: '0.85em' }}>/Person</span>}

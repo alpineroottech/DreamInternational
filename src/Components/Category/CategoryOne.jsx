@@ -99,10 +99,10 @@ const CategoryOne = ({ data = {} }) => {
             576: { slidesPerView: 1 },
             768: { slidesPerView: 2 },
             992: { slidesPerView: 3 },
-            1200: { slidesPerView: 3 },
-            1400: { slidesPerView: 5 },
+            1200: { slidesPerView: 4 },
+            1400: { slidesPerView: 6 },
           }}
-          spaceBetween={40}
+          spaceBetween={28}
           loop={true}
           autoplay={{ delay: 3000, disableOnInteraction: false }}
           speed={1000}

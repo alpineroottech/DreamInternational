@@ -221,7 +221,7 @@ function TourInner({ market = 'nepal' }) {
                             >
                                 <div className="row gy-24 gx-24">
                                     {currentPosts.map((data, index) => (
-                                        <div key={index} className="col-md-6">
+                                        <div key={index} className="col-md-6 col-xl-4">
                                             <TourCard
                                                 tourID={data.id}
                                                 tourImage={`${data.image}`}
@@ -229,6 +229,8 @@ function TourInner({ market = 'nepal' }) {
                                                 tourPrice={data.price}
                                                 tourDuration={data.durationDays}
                                                 tourCategory={data.categoryName}
+                                                tourDifficulty={data.raw?.difficulty}
+                                                tourGroupSize={data.raw?.groupSizeMax}
                                                 tourLink={data.slug ? tourDetailPath(data, market) : undefined}
                                             />
                                         </div>
@@ -279,22 +281,33 @@ function TourInner({ market = 'nepal' }) {
                     <div className="col-xxl-4 col-lg-5">
                         <aside className="sidebar-area">
                             {/* Tour categories from CMS */}
-                            <div className="widget widget_categories">
-                                <h3 className="widget_title">{market === 'international' ? 'Holiday Types' : 'Tour Categories'}</h3>
-                                <ul>
-                                    {(cmsCategories && cmsCategories.length ? cmsCategories : []).map((cat) => (
-                                        <li key={cat.slug}>
-                                            <Link
-                                                to="#"
-                                                onClick={(e) => { e.preventDefault(); const p = new URLSearchParams(searchParams); p.set('category', cat.slug); setSearchParams(p); setCurrentPage(1); }}
-                                            >
-                                                <img src="/assets/img/theme-img/map.svg" alt="" />
-                                                {cat.name}
-                                            </Link>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
+                            {cmsCategories === undefined ? (
+                                <div className="widget widget_categories di-skeleton-widget">
+                                    <h3 className="widget_title">{market === 'international' ? 'Holiday Types' : 'Tour Categories'}</h3>
+                                    <ul>
+                                        {Array.from({ length: 5 }).map((_, i) => (
+                                            <li key={i}><span className="di-skeleton di-skeleton-line" /></li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            ) : (
+                                <div className="widget widget_categories">
+                                    <h3 className="widget_title">{market === 'international' ? 'Holiday Types' : 'Tour Categories'}</h3>
+                                    <ul>
+                                        {(cmsCategories && cmsCategories.length ? cmsCategories : []).map((cat) => (
+                                            <li key={cat.slug}>
+                                                <Link
+                                                    to="#"
+                                                    onClick={(e) => { e.preventDefault(); const p = new URLSearchParams(searchParams); p.set('category', cat.slug); setSearchParams(p); setCurrentPage(1); }}
+                                                >
+                                                    <img src="/assets/img/theme-img/map.svg" alt="" />
+                                                    {cat.name}
+                                                </Link>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            )}
                             {/* Recent blog posts from CMS */}
                             <RecentPostsWidget />
                             <SidebarHelpWidget />
