@@ -11,9 +11,7 @@ const DEFAULT_IMAGES = {
 
 function AboutOne({ data = {} }) {
     const img1 = cmsImage(data.image, DEFAULT_IMAGES.image);
-    const img2 = cmsImage(data.image2, DEFAULT_IMAGES.image2);
-    const img3 = cmsImage(data.image3, DEFAULT_IMAGES.image3);
-    const hasCollage = Boolean(img1 || img2 || img3);
+    const hasImage = Boolean(img1);
     const ctaLabel = data.ctaLabel || "Learn More";
     const ctaUrl = data.ctaUrl || "/about";
     const featureOneTitle = data.featureOneTitle || "Custom Itineraries";
@@ -29,52 +27,22 @@ function AboutOne({ data = {} }) {
         <div className="about-area di-about-section position-relative space" id="about-sec">
             <div className="container">
                 <div className="row gy-4 align-items-center">
-                    {hasCollage && (
+                    {hasImage && (
                         <div className="col-lg-6">
-                            <div className="di-about-imgs">
-                                {img1 && (
-                                    <div className="di-about-imgs__main">
-                                        <img
-                                            className="di-about-imgs__primary"
-                                            src={img1}
-                                            alt={data.imageAlt || "About Dream International"}
-                                            width="500"
-                                            height="600"
-                                            loading="lazy"
-                                            decoding="async"
-                                        />
-                                    </div>
-                                )}
-                                {(img2 || img3) && (
-                                    <div className="di-about-imgs__stack">
-                                        {img2 && (
-                                            <img
-                                                className="di-about-imgs__secondary"
-                                                src={img2}
-                                                alt={data.image2Alt || "Nepal landscape"}
-                                                width="400"
-                                                height="300"
-                                                loading="lazy"
-                                                decoding="async"
-                                            />
-                                        )}
-                                        {img3 && (
-                                            <img
-                                                className="di-about-imgs__secondary"
-                                                src={img3}
-                                                alt={data.image3Alt || "Nepal culture"}
-                                                width="400"
-                                                height="300"
-                                                loading="lazy"
-                                                decoding="async"
-                                            />
-                                        )}
-                                    </div>
-                                )}
+                            <div className="di-about-imgs di-about-imgs--single">
+                                <img
+                                    className="di-about-imgs__primary"
+                                    src={img1}
+                                    alt={data.imageAlt || "About Dream International"}
+                                    width="600"
+                                    height="720"
+                                    loading="lazy"
+                                    decoding="async"
+                                />
                             </div>
                         </div>
                     )}
-                    <div className={hasCollage ? "col-lg-6 di-about-content" : "col-lg-10 col-xl-9 mx-auto di-about-content"}>
+                    <div className={hasImage ? "col-lg-6 di-about-content" : "col-lg-10 col-xl-9 mx-auto di-about-content"}>
                         <span className="sub-title style1 di-section-script">{data.subTitle || "About Dream International"}</span>
                         <h2 className="sec-title mb-20">
                             {data.title || "Your Trusted Travel Partner in Nepal"}

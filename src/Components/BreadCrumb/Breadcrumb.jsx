@@ -12,7 +12,9 @@ function Breadcrumb({ title, pageKey, parent }) {
   const settings = useSettings();
   const color = resolveHeroColor(pageKey, settings);
 
-  if (!isHeroEnabled(pageKey, settings)) return null;
+  if (!isHeroEnabled(pageKey, settings)) {
+    return <div className="di-page-without-hero" aria-hidden="true" />;
+  }
 
   return (
     <div

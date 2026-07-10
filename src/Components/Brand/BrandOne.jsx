@@ -22,10 +22,16 @@ function BrandOne({ className, data = {} }) {
     .filter(Boolean);
 
   const base = names.length ? names : FALLBACK.map((b) => b.name);
-  // Duplicate for seamless marquee loop.
-  const track = base.length ? [...base, ...base] : [];
+  if (!base.length) return null;
 
-  const durationSec = Math.max(18, Math.min(70, track.length * 2.2));
+  const renderGroup = (suffix) =>
+    base.map((name) => (
+      <span key={`${name}-${suffix}`} className="di-brand-marquee__item">
+        {name}
+      </span>
+    ));
+
+  const durationSec = Math.max(22, Math.min(80, base.length * 3.5));
   const ariaLabel = data.title || data.subTitle || "Partner brands";
 
   return (
@@ -42,11 +48,12 @@ function BrandOne({ className, data = {} }) {
                 className="di-brand-marquee__track"
                 style={{ animationDuration: `${durationSec}s` }}
               >
-                {track.map((name, index) => (
-                  <span key={`${name}-${index}`} className="di-brand-marquee__item">
-                    {name}
-                  </span>
-                ))}
+                <div className="di-brand-marquee__group" aria-hidden="false">
+                  {renderGroup("a")}
+                </div>
+                <div className="di-brand-marquee__group" aria-hidden="true">
+                  {renderGroup("b")}
+                </div>
               </div>
             </div>
           </div>

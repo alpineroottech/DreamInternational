@@ -8,12 +8,30 @@
   ================================================================
 */
 
+html,
+body,
+#root,
+.App {
+  overflow-x: clip;
+  max-width: 100%;
+}
+
+.di-route-loading {
+  min-height: 40vh;
+  display: grid;
+  place-items: center;
+  padding: 48px 16px;
+  color: var(--body-color);
+  font-size: 1rem;
+}
+
 /* ─── 1. CSS VARIABLE OVERRIDES ─────────────────────────────── */
 :root {
   /* Denser section rhythm than the template default (was 120px/80px) —
      cuts padding ~35% so pages read as content-rich rather than sparse. */
   --section-space:        76px;
   --section-space-mobile: 48px;
+  --di-header-offset:     108px;
 
   /* Primary brand navy (mockup palette) */
   --theme-color:       #001a57;
@@ -205,6 +223,36 @@
   color: rgba(255, 255, 255, 0.85);
 }
 
+/* When the hero banner is turned off in CMS, tighten the first section
+   that follows — it no longer needs the large `.space` top pad meant
+   to sit below a tall breadcrumb hero. */
+.di-page-without-hero + .space,
+.di-page-without-hero + .space-top,
+.di-page-without-hero + [class*="space-top"],
+.di-page-without-hero + section.space,
+.di-page-without-hero + section[class*="space-top"] {
+  padding-top: 20px !important;
+}
+
+.breadcumb-wrapper--solid + .space,
+.breadcumb-wrapper--solid + section.space {
+  padding-top: 40px !important;
+}
+
+@media (max-width: 991px) {
+  :root {
+    --di-header-offset: 84px;
+  }
+
+  .di-page-without-hero + .space,
+  .di-page-without-hero + .space-top,
+  .di-page-without-hero + [class*="space-top"],
+  .di-page-without-hero + section.space,
+  .di-page-without-hero + section[class*="space-top"] {
+    padding-top: 16px !important;
+  }
+}
+
 /* ─── 2e. HEADER BAR — centered nav, balanced spacing ─────────── */
 .di-header-bar {
   display: grid;
@@ -375,6 +423,13 @@
   width: max-content;
   animation: di-brand-scroll linear infinite;
   align-items: center;
+  will-change: transform;
+}
+
+.di-brand-marquee__group {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
   gap: 18px;
   padding: 10px 0;
 }
@@ -410,6 +465,12 @@
     justify-content: center;
     width: 100%;
     gap: 1rem 2rem;
+  }
+
+  .di-brand-marquee__group {
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
   }
 }
 
@@ -1277,50 +1338,27 @@ select:focus,
   background: #001a57;
 }
 
-/* ─── 23. ABOUT SECTION — arch + overlapping stack (mockup) ──────
-   The three images act as one natural-height group (no fixed/clamped
-   container height, no absolute positioning) so the column sizes to its
-   real content and the row's `align-items-center` centers the whole
-   group against the text column with equal top/bottom space. */
-.di-about-imgs {
-  display: flex;
-  align-items: stretch;
-  gap: 20px;
+/* ─── 23. ABOUT SECTION — single responsive image ─────────────── */
+.di-about-section {
+  overflow-x: clip;
+}
+
+.di-about-imgs--single {
   width: 100%;
-  max-width: 520px;
+  max-width: 480px;
   margin-inline: auto;
 }
 
-.di-about-imgs__main {
-  flex: 0 0 58%;
-  min-width: 0;
-}
-
-.di-about-imgs__primary {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.di-about-imgs--single .di-about-imgs__primary {
   display: block;
-  border-radius: 9999px;
-}
-
-.di-about-imgs__stack {
-  flex: 1 1 auto;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 18px;
-}
-
-.di-about-imgs__secondary {
   width: 100%;
-  height: clamp(150px, 17vw, 185px);
+  max-width: 100%;
+  height: auto;
+  aspect-ratio: 5 / 6;
+  max-height: min(520px, 70vh);
   object-fit: cover;
-  display: block;
-  border-radius: 18px;
-  border: 5px solid #fff;
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+  border-radius: clamp(18px, 4vw, 28px);
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.22);
 }
 
 .di-about-content {
@@ -1339,6 +1377,10 @@ select:focus,
   .di-about-section {
     padding-top: 64px !important;
     padding-bottom: 64px !important;
+  }
+
+  .di-about-imgs--single {
+    max-width: 420px;
   }
 }
 
@@ -1361,39 +1403,6 @@ select:focus,
   max-width: 100%;
   font-size: 1.05rem;
   line-height: 1.75;
-}
-
-@media (max-width: 991px) {
-  .di-about-imgs {
-    max-width: 460px;
-    margin-bottom: 8px;
-  }
-}
-
-@media (max-width: 575px) {
-  .di-about-imgs {
-    flex-direction: column;
-    max-width: 100%;
-    gap: 16px;
-  }
-
-  .di-about-imgs__main {
-    flex-basis: auto;
-    width: 100%;
-    height: 260px;
-  }
-
-  .di-about-imgs__primary {
-    border-radius: 24px 24px 90px 90px;
-  }
-
-  .di-about-imgs__stack {
-    flex-direction: row;
-  }
-
-  .di-about-imgs__secondary {
-    height: 150px;
-  }
 }
 
 /* ─── 24. MOCKUP SECTION PALETTE (navy / white alternation) ─── */
