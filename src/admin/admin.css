@@ -344,3 +344,82 @@
   min-height: 42px !important;
   padding: 8px 14px !important;
 }
+
+/* Navigation — page checklist with drag reorder */
+.di-nav-page-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 640px;
+  overflow-y: auto;
+}
+.di-nav-page-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid #e9edf5;
+  border-radius: 10px;
+  background: #fff;
+  cursor: grab;
+  transition: background 0.15s ease, opacity 0.15s ease;
+}
+.di-nav-page-row:hover {
+  background: #f8f9ff;
+}
+.di-nav-page-row--dragging {
+  opacity: 0.4;
+}
+.di-nav-page-row--hidden {
+  background: #f5f5f7;
+  opacity: 0.65;
+}
+.di-nav-page-row__handle {
+  color: #b7bdd0;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  cursor: grab;
+}
+.di-nav-page-row__check {
+  margin: 0;
+  padding: 0;
+}
+.di-nav-page-row__check .form-check-input {
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  cursor: pointer;
+}
+.di-nav-page-row__body {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.di-nav-page-row__label {
+  border: none;
+  background: transparent;
+  font-weight: 600;
+  font-size: 14px;
+  color: #1a1a2e;
+  padding: 2px 0 !important;
+  min-height: auto !important;
+}
+.di-nav-page-row__label:focus {
+  outline: none;
+  box-shadow: none;
+}
+.di-nav-page-row__url {
+  font-size: 12px;
+  color: #8a90a6;
+}
+.di-nav-page-row__reorder {
+  display: flex;
+  gap: 4px;
+  flex: 0 0 auto;
+}
+.di-nav-page-row__reorder .btn {
+  padding: 4px 8px;
+  line-height: 1;
+}

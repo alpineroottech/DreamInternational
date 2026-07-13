@@ -11,6 +11,8 @@ const Service = lazy(() => import('./Service'))
 const ServiceDetails = lazy(() => import('./ServiceDetails'))
 const Activities = lazy(() => import('./Activities'))
 const ActivitiesDetails = lazy(() => import('./ActivitiesDetails'))
+const VehicleRentals = lazy(() => import('./VehicleRentals'))
+const VehicleRentalDetails = lazy(() => import('./VehicleRentalDetails'))
 const Shop = lazy(() => import('./Shop'))
 const ShopDetails = lazy(() => import('./ShopDetails'))
 const Cart = lazy(() => import('./Cart'))
@@ -75,6 +77,8 @@ function RouterPage() {
             <Route path="/activities" element={<Activities />}></Route>
             <Route path="/activities-details" element={<ActivitiesDetails />}></Route>
             <Route path="/activities/:slug" element={<ActivitiesDetails />}></Route>
+            <Route path="/vehicle-rentals" element={<VehicleRentals />}></Route>
+            <Route path="/vehicle-rentals/:slug" element={<VehicleRentalDetails />}></Route>
             <Route path="/shop" element={<Shop />}></Route>
             <Route path="/shop/:id" element={<ShopDetails />}></Route>
             <Route path="/cart" element={<Cart />}></Route>

@@ -32,15 +32,40 @@ export function useActivitiesMegaMenu() {
     );
 }
 
+function groupRentalsByCategory(rentals) {
+    const map = new Map();
+    rentals.forEach((r) => {
+        const key = r.category?.name || 'More Vehicles';
+        if (!map.has(key)) map.set(key, []);
+        map.get(key).push(r);
+    });
+    // "Hire a Driver" always renders last so it reads as a distinct add-on.
+    return Array.from(map.entries())
+        .map(([name, items]) => ({ name, items }))
+        .sort((a, b) => (a.name === 'Hire a Driver') - (b.name === 'Hire a Driver'));
+}
+
+/** Vehicle rentals group by their CMS category (Cars, Jeeps/SUVs, Vans & Minibuses, Buses, Hire a Driver). */
+export function useVehicleRentalsMegaMenu() {
+    const cms = useCollection('/public/vehicle-rentals');
+    const { items } = resolveCmsList(cms, []);
+    return useMemo(() => groupRentalsByCategory(items), [items]);
+}
+
+function itemDetailPath(item, market, isVehicle) {
+    if (!item.slug) return null;
+    return isVehicle ? `/vehicle-rentals/${item.slug}` : tourDetailPath(item, market);
+}
+
 /** Flattens mega-menu columns into the generic { label, url } shape MobileMenu understands. */
-export function megaColumnsToMobileChildren(columns, market, viewAllLabel, viewAllUrl) {
+export function megaColumnsToMobileChildren(columns, market, viewAllLabel, viewAllUrl, isVehicle) {
     const children = [];
     columns.forEach((col) => {
         children.push({ label: col.name, isHeading: true });
         col.items.slice(0, MAX_PER_COLUMN).forEach((item) => {
             children.push({
                 label: item.title,
-                url: item.slug ? tourDetailPath(item, market) : '#',
+                url: itemDetailPath(item, market, isVehicle) || '#',
             });
         });
     });
@@ -54,7 +79,7 @@ function categoryFilterUrl(viewAllUrl, categorySlug) {
     return `${viewAllUrl}${sep}category=${encodeURIComponent(categorySlug)}`;
 }
 
-function MegaMenu({ columns, market, viewAllLabel, viewAllUrl }) {
+function MegaMenu({ columns, market, viewAllLabel, viewAllUrl, isVehicle }) {
     if (!columns || !columns.length) return null;
     return (
         <div className="di-mega-menu">
@@ -68,15 +93,18 @@ function MegaMenu({ columns, market, viewAllLabel, viewAllUrl }) {
                                 <ul>
                                     {col.items.slice(0, MAX_PER_COLUMN).map((item) => (
                                         <li key={item.id || item.slug}>
-                                            <Link to={item.slug ? tourDetailPath(item, market) : viewAllUrl}>
+                                            <Link to={itemDetailPath(item, market, isVehicle) || viewAllUrl}>
                                                 {item.title}
+                                                {isVehicle && item.showPricing !== false && item.pricePerDay ? (
+                                                    <span className="di-mega-menu__price">${item.pricePerDay}/day</span>
+                                                ) : null}
                                             </Link>
                                         </li>
                                     ))}
                                     {col.items.length > MAX_PER_COLUMN && (
                                         <li>
                                             <Link to={moreUrl} className="di-mega-menu__more">
-                                                View all {col.items.length} packages
+                                                View all {col.items.length} {isVehicle ? 'vehicles' : 'packages'}
                                             </Link>
                                         </li>
                                     )}

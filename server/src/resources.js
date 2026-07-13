@@ -239,6 +239,46 @@ const FlightRouteSchema = z.object({
   ...seo,
 });
 
+const VehicleCategorySchema = z.object({
+  name: z.string().min(1),
+  slug,
+  icon: str,
+  order: int,
+  isVisible: bool,
+});
+
+const VehicleRentalSchema = z.object({
+  title: z.string().min(1),
+  slug,
+  categoryId: str,
+  vehicleType: z.enum(["car", "jeep", "van", "bus", "driver-only"]).optional(),
+  brandModel: str,
+  seatingCapacity: int,
+  transmission: str,
+  fuelType: str,
+  luggageCapacity: str,
+  driverOptions: z.enum(["self-drive", "with-driver", "both"]).optional(),
+  showPricing: bool,
+  pricePerDay: z.number().optional().nullable(),
+  pricePerDayDriver: z.number().optional().nullable(),
+  priceNote: str,
+  minRentalDays: int,
+  shortDescription: str,
+  description: str,
+  highlights: strArr,
+  priceIncludes: strArr,
+  priceExcludes: strArr,
+  featuredImageUrl: str,
+  featuredImageAlt: str,
+  cardImageUrl: str,
+  cardImageAlt: str,
+  galleryImages: imgArr,
+  status,
+  isFeatured: bool,
+  order: int,
+  ...seo,
+});
+
 const byOrder = [{ order: "asc" }, { createdAt: "desc" }];
 
 // Each entry maps an API path to its resource config.
@@ -292,6 +332,24 @@ export const RESOURCES = {
     htmlFields: ["description", "bookingNotes"],
     filterQueryFields: ["ticketType"],
     publicOrderBy: [{ isFeatured: "desc" }, { order: "asc" }, { updatedAt: "desc" }],
+  },
+  "vehicle-categories": {
+    modelName: "vehicleCategory",
+    schema: VehicleCategorySchema,
+    slugFrom: "name",
+    hasStatus: false,
+    hasVisibility: true,
+    publicOrderBy: byOrder,
+  },
+  "vehicle-rentals": {
+    modelName: "vehicleRental",
+    schema: VehicleRentalSchema,
+    slugFrom: "title",
+    htmlFields: ["description"],
+    filterQueryFields: ["vehicleType", "categoryId"],
+    publicOrderBy: [{ isFeatured: "desc" }, { order: "asc" }, { updatedAt: "desc" }],
+    publicInclude: { category: true },
+    adminInclude: { category: true },
   },
 };
 

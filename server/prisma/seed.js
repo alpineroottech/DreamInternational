@@ -688,6 +688,173 @@ async function main() {
     },
   });
 
+  // ---------- Vehicle rental categories ----------
+  const vehicleCategories = [
+    ["Cars", "cars", "fa-light fa-car-side"],
+    ["Jeeps / SUVs", "jeeps-suvs", "fa-light fa-truck-monster"],
+    ["Vans & Minibuses", "vans-minibuses", "fa-light fa-van-shuttle"],
+    ["Buses & Coaches", "buses-coaches", "fa-light fa-bus"],
+    ["Hire a Driver", "hire-a-driver", "fa-light fa-id-card"],
+  ];
+  const vehicleCategoryIds = {};
+  for (let i = 0; i < vehicleCategories.length; i += 1) {
+    const [vname, vslug, vicon] = vehicleCategories[i];
+    // eslint-disable-next-line no-await-in-loop
+    const row = await prisma.vehicleCategory.upsert({
+      where: { slug: vslug },
+      update: {},
+      create: { name: vname, slug: vslug, icon: vicon, order: i, isVisible: true },
+    });
+    vehicleCategoryIds[vslug] = row.id;
+  }
+
+  // ---------- Vehicle rentals (popular models — client did not specify exact models) ----------
+  const vehicleRentals = [
+    {
+      title: "Toyota Corolla (Sedan)",
+      category: "cars",
+      vehicleType: "car",
+      brandModel: "Toyota Corolla",
+      seatingCapacity: 4,
+      transmission: "automatic",
+      fuelType: "petrol",
+      pricePerDay: 45,
+      pricePerDayDriver: 65,
+    },
+    {
+      title: "BYD Atto 3 (Electric)",
+      category: "cars",
+      vehicleType: "car",
+      brandModel: "BYD Atto 3",
+      seatingCapacity: 5,
+      transmission: "automatic",
+      fuelType: "electric",
+      pricePerDay: 55,
+      pricePerDayDriver: 75,
+    },
+    {
+      title: "Suzuki Swift (Hatchback)",
+      category: "cars",
+      vehicleType: "car",
+      brandModel: "Suzuki Swift",
+      seatingCapacity: 4,
+      transmission: "manual",
+      fuelType: "petrol",
+      pricePerDay: 35,
+      pricePerDayDriver: 55,
+    },
+    {
+      title: "Mahindra Scorpio",
+      category: "jeeps-suvs",
+      vehicleType: "jeep",
+      brandModel: "Mahindra Scorpio",
+      seatingCapacity: 7,
+      transmission: "manual",
+      fuelType: "diesel",
+      pricePerDay: 70,
+      pricePerDayDriver: 95,
+    },
+    {
+      title: "Toyota Land Cruiser Prado",
+      category: "jeeps-suvs",
+      vehicleType: "jeep",
+      brandModel: "Toyota Land Cruiser Prado",
+      seatingCapacity: 7,
+      transmission: "automatic",
+      fuelType: "diesel",
+      pricePerDay: 110,
+      pricePerDayDriver: 140,
+    },
+    {
+      title: "Hyundai Creta (Compact SUV)",
+      category: "jeeps-suvs",
+      vehicleType: "jeep",
+      brandModel: "Hyundai Creta",
+      seatingCapacity: 5,
+      transmission: "automatic",
+      fuelType: "petrol",
+      pricePerDay: 60,
+      pricePerDayDriver: 85,
+    },
+    {
+      title: "Toyota Hiace Van (12-Seater)",
+      category: "vans-minibuses",
+      vehicleType: "van",
+      brandModel: "Toyota Hiace",
+      seatingCapacity: 12,
+      transmission: "manual",
+      fuelType: "diesel",
+      pricePerDay: 120,
+      pricePerDayDriver: 150,
+    },
+    {
+      title: "Force Traveller (17-Seater)",
+      category: "vans-minibuses",
+      vehicleType: "van",
+      brandModel: "Force Traveller",
+      seatingCapacity: 17,
+      transmission: "manual",
+      fuelType: "diesel",
+      pricePerDay: 150,
+      pricePerDayDriver: 185,
+    },
+    {
+      title: "32-Seater Tourist Coach",
+      category: "buses-coaches",
+      vehicleType: "bus",
+      brandModel: "Tourist Coach",
+      seatingCapacity: 32,
+      transmission: "manual",
+      fuelType: "diesel",
+      driverOptions: "with-driver",
+      pricePerDayDriver: 220,
+    },
+    {
+      title: "40-Seater Deluxe Bus",
+      category: "buses-coaches",
+      vehicleType: "bus",
+      brandModel: "Deluxe Bus",
+      seatingCapacity: 40,
+      transmission: "manual",
+      fuelType: "diesel",
+      driverOptions: "with-driver",
+      pricePerDayDriver: 280,
+    },
+    {
+      title: "Professional Driver — Hire Only",
+      category: "hire-a-driver",
+      vehicleType: "driver-only",
+      driverOptions: "with-driver",
+      shortDescription: "Bring your own vehicle — we provide an experienced, licensed local driver.",
+      showPricing: true,
+      pricePerDayDriver: 35,
+    },
+  ];
+  await seedIfEmpty(
+    prisma.vehicleRental,
+    vehicleRentals.map((r, i) => ({
+      title: r.title,
+      slug: r.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, ""),
+      categoryId: vehicleCategoryIds[r.category] || null,
+      vehicleType: r.vehicleType,
+      brandModel: r.brandModel || null,
+      seatingCapacity: r.seatingCapacity || null,
+      transmission: r.transmission || null,
+      fuelType: r.fuelType || null,
+      driverOptions: r.driverOptions || "both",
+      showPricing: r.showPricing !== false,
+      pricePerDay: r.pricePerDay || null,
+      pricePerDayDriver: r.pricePerDayDriver || null,
+      shortDescription: r.shortDescription || `${r.title} available for rental with Dream International — well-maintained and ready for your trip.`,
+      description: `<p>${r.title} available for rental with Dream International. Contact us for availability, exact pricing, and pickup arrangements.</p>`,
+      highlights: ["Well-maintained vehicle", "Flexible pickup & drop-off", "Local support throughout your rental"],
+      status: "PUBLISHED",
+      isFeatured: i < 4,
+      order: i,
+      publishedAt: now(),
+    }))
+  );
+
   await seedInternationalTours(prisma, now);
 
   console.log("Seed complete.");

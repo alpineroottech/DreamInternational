@@ -1,35 +1,22 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import MobileMenu from './MobileMenu';
-import MegaMenu, { useTourMegaMenu, useActivitiesMegaMenu, megaColumnsToMobileChildren } from './MegaMenu';
+import MegaMenu, { useTourMegaMenu, useActivitiesMegaMenu, useVehicleRentalsMegaMenu, megaColumnsToMobileChildren } from './MegaMenu';
 import { useSettings } from '../../public-cms/hooks';
 import { BRAND_NAME, LOGO_TITLE } from '../../brand/brandAssets';
+import { DEFAULT_HEADER_NAV } from '../../lib/sitePages';
 
-/** Only these three archive nav items get a mega menu; everything else is a plain link. */
+/** Only these archive nav items get a mega menu; everything else is a plain link. */
 function getMegaType(item) {
     const url = (item.url || '').replace(/\/$/, '');
     if (url === '/tour') return 'nepal';
     if (url === '/international-holidays') return 'international';
     if (url === '/activities') return 'activities';
+    if (url === '/vehicle-rentals') return 'vehicle-rentals';
     return null;
 }
 
-const DEFAULT_NAV = [
-    { label: "Home", url: "/" },
-    { label: "About", url: "/about" },
-    { label: "Nepal Experiences", url: "/tour" },
-    { label: "International Holidays", url: "/international-holidays" },
-    { label: "Activities", url: "/activities" },
-    {
-        label: "Ticketing",
-        url: "#",
-        children: [
-            { label: "Domestic Flights", url: "/ticketing/domestic" },
-            { label: "International Flights", url: "/ticketing/international" },
-        ],
-    },
-    { label: "Blog", url: "/blog" },
-];
+const DEFAULT_NAV = DEFAULT_HEADER_NAV;
 
 const TICKETING_NAV = DEFAULT_NAV.find((item) => item.label === "Ticketing");
 
@@ -70,10 +57,12 @@ function HeaderOne() {
     const nepalColumns = useTourMegaMenu('nepal');
     const intlColumns = useTourMegaMenu('international');
     const activityColumns = useActivitiesMegaMenu();
+    const vehicleColumns = useVehicleRentalsMegaMenu();
     const megaDataByType = {
         nepal: { columns: nepalColumns, market: 'nepal', viewAllLabel: 'View All Nepal Experiences', viewAllUrl: '/tour' },
         international: { columns: intlColumns, market: 'international', viewAllLabel: 'View All International Holidays', viewAllUrl: '/international-holidays' },
         activities: { columns: activityColumns, market: undefined, viewAllLabel: 'View All Activities', viewAllUrl: '/activities' },
+        'vehicle-rentals': { columns: vehicleColumns, market: undefined, viewAllLabel: 'View All Vehicle Rentals', viewAllUrl: '/vehicle-rentals', isVehicle: true },
     };
 
     const mobileNav = nav.map((item) => {
@@ -82,7 +71,7 @@ function HeaderOne() {
         if (!data || !data.columns.length) return item;
         return {
             ...item,
-            children: megaColumnsToMobileChildren(data.columns, data.market, data.viewAllLabel, data.viewAllUrl),
+            children: megaColumnsToMobileChildren(data.columns, data.market, data.viewAllLabel, data.viewAllUrl, data.isVehicle),
         };
     });
 
@@ -166,6 +155,7 @@ function HeaderOne() {
                                                             market={megaData.market}
                                                             viewAllLabel={megaData.viewAllLabel}
                                                             viewAllUrl={megaData.viewAllUrl}
+                                                            isVehicle={megaData.isVehicle}
                                                         />
                                                     </li>
                                                 );

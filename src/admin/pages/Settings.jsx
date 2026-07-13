@@ -90,6 +90,8 @@ export const PAGE_HERO_FIELDS = [
   { key: "destination-details", label: "Destination details (fallback, legacy)" },
   { key: "activities", label: "Activities listing" },
   { key: "activity-details", label: "Activity details (fallback)" },
+  { key: "vehicle-rentals", label: "Vehicle Rentals listing" },
+  { key: "vehicle-rental-details", label: "Vehicle Rental details (fallback)" },
   { key: "services", label: "Services listing" },
   { key: "service-details", label: "Service details (fallback)" },
   { key: "blog", label: "Blog listing" },

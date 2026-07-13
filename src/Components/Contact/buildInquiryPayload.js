@@ -7,6 +7,7 @@ const CATEGORY_LABELS = {
   activity: "Activity",
   service: "Service",
   flight: "Flight ticketing",
+  "vehicle-rental": "Vehicle rental",
   "custom-trip": "Custom / multi-day trip",
 };
 

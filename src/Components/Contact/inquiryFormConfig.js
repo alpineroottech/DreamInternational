@@ -36,6 +36,14 @@ export const INQUIRY_CATEGORIES = [
     hint: "Prefer our flight enquiry form for routes and dates — or describe your needs below.",
     ticketingPath: "/ticketing/domestic",
   },
+  {
+    value: "vehicle-rental",
+    label: "Vehicle rental",
+    apiPath: "/public/vehicle-rentals",
+    labelKey: "title",
+    slugKey: "slug",
+    hint: "Cars, jeeps/SUVs, vans, buses, self-drive or with-driver — or hire a driver for your own vehicle.",
+  },
   { value: "custom-trip", label: "Custom / multi-day trip" },
 ];
 

@@ -400,6 +400,58 @@ model FlightRoute {
   publishedAt      DateTime?
 }
 
+model VehicleCategory {
+  id        String          @id @default(cuid())
+  name      String          // "Cars", "Jeeps/SUVs", "Vans & Minibuses", "Buses & Coaches", "Hire a Driver"
+  slug      String          @unique
+  icon      String?
+  order     Int             @default(0)
+  isVisible Boolean         @default(true)
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+  rentals   VehicleRental[]
+}
+
+model VehicleRental {
+  id                String   @id @default(cuid())
+  slug              String   @unique
+  title             String            // "Toyota Corolla", "32-Seater Tourist Coach"
+  categoryId        String?
+  category          VehicleCategory? @relation(fields: [categoryId], references: [id])
+  vehicleType       String   @default("car") // car | jeep | van | bus | driver-only
+  brandModel        String?
+  seatingCapacity   Int?
+  transmission      String?  // manual | automatic
+  fuelType          String?  // petrol | diesel | electric | hybrid
+  luggageCapacity   String?
+  driverOptions     String   @default("both") // self-drive | with-driver | both
+  showPricing       Boolean  @default(true)   // optional public price display
+  pricePerDay       Float?
+  pricePerDayDriver Float?
+  priceNote         String?
+  minRentalDays     Int?
+  shortDescription  String?
+  description       String?  @db.Text
+  highlights        Json?    // string[]
+  priceIncludes     Json?    // string[]
+  priceExcludes     Json?    // string[]
+  featuredImageUrl  String?
+  featuredImageAlt  String?
+  cardImageUrl      String?
+  cardImageAlt      String?
+  galleryImages     Json?    // [{ url, alt }]
+  status            String   @default("DRAFT") // DRAFT | PUBLISHED | ARCHIVED
+  isFeatured        Boolean  @default(false)
+  order             Int      @default(0)
+  seoTitle          String?
+  seoDescription    String?
+  ogImageUrl        String?
+  canonicalUrl      String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  publishedAt       DateTime?
+}
+
 model FlightInquiry {
   id              String   @id @default(cuid())
   ticketType      String   @default("domestic") // domestic | international

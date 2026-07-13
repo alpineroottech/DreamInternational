@@ -12,6 +12,8 @@ export const DEFAULT_PAGE_HERO_COLORS = {
   "destination-details": "#001a57",
   activities: "#001a57",
   "activity-details": "#001a57",
+  "vehicle-rentals": "#001a57",
+  "vehicle-rental-details": "#001a57",
   services: "#001a57",
   "service-details": "#001a57",
   blog: "#001a57",

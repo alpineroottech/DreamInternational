@@ -13,6 +13,8 @@ const NAV = [
   { to: "/admin/categories", label: "Tour Categories", icon: "solar:widget-5-outline" },
   { to: "/admin/destinations", label: "Destinations", icon: "solar:map-point-outline" },
   { to: "/admin/activities", label: "Activities", icon: "solar:running-2-outline" },
+  { to: "/admin/vehicleRentals", label: "Vehicle Rentals", icon: "solar:wheel-outline" },
+  { to: "/admin/vehicleCategories", label: "Vehicle Categories", icon: "solar:car-outline" },
   { to: "/admin/services", label: "Services", icon: "solar:case-round-outline" },
   { to: "/admin/flightRoutes", label: "Flight Routes", icon: "solar:airplane-outline" },
   { to: "/admin/ticketing-pages", label: "Ticketing Pages", icon: "solar:ticket-outline" },
