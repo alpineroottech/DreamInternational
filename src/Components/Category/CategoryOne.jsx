@@ -6,30 +6,17 @@ import "swiper/css/pagination";
 import { Link } from "react-router-dom";
 import { useCollection, resolveAssetUrl, resolveCmsList } from "../../public-cms/hooks";
 
-const FALLBACK = [
-  { id: 1, title: "Cruises", imgSrc: "/assets/img/category/category_1_1.jpg" },
-  { id: 2, title: "Hiking", imgSrc: "/assets/img/category/category_1_2.jpg" },
-  { id: 3, title: "Airbirds", imgSrc: "/assets/img/category/category_1_3.jpg" },
-  { id: 4, title: "Wildlife", imgSrc: "/assets/img/category/category_1_4.jpg" },
-  { id: 5, title: "Walking", imgSrc: "/assets/img/category/category_1_5.jpg" },
-];
-
 const CategoryOne = ({ data = {} }) => {
   const swiperRef = useRef(null);
   const cms = useCollection("/public/categories");
+  const { loading, items: categories } = resolveCmsList(cms);
 
-  const { loading, items: categories } = resolveCmsList(
-    cms,
-    FALLBACK.map((c) => ({ ...c, slug: undefined }))
-  );
-  const displayCategories = cms && cms.length
-    ? cms.map((c) => ({
-        id: c.slug,
-        title: c.name,
-        imgSrc: resolveAssetUrl(c.imageUrl) || "/assets/img/category/category_1_1.jpg",
-        slug: c.slug,
-      }))
-    : categories;
+  const displayCategories = categories.map((c) => ({
+    id: c.slug,
+    title: c.name,
+    imgSrc: resolveAssetUrl(c.imageUrl) || "/assets/img/category/category_1_1.jpg",
+    slug: c.slug,
+  }));
 
   // Swiper disables looping/autoplay whenever the slide track already fits
   // every slide on screen (e.g. 5 categories at slidesPerView 6), so at
@@ -95,7 +82,7 @@ const CategoryOne = ({ data = {} }) => {
     return () => cancelAnimationFrame(raf);
   }, [displayCategories.length]);
 
-  if (loading) return null;
+  if (loading || displayCategories.length === 0) return null;
 
   return (
     <section className="category-area bg-top-center">

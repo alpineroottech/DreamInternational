@@ -6,16 +6,9 @@ import "swiper/css/pagination";
 import { Link } from "react-router-dom";
 import { useCollection, resolveAssetUrl, resolveCmsList } from "../../public-cms/hooks";
 
-const FALLBACK = [
-  { id: 1, name: "Jacob Jones", photoUrl: "/assets/img/team/team_1_1.jpg", role: "Team Member" },
-  { id: 2, name: "Jane Cooper", photoUrl: "/assets/img/team/team_1_2.jpg", role: "Team Member" },
-  { id: 3, name: "Guy Hawkins", photoUrl: "/assets/img/team/team_1_3.jpg", role: "Team Member" },
-  { id: 4, name: "Jenny Wilson", photoUrl: "/assets/img/team/team_1_4.jpg", role: "Team Member" },
-];
-
 function TourGuide({ data = {} }) {
   const cms = useCollection("/public/team");
-  const { loading, items: guides } = resolveCmsList(cms, FALLBACK);
+  const { loading, items: guides } = resolveCmsList(cms);
   const [swiperInstance, setSwiperInstance] = useState(null);
   const paginationRef = useRef(null);
 
@@ -27,7 +20,7 @@ function TourGuide({ data = {} }) {
     }
   }, [swiperInstance]);
 
-  if (loading) return null;
+  if (loading || guides.length === 0) return null;
 
   return (
     <section className="di-team-section space overflow-hidden">

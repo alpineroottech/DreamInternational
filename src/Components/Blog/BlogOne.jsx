@@ -6,26 +6,18 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { useCollection, resolveAssetUrl, resolveCmsList } from "../../public-cms/hooks";
 
-const FALLBACK = [
-  { id: 1, date: "", readTime: "6 min read", title: "Top treks in Nepal for first-timers", image: "/assets/img/blog/blog_1_1.jpg", detailsLink: "/blog/1" },
-  { id: 2, date: "", readTime: "7 min read", title: "A cultural guide to Kathmandu Valley", image: "/assets/img/blog/blog_1_2.jpg", detailsLink: "/blog/1" },
-  { id: 3, date: "", readTime: "8 min read", title: "Best destinations for adventure seekers", image: "/assets/img/blog/blog_1_3.jpg", detailsLink: "/blog/1" },
-];
-
 function BlogOne({ data = {} }) {
   const cms = useCollection("/public/blog");
-  const { loading, items: blogPosts } = resolveCmsList(cms, FALLBACK);
-  const posts = cms && cms.length
-    ? cms.map((p) => ({
-        id: p.slug,
-        date: p.publishedAt ? new Date(p.publishedAt).toLocaleDateString() : "",
-        readTime: "",
-        title: p.title,
-        image: resolveAssetUrl(p.coverImageUrl),
-        detailsLink: `/blog/${p.slug}`,
-      }))
-    : blogPosts;
-  if (loading) return null;
+  const { loading, items: blogPosts } = resolveCmsList(cms);
+  const posts = blogPosts.map((p) => ({
+    id: p.slug,
+    date: p.publishedAt ? new Date(p.publishedAt).toLocaleDateString() : "",
+    readTime: "",
+    title: p.title,
+    image: resolveAssetUrl(p.coverImageUrl),
+    detailsLink: `/blog/${p.slug}`,
+  }));
+  if (loading || posts.length === 0) return null;
   return (
     <section className="bg-smoke overflow-hidden space overflow-hidden" id="blog-sec">
       <div className="container shape-mockup-wrap">

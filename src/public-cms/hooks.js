@@ -17,6 +17,12 @@ export function resolveAssetUrl(url) {
   return url;
 }
 
+// Multiple components on the same page often request the same collection
+// (e.g. /public/categories is used by both the category carousel and the
+// booking search bar). Cache resolved responses for the session and share
+// in-flight requests so the same data is never fetched twice in parallel.
+const collectionCache = new Map();
+
 /**
  * Load a public CMS collection.
  * - `undefined` → still loading (do NOT show fallback yet)
@@ -24,36 +30,73 @@ export function resolveAssetUrl(url) {
  * - `array`     → CMS data
  */
 export function useCollection(path, params) {
-  const [data, setData] = useState(undefined);
-  const key = JSON.stringify(params || {});
+  const key = `${path}?${JSON.stringify(params || {})}`;
+  const cached = collectionCache.get(key);
+  const [data, setData] = useState(
+    cached && cached.status === "resolved" ? cached.value : undefined
+  );
+
   useEffect(() => {
     let active = true;
-    setData(undefined);
-    publicApi
-      .get(path, { params })
-      .then((r) => {
-        if (!active) return;
-        const rows = Array.isArray(r.data) ? r.data : [];
-        setData(rows.length ? rows : null);
-      })
-      .catch(() => active && setData(null));
+    const existing = collectionCache.get(key);
+
+    if (existing && existing.status === "resolved") {
+      setData(existing.value);
+      return () => {
+        active = false;
+      };
+    }
+
+    if (!existing) {
+      setData(undefined);
+      const promise = publicApi
+        .get(path, { params })
+        .then((r) => {
+          const rows = Array.isArray(r.data) ? r.data : [];
+          const value = rows.length ? rows : null;
+          collectionCache.set(key, { status: "resolved", value });
+          return value;
+        })
+        .catch(() => {
+          collectionCache.set(key, { status: "resolved", value: null });
+          return null;
+        });
+      collectionCache.set(key, { status: "pending", promise });
+      promise.then((value) => active && setData(value));
+    } else {
+      setData(undefined);
+      existing.promise.then((value) => active && setData(value));
+    }
+
     return () => {
       active = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [path, key]);
+  }, [key]);
+
   return data;
 }
 
-// In production the site must rely solely on CMS content — template/demo
-// fallback data is only used in development so the UI isn't empty locally.
-const ALLOW_FALLBACK = process.env.NODE_ENV !== "production";
+/** Drop cached collection responses (e.g. after an admin save) so the next mount refetches. */
+export function clearCollectionCache() {
+  collectionCache.clear();
+}
 
-/** Resolve CMS list vs fallback without flashing template defaults during load. */
-export function resolveCmsList(cms, fallback = []) {
+/**
+ * The site must render CMS content only — never template/demo fallback data,
+ * in development or production. A slower first paint while the real data
+ * loads is acceptable; showing fake placeholder content is not.
+ *
+ * - `loading: true`  → still fetching, render a skeleton/spinner, not content
+ * - `loading: false, items: []` → fetch finished with nothing published yet;
+ *   render a genuine empty state, never the `fallback` argument
+ *
+ * The `fallback` parameter is kept only for call-site readability/back-compat
+ * and is intentionally never returned.
+ */
+export function resolveCmsList(cms, _fallback = []) {
   if (cms === undefined) return { loading: true, items: [] };
-  if (cms && cms.length) return { loading: false, items: cms };
-  return { loading: false, items: ALLOW_FALLBACK ? fallback : [] };
+  return { loading: false, items: Array.isArray(cms) ? cms : [] };
 }
 
 // Site settings, cached across the app (loaded once).

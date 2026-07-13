@@ -1,6 +1,5 @@
 import React from 'react';
 import ServiceCard from './ServiceCard';
-import jsonPosts from '../data/data-service.json';
 import { useCollection } from '../../public-cms/hooks';
 
 function ServiceInner() {
@@ -16,9 +15,19 @@ function ServiceInner() {
         );
     }
 
-    const posts = cms && cms.length
+    const posts = Array.isArray(cms)
         ? cms.map((s) => ({ id: s.slug, title: s.title, item: s.shortDescription || '' }))
-        : jsonPosts.map((p) => ({ id: p.id, title: p.title, item: p.item }));
+        : [];
+
+    if (posts.length === 0) {
+        return (
+            <section className="position-relative overflow-hidden space" id="destination-sec">
+                <div className="container text-center py-5">
+                    <p className="mb-0">No services published yet. Please check back soon.</p>
+                </div>
+            </section>
+        );
+    }
 
     return (
         <section className="position-relative overflow-hidden space" id="destination-sec">

@@ -28,15 +28,7 @@ function Booking() {
 
     const categoryOptions = [
         ANY,
-        ...(catResolved.loading
-            ? []
-            : cmsCategories && cmsCategories.length
-                ? cmsCategories.map((c) => ({ value: c.slug, label: c.name }))
-                : [
-                    { value: "trekking", label: "Trekking" },
-                    { value: "cultural-tours", label: "Cultural Tours" },
-                    { value: "adventure", label: "Adventure" },
-                ]),
+        ...(catResolved.loading ? [] : catResolved.items.map((c) => ({ value: c.slug, label: c.name }))),
     ];
 
     const durationOptions = [

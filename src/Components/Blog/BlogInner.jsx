@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import BlogPost from './BlogPost';
-import jsonPosts from '../data/data-post.json';
 import { useCollection, resolveAssetUrl } from '../../public-cms/hooks';
 
 function BlogInner() {
@@ -18,15 +16,12 @@ function BlogInner() {
         );
     }
 
-    const usingCms = cms && cms.length > 0;
-    const postsPerPage = usingCms ? 6 : 1;
-    const posts = usingCms ? cms : jsonPosts;
-    const totalPages = Math.ceil(posts.length / postsPerPage);
-    const recentPosts = usingCms
-        ? [...cms]
-            .sort((a, b) => new Date(b.publishedAt || 0) - new Date(a.publishedAt || 0))
-            .slice(0, 3)
-        : [];
+    const posts = Array.isArray(cms) ? cms : [];
+    const postsPerPage = 6;
+    const totalPages = Math.max(1, Math.ceil(posts.length / postsPerPage));
+    const recentPosts = [...posts]
+        .sort((a, b) => new Date(b.publishedAt || 0) - new Date(a.publishedAt || 0))
+        .slice(0, 3);
 
     const indexOfLastPost = currentPage * postsPerPage;
     const indexOfFirstPost = indexOfLastPost - postsPerPage;
@@ -43,8 +38,9 @@ function BlogInner() {
             <div className="container">
                 <div className="row">
                     <div className="col-xxl-8 col-lg-7">
-                        {usingCms
-                            ? currentPosts.map((data) => (
+                        {currentPosts.length === 0 ? (
+                            <p className="mb-0 py-5 text-center">No articles published yet. Please check back soon.</p>
+                        ) : currentPosts.map((data) => (
                                 <div key={data.slug} className="th-blog blog-single has-post-thumbnail mb-4">
                                     {data.coverImageUrl && (
                                         <div className="blog-img">
@@ -67,14 +63,6 @@ function BlogInner() {
                                         <Link to={`/blog/${data.slug}`} className="th-btn style4 th-icon">Read More</Link>
                                     </div>
                                 </div>
-                            ))
-                            : currentPosts.map((data) => (
-                                <BlogPost
-                                    key={data.id}
-                                    blogID={data.id}
-                                    blogImage={data.image}
-                                    blogTitle={data.title}
-                                />
                             ))}
                         <div className="th-pagination">
                             <ul>

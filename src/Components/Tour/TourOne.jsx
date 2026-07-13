@@ -7,18 +7,11 @@ import { Autoplay } from 'swiper/modules';
 import { useCollection, resolveAssetUrl, resolveCmsList } from '../../public-cms/hooks';
 import { tourDetailPath } from '../../lib/tourUrls';
 
-const FALLBACK = [
-  { slug: 'greece-tour-package', title: 'Greece Tour Package', featuredImageUrl: '/assets/img/tour/tour_box_1.jpg', basePrice: 980, durationDays: 7 },
-  { slug: 'italy-tour-package', title: 'Italy Tour Package', featuredImageUrl: '/assets/img/tour/tour_box_2.jpg', basePrice: 980, durationDays: 7 },
-  { slug: 'dubai-tour-package', title: 'Dubai Tour Package', featuredImageUrl: '/assets/img/tour/tour_box_3.jpg', basePrice: 980, durationDays: 7 },
-  { slug: 'switzerland-tour', title: 'Switzerland Tour', featuredImageUrl: '/assets/img/tour/tour_box_4.jpg', basePrice: 980, durationDays: 7 },
-];
-
 function TourOne({ data = {} }) {
   const swiperRef = useRef(null);
   const cms = useCollection('/public/tours', { featured: true, market: 'nepal' });
-  const { loading, items: tours } = resolveCmsList(cms, FALLBACK);
-  if (loading) return null;
+  const { loading, items: tours } = resolveCmsList(cms);
+  if (loading || tours.length === 0) return null;
 
   const slide = (dir) => {
     const swiper = swiperRef.current?.swiper;

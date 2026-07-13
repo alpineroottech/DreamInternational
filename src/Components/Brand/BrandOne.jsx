@@ -1,27 +1,15 @@
 import React from "react";
 import { useCollection, resolveCmsList } from "../../public-cms/hooks";
 
-const FALLBACK = [
-  "Buddha Air",
-  "Yeti Airlines",
-  "Qatar Airways",
-  "Emirates",
-  "Singapore Airlines",
-  "Turkish Airlines",
-  "Nepal Airlines",
-  "IndiGo",
-].map((name) => ({ name, logoUrl: "" }));
-
 function BrandOne({ className, data = {} }) {
   const cms = useCollection("/public/brands");
-  const { loading, items: brands } = resolveCmsList(cms, FALLBACK);
+  const { loading, items: brands } = resolveCmsList(cms);
   if (loading) return null;
 
-  const names = brands
+  const base = brands
     .map((b) => (b.name || "").trim())
     .filter(Boolean);
 
-  const base = names.length ? names : FALLBACK.map((b) => b.name);
   if (!base.length) return null;
 
   const renderGroup = (suffix) =>

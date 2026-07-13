@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import jsonPosts from '../data/data-activities.json';
 import ActivitiesCard from './ActivitiesCard';
 import { useCollection } from '../../public-cms/hooks';
 
@@ -26,7 +25,7 @@ function ActivitiesInner() {
         );
     }
 
-    const posts = cms && cms.length
+    const posts = Array.isArray(cms)
         ? cms.map((a) => ({
             id: a.slug,
             slug: a.slug,
@@ -35,7 +34,7 @@ function ActivitiesInner() {
             price: a.price || 'On request',
             duration: a.duration,
           }))
-        : jsonPosts;
+        : [];
 
     const term = searchTerm.trim().toLowerCase();
     const filteredPosts = posts.filter((p) =>

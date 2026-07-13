@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import DestinationCard from './DestinationCard';
-import staticPosts from '../data/data-destination.json';
 import DestinationCardTwo from './DestinationCardTwo';
 import { useCollection, resolveAssetUrl } from '../../public-cms/hooks';
 import RecentPostsWidget from '../Sidebar/RecentPostsWidget';
@@ -35,7 +34,7 @@ function DestinationInner() {
             price: d.price || (d.basePrice != null ? `From $${d.basePrice}` : null),
             shortDescription: d.shortDescription,
           }))
-        : staticPosts.map((p) => ({ ...p, slug: String(p.id), image: `/assets/img/tour/${p.image}` }));
+        : [];
 
     const posts = filterSlug
         ? allPosts.filter((p) => p.slug === filterSlug)

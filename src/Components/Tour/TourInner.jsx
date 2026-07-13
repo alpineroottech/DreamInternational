@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import TourCard from './TourCard';
-import jsonPosts from '../data/data-tour.json';
 import TourCardTwo from './TourCardTwo';
 import { useCollection } from '../../public-cms/hooks';
 import RecentPostsWidget from '../Sidebar/RecentPostsWidget';
@@ -37,7 +36,7 @@ function TourInner({ market = 'nepal' }) {
         );
     }
 
-    const allPosts = cms && cms.length
+    const allPosts = Array.isArray(cms)
         ? cms.map((t) => ({
             id: t.slug,
             slug: t.slug,
@@ -50,8 +49,6 @@ function TourInner({ market = 'nepal' }) {
             raw: t,
             market: t.market || market,
         }))
-        : market === 'nepal'
-        ? jsonPosts.map((p) => ({ ...p, durationDays: null, categorySlug: '', categoryName: '', raw: p, market: 'nepal' }))
         : [];
 
     // Apply filters from URL params (homepage booking bar + sidebar)
@@ -220,6 +217,15 @@ function TourInner({ market = 'nepal' }) {
                                 className={`tab-pane fade ${activeTab === 'tab-grid' ? 'show active' : ''}`} id="tab-grid" role="tabpanel"
                             >
                                 <div className="row gy-24 gx-24">
+                                    {currentPosts.length === 0 && (
+                                        <div className="col-12 text-center py-5">
+                                            <p className="mb-0">
+                                                {allPosts.length === 0
+                                                    ? `No ${market === 'international' ? 'holiday packages' : 'tours'} published yet. Please check back soon.`
+                                                    : 'No results match your filters.'}
+                                            </p>
+                                        </div>
+                                    )}
                                     {currentPosts.map((data, index) => (
                                         <div key={index} className="col-md-6 col-xl-4">
                                             <TourCard
