@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { useCollection, resolveCmsList } from '../../public-cms/hooks';
 import VehicleRentalCard from './VehicleRentalCard';
+import RentalInquiryWidget from './RentalInquiryWidget';
 
 const TYPE_FILTERS = [
     { value: '', label: 'All Vehicles' },
@@ -52,6 +53,10 @@ function VehicleRentalsInner() {
                         ))}
                     </div>
                 )}
+
+                <div className="mt-5 pt-4">
+                    <RentalInquiryWidget />
+                </div>
             </div>
         </section>
     );

@@ -2,20 +2,38 @@ import React, { useEffect, useRef, useState } from "react";
 import { publicApi } from "../../public-cms/hooks";
 import { buildInquiryPayload } from "../Contact/buildInquiryPayload";
 
+const VEHICLE_TYPE_OPTIONS = [
+  { value: "", label: "Any vehicle type" },
+  { value: "car", label: "Car" },
+  { value: "jeep", label: "Jeep / SUV" },
+  { value: "van", label: "Van / Minibus" },
+  { value: "bus", label: "Bus / Coach" },
+  { value: "driver-only", label: "Hire a driver" },
+];
+
 const EMPTY = {
   name: "",
   email: "",
   phone: "",
-  travelDates: "",
+  rentalDate: "",
+  rentalDuration: "",
   groupSize: "",
   driverChoice: "",
+  vehicleTypeChoice: "",
   message: "",
 };
 
+/**
+ * Rental enquiry form.
+ * - Pass a `rental` prop to embed it on a vehicle's detail page (pre-scoped to that vehicle).
+ * - Omit `rental` to render a general enquiry form (used on the vehicle rentals archive page),
+ *   which adds a "vehicle type" picker instead of being scoped to one listing.
+ */
 export default function RentalInquiryWidget({ rental }) {
   const [form, setForm] = useState({ ...EMPTY });
   const [status, setStatus] = useState({ state: "idle", msg: "" });
   const statusRef = useRef(null);
+  const isGeneral = !rental;
 
   useEffect(() => {
     setStatus({ state: "idle", msg: "" });
@@ -25,10 +43,8 @@ export default function RentalInquiryWidget({ rental }) {
     }));
   }, [rental?.slug, rental?.driverOptions]);
 
-  if (!rental) return null;
-
   const setField = (key, value) => setForm((f) => ({ ...f, [key]: value }));
-  const showDriverChoice = rental.driverOptions === "both" && rental.vehicleType !== "driver-only";
+  const showDriverChoice = !isGeneral && rental.driverOptions === "both" && rental.vehicleType !== "driver-only";
 
   const submit = async (e) => {
     e.preventDefault();
@@ -37,14 +53,21 @@ export default function RentalInquiryWidget({ rental }) {
       const driverNote = showDriverChoice && form.driverChoice
         ? `Preferred option: ${form.driverChoice === "self-drive" ? "Self-drive" : "With driver"}`
         : "";
+      const vehicleTypeNote = isGeneral && form.vehicleTypeChoice
+        ? `Vehicle type: ${VEHICLE_TYPE_OPTIONS.find((o) => o.value === form.vehicleTypeChoice)?.label || form.vehicleTypeChoice}`
+        : "";
+      const durationNote = form.rentalDuration ? `Rental duration: ${form.rentalDuration} day(s)` : "";
       const payload = buildInquiryPayload({
         ...form,
-        message: [driverNote, form.message].filter(Boolean).join("\n"),
+        travelDates: form.rentalDate,
+        message: [vehicleTypeNote, driverNote, durationNote, form.message].filter(Boolean).join("\n"),
         inquiryCategory: "vehicle-rental",
-        subjectSlug: rental.slug,
-        subjectLabel: rental.title,
-        subjectId: rental.id || "",
+        subjectSlug: isGeneral ? null : rental.slug,
+        subjectLabel: isGeneral ? (form.vehicleTypeChoice ? VEHICLE_TYPE_OPTIONS.find((o) => o.value === form.vehicleTypeChoice)?.label : "General vehicle rental enquiry") : rental.title,
+        subjectId: isGeneral ? "" : rental.id || "",
       });
+      payload.customDetails.rentalDuration = form.rentalDuration || null;
+      payload.customDetails.rentalDate = form.rentalDate || null;
       await publicApi.post("/public/inquiries", payload);
       setStatus({
         state: "success",
@@ -61,10 +84,14 @@ export default function RentalInquiryWidget({ rental }) {
   };
 
   return (
-    <div className="di-tour-inquiry di-tour-inquiry--sidebar">
-      <h4 className="di-tour-inquiry__title">Check availability</h4>
+    <div className={isGeneral ? "di-tour-inquiry di-tour-inquiry--general" : "di-tour-inquiry di-tour-inquiry--sidebar"}>
+      <h4 className="di-tour-inquiry__title">
+        {isGeneral ? "Can't find what you need?" : "Check availability"}
+      </h4>
       <p className="di-tour-inquiry__subtitle small mb-3">
-        Ask about <strong>{rental.title}</strong> — we'll reply with pricing and availability.
+        {isGeneral
+          ? "Tell us what you're looking for — car, jeep, van, bus, or a driver — and we'll get back to you with pricing and availability."
+          : (<>Ask about <strong>{rental.title}</strong> — we'll reply with pricing and availability.</>)}
       </p>
 
       <div ref={statusRef}>
@@ -116,6 +143,19 @@ export default function RentalInquiryWidget({ rental }) {
             autoComplete="tel"
           />
         </div>
+        {isGeneral && (
+          <div className="form-group mb-2">
+            <select
+              className="form-select form-select-sm"
+              value={form.vehicleTypeChoice}
+              onChange={(e) => setField("vehicleTypeChoice", e.target.value)}
+            >
+              {VEHICLE_TYPE_OPTIONS.map((o) => (
+                <option key={o.value} value={o.value}>{o.label}</option>
+              ))}
+            </select>
+          </div>
+        )}
         {showDriverChoice && (
           <div className="form-group mb-2">
             <select
@@ -131,26 +171,44 @@ export default function RentalInquiryWidget({ rental }) {
         )}
         <div className="row g-2 mb-2">
           <div className="col-6">
+            <label className="di-tour-inquiry__label small text-muted mb-1" htmlFor="rental-date">
+              Rental start date
+            </label>
             <input
-              type="text"
+              id="rental-date"
+              type="date"
               className="form-control form-control-sm"
-              placeholder="Rental dates"
-              value={form.travelDates}
-              onChange={(e) => setField("travelDates", e.target.value)}
-              maxLength={80}
+              value={form.rentalDate}
+              onChange={(e) => setField("rentalDate", e.target.value)}
+              min={new Date().toISOString().slice(0, 10)}
             />
           </div>
           <div className="col-6">
+            <label className="di-tour-inquiry__label small text-muted mb-1" htmlFor="rental-duration">
+              Duration (days)
+            </label>
             <input
+              id="rental-duration"
               type="number"
               className="form-control form-control-sm"
-              placeholder="Passengers"
-              value={form.groupSize}
-              onChange={(e) => setField("groupSize", e.target.value)}
+              placeholder="e.g. 5"
+              value={form.rentalDuration}
+              onChange={(e) => setField("rentalDuration", e.target.value)}
               min={1}
-              max={99}
+              max={365}
             />
           </div>
+        </div>
+        <div className="form-group mb-2">
+          <input
+            type="number"
+            className="form-control form-control-sm"
+            placeholder="Passengers"
+            value={form.groupSize}
+            onChange={(e) => setField("groupSize", e.target.value)}
+            min={1}
+            max={99}
+          />
         </div>
         <div className="form-group mb-3">
           <textarea

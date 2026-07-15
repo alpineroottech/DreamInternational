@@ -13,8 +13,11 @@ function getResend() {
 }
 
 function fromAddress() {
-  // Sender can be any verified Resend address; onboarding works without a custom domain.
-  return process.env.RESEND_FROM_EMAIL || "Dream International <onboarding@resend.dev>";
+  // flywithdream.com is a verified sending domain on Resend — using it (instead of the
+  // onboarding@resend.dev sandbox address) is what lets us email visitors directly.
+  // The sandbox address can only deliver to the Resend account's own verified email,
+  // which was silently failing every "we received your message" confirmation email.
+  return process.env.RESEND_FROM_EMAIL || "Dream International Travel and Tours <noreply@flywithdream.com>";
 }
 
 function adminRecipient() {
@@ -113,12 +116,15 @@ async function sendInquiryEmails(inquiry) {
     ? inquiry.customDetails
     : {};
 
+  const isVehicleRental = details.subjectCategory === "vehicle-rental";
+
   const fields = [
     ["Name", inquiry.name],
     ["Email", inquiry.email],
     ["Phone", inquiry.phone],
     ["Nationality", inquiry.nationality],
     ["Travel dates", inquiry.travelDates],
+    ["Rental duration", details.rentalDuration ? `${details.rentalDuration} day(s)` : null],
     ["Group size", inquiry.groupSize],
     ["Inquiry type", inquiry.type || "STANDARD"],
     ["Subject category", details.subjectCategoryLabel || details.subjectCategory],
@@ -127,14 +133,15 @@ async function sendInquiryEmails(inquiry) {
   ];
 
   const admin = adminRecipient();
+  const subjectPrefix = isVehicleRental ? "New vehicle rental inquiry" : "New contact inquiry";
   const tasks = [
     // Primary: always notify the official inbox.
     sendMail({
       to: admin,
       replyTo: inquiry.email,
-      subject: `New contact inquiry — ${inquiry.name}`,
-      html: adminTemplate("New Contact Inquiry", fields, inquiry.id),
-      text: `New contact inquiry\n\n${plainFields(fields)}\n\nReference: ${inquiry.id}`,
+      subject: `${subjectPrefix} — ${inquiry.name}`,
+      html: adminTemplate(isVehicleRental ? "New Vehicle Rental Inquiry" : "New Contact Inquiry", fields, inquiry.id),
+      text: `${subjectPrefix}\n\n${plainFields(fields)}\n\nReference: ${inquiry.id}`,
     }),
   ];
 
