@@ -94,7 +94,7 @@ function MegaMenu({ columns, market, viewAllLabel, viewAllUrl, isVehicle }) {
                                     {col.items.slice(0, MAX_PER_COLUMN).map((item) => (
                                         <li key={item.id || item.slug}>
                                             <Link to={itemDetailPath(item, market, isVehicle) || viewAllUrl}>
-                                                {item.title}
+                                                <span className="di-mega-menu__label">{item.title}</span>
                                                 {isVehicle && item.showPricing !== false && item.pricePerDay ? (
                                                     <span className="di-mega-menu__price">${item.pricePerDay}/day</span>
                                                 ) : null}

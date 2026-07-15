@@ -14,8 +14,10 @@ function TourguideCard(props) {
         { key: 'youtube', icon: 'fab fa-youtube' },
         { key: 'instagram', icon: 'fab fa-instagram' },
     ];
+    const link = `/tour-guide/${guideID}`;
     return (
         <div className="th-team team-grid">
+            <Link to={link} className="di-card-stretched-link" aria-hidden="true" tabIndex={-1} />
             <div className="team-img">
                 <img src={resolve(guideThumb, 'team_1_1.jpg')} alt="Team" />
             </div>
@@ -25,7 +27,7 @@ function TourguideCard(props) {
             <div className="team-content">
                 <div className="media-body">
                     <h3 className="box-title">
-                        <Link to={`/tour-guide/${guideID}`}>{guideTitle ? guideTitle : 'Michel Smith'}</Link>
+                        <Link to={link}>{guideTitle ? guideTitle : 'Michel Smith'}</Link>
                     </h3>
                     <span className="team-desig">{guideRole || 'Tourist Guide'}</span>
                     <div className="th-social">

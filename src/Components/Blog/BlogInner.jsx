@@ -41,7 +41,8 @@ function BlogInner() {
                         {currentPosts.length === 0 ? (
                             <p className="mb-0 py-5 text-center">No articles published yet. Please check back soon.</p>
                         ) : currentPosts.map((data) => (
-                                <div key={data.slug} className="th-blog blog-single has-post-thumbnail mb-4">
+                                <div key={data.slug} className="th-blog blog-single has-post-thumbnail mb-4 position-relative">
+                                    <Link to={`/blog/${data.slug}`} className="di-card-stretched-link" aria-hidden="true" tabIndex={-1} />
                                     {data.coverImageUrl && (
                                         <div className="blog-img">
                                             <Link to={`/blog/${data.slug}`}>

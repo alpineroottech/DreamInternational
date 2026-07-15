@@ -501,6 +501,7 @@ body,
 
 /* Service listing tiles — equal height, no images */
 .di-service-tile {
+  position: relative;
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -1840,16 +1841,20 @@ select:focus,
   padding: 30px 32px;
   max-height: 74vh;
   overflow-y: auto;
+  overflow-x: hidden;
+  box-sizing: border-box;
 }
 
 .di-mega-menu__columns {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px 36px;
+  min-width: 0;
 }
 
 .di-mega-menu__col {
   padding-bottom: 14px;
+  min-width: 0;
 }
 
 .di-mega-menu__col-title {
@@ -1862,6 +1867,7 @@ select:focus,
   margin-bottom: 12px;
   padding-bottom: 8px;
   border-bottom: 1px solid var(--th-border-color);
+  overflow-wrap: break-word;
 }
 
 .di-mega-menu__col ul {
@@ -1871,6 +1877,11 @@ select:focus,
   display: flex;
   flex-direction: column;
   gap: 9px;
+  min-width: 0;
+}
+
+.di-mega-menu__col ul li {
+  min-width: 0;
 }
 
 .di-mega-menu__col ul li a {
@@ -1890,6 +1901,15 @@ select:focus,
   align-items: baseline;
   justify-content: space-between;
   gap: 8px;
+  min-width: 0;
+  white-space: normal;
+}
+
+.di-mega-menu__label {
+  min-width: 0;
+  flex: 1 1 auto;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .di-mega-menu__price {
@@ -1897,6 +1917,7 @@ select:focus,
   font-weight: 600;
   color: var(--brand-red);
   white-space: nowrap;
+  flex: 0 0 auto;
 }
 
 .di-mega-menu__more {
@@ -1932,6 +1953,27 @@ select:focus,
   color: #fff;
 }
 
+/* Vehicle rental tiles: the vehicle name should read as the primary label,
+   with "Enquire for price" (or the day rate) as a secondary, smaller line
+   underneath it — the template's default `.currency` styling made the price
+   larger/bolder than the title, which read backwards. */
+.di-vehicle-title {
+  font-size: 22px;
+  margin-bottom: 6px;
+}
+
+.di-vehicle-price {
+  margin-bottom: 14px;
+}
+
+.di-vehicle-price .currency {
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  line-height: 1.3 !important;
+  letter-spacing: normal !important;
+  color: var(--brand-red) !important;
+}
+
 .di-vehicle-type-badge {
   position: absolute;
   top: 12px;
@@ -1945,6 +1987,33 @@ select:focus,
   text-transform: uppercase;
   padding: 4px 10px;
   border-radius: 6px;
+}
+
+/* Full-tile clickable overlay: listing/archive cards should navigate to the
+   detail page no matter where inside the tile is clicked, not just the
+   title text or the "View Details" button. The overlay link sits behind
+   (z-index 1) any control that needs to stay independently clickable
+   (a differently-targeted link, social icons, etc.), which is bumped above
+   it via the selectors below. */
+.di-card-stretched-link {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.di-card-stretched-link:focus-visible {
+  outline: 2px solid var(--brand-red);
+  outline-offset: 2px;
+}
+
+.tour-box .tour-action .th-btn,
+.di-service-tile .th-btn,
+.th-team .th-social a,
+.ticketing-card__footer .th-btn,
+.resort-btn .th-btn,
+.blog-content .th-btn {
+  position: relative;
+  z-index: 2;
 }
 
 .di-card-img-placeholder {

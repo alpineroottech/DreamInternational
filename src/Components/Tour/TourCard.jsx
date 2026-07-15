@@ -9,6 +9,7 @@ function TourCard({ tourImage, tourTitle, tourPrice, tourLink, tourDuration, tou
     const link = tourLink || '/tour-details';
     return (
         <div className="tour-box th-ani di-card-grid">
+            <Link to={link} className="di-card-stretched-link" aria-hidden="true" tabIndex={-1} />
             <div className="tour-box_img global-img">
                 <Link to={link}>
                     <img src={src} alt={tourTitle || 'Tour'} />

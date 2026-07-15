@@ -10,6 +10,7 @@ export default function TicketingRouteCard({ route, ticketType }) {
   return (
     <div className="col-md-6 col-xl-4">
       <article className="ticketing-card">
+        <Link to={detailUrl} className="di-card-stretched-link" aria-hidden="true" tabIndex={-1} />
         <Link to={detailUrl} className="ticketing-card__media">
           <img src={image} alt={route.imageAlt || route.title} loading="lazy" />
           {route.isFeatured && <span className="ticketing-card__badge">Popular</span>}

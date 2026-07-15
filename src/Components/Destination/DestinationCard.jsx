@@ -16,9 +16,11 @@ function DestinationCard(props) {
         ? destinationImage
         : `/assets/img/tour/${destinationImage}`;
     const { amount, suffix } = formatPrice(destinationPrice);
+    const link = `/destination/${destinationID}`;
     return (
         <>
             <div className="tour-box th-ani di-card-grid">
+                <Link to={link} className="di-card-stretched-link" aria-hidden="true" tabIndex={-1} />
                 <div className="tour-box_img global-img">
                     <img src={imgSrc} alt={destinationTitle || 'Destination'} loading="lazy" />
                 </div>

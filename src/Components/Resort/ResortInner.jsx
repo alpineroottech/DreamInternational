@@ -32,7 +32,8 @@ function ResortInner() {
           <p className="text-muted text-center py-4">No resorts published yet. Please check back soon.</p>
         ) : (
           resorts.map((resort, index) => (
-            <div className="row gx-60 gy-30 mb-60 align-items-center" key={resort.slug || resort.id}>
+            <div className="row gx-60 gy-30 mb-60 align-items-center position-relative" key={resort.slug || resort.id}>
+              <Link to={`/resort/${resort.slug}`} className="di-card-stretched-link" aria-hidden="true" tabIndex={-1} />
               <div className={`col-lg-6 ${index % 2 !== 0 ? "order-lg-4" : ""}`}>
                 <div className="resort-image global-img">
                   <img src={resolveAssetUrl(resort.imageUrl) || "/assets/img/normal/resort_1_1.jpg"} alt={resort.imageAlt || resort.title} />

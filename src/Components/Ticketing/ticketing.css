@@ -103,6 +103,7 @@
 }
 
 .ticketing-card {
+  position: relative;
   height: 100%;
   background: #fff;
   border: 1px solid #e8eef0;

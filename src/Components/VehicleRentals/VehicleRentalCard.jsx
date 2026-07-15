@@ -24,15 +24,16 @@ function VehicleRentalCard({ rental }) {
     const link = `/vehicle-rentals/${rental.slug}`;
     return (
         <div className="tour-box th-ani di-card-grid">
+            <Link to={link} className="di-card-stretched-link" aria-hidden="true" tabIndex={-1} />
             <div className="tour-box_img global-img">
                 {src ? <img src={src} alt={rental.title} loading="lazy" /> : <div className="di-card-img-placeholder" />}
                 <span className="di-vehicle-type-badge">{TYPE_LABELS[rental.vehicleType] || 'Vehicle'}</span>
             </div>
             <div className="tour-content">
-                <h3 className="box-title">
+                <h3 className="box-title di-vehicle-title">
                     <Link to={link}>{rental.title}</Link>
                 </h3>
-                <h4 className="tour-box_price">
+                <h4 className="tour-box_price di-vehicle-price">
                     <span className="currency">{priceLabel(rental)}</span>
                 </h4>
                 <div className="tour-action">
