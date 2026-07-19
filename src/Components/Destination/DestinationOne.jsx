@@ -11,7 +11,9 @@ function DestinationOne({ data = {} }) {
     let active = true;
     const req = specificSlug
       ? publicApi.get(`/public/tours/${specificSlug}`)
-      : publicApi.get("/public/tours", { params: { featured: "true", market: "nepal" } });
+      : publicApi.get("/public/tours", {
+          params: { featured: "true", market: "nepal" },
+        });
 
     req
       .then(({ data: payload }) => {
@@ -50,15 +52,25 @@ function DestinationOne({ data = {} }) {
   const highlights = Array.isArray(tour?.highlights) ? tour.highlights : [];
 
   return (
-    <section className="space di-featured-destination" style={{ background: "#ffffff" }}>
+    <section
+      className="space di-featured-destination"
+      style={{ background: "#ffffff" }}
+    >
       <div className="container">
         <div className="title-area text-center mb-40">
-          <span className="sub-title">{data.subTitle || "Nepal Experiences"}</span>
-          <h2 className="sec-title">{data.title || "Featured Nepal Experience"}</h2>
+          <span className="sub-title">
+            {data.subTitle || "Nepal Experiences"}
+          </span>
+          <h2 className="sec-title">
+            {data.title || "Featured Nepal Experience"}
+          </h2>
         </div>
         <div className="row g-4 align-items-start">
           <div className="col-lg-6">
-            <div className="global-img rounded overflow-hidden" style={{ height: 420 }}>
+            <div
+              className="global-img rounded overflow-hidden"
+              style={{ height: 420 }}
+            >
               <img
                 src={image}
                 alt={title}
@@ -72,9 +84,13 @@ function DestinationOne({ data = {} }) {
           </div>
           <div className="col-lg-6">
             <h3 className="sec-title mb-10">
-              <Link to={tourDetailPath({ slug, market: "nepal" })}>{title}</Link>
+              <Link to={tourDetailPath({ slug, market: "nepal" })}>
+                {title}
+              </Link>
             </h3>
-            <p className="mb-20" style={{ lineHeight: 1.8 }}>{summary}</p>
+            <p className="mb-20" style={{ lineHeight: 1.8 }}>
+              {summary}
+            </p>
             {highlights.length > 0 && (
               <>
                 <h4 className="box-title mb-10">Package highlights</h4>
@@ -87,12 +103,17 @@ function DestinationOne({ data = {} }) {
                 </div>
               </>
             )}
-            <Link to={tourDetailPath({ slug, market: "nepal" })} className="th-btn th-icon me-3">
-              View tour
-            </Link>
-            <Link to="/tour" className="th-btn style3 th-icon">
-              Explore Nepal tours
-            </Link>
+            <div className="d-flex flex-wrap gap-3">
+              <Link
+                to={tourDetailPath({ slug, market: "nepal" })}
+                className="th-btn th-icon"
+              >
+                View tour
+              </Link>
+              <Link to="/tour" className="th-btn style3 th-icon">
+                Explore Nepal tours
+              </Link>
+            </div>
           </div>
         </div>
       </div>

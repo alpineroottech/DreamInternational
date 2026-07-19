@@ -6,11 +6,18 @@ import rateLimit from "express-rate-limit";
 import path from "node:path";
 
 import authRoutes from "./routes/auth.js";
-import { publicDestinations, adminDestinations } from "./routes/destinations.js";
+import { adminUsers, selfAccount } from "./routes/users.js";
+import {
+  publicDestinations,
+  adminDestinations,
+} from "./routes/destinations.js";
 import { publicSettings, adminSettings } from "./routes/settings.js";
 import { publicSections, adminSections } from "./routes/sections.js";
 import { publicInquiries, adminInquiries } from "./routes/inquiries.js";
-import { publicFlightInquiries, adminFlightInquiries } from "./routes/flightInquiries.js";
+import {
+  publicFlightInquiries,
+  adminFlightInquiries,
+} from "./routes/flightInquiries.js";
 import mediaRoutes from "./routes/media.js";
 import { registerResources } from "./resources.js";
 import { isServerlessHost, normalizeOrigin, moduleDir } from "./lib/runtime.js";
@@ -32,7 +39,9 @@ function buildAllowedOrigins() {
   add(process.env.DEPLOY_PRIME_URL);
   add(process.env.DEPLOY_URL);
   add(process.env.VERCEL_URL && `https://${process.env.VERCEL_URL}`);
-  add(process.env.VERCEL_BRANCH_URL && `https://${process.env.VERCEL_BRANCH_URL}`);
+  add(
+    process.env.VERCEL_BRANCH_URL && `https://${process.env.VERCEL_BRANCH_URL}`,
+  );
 
   if (!isProduction) {
     origins.add("http://localhost:3000");
@@ -52,18 +61,24 @@ app.use(
     origin(origin, callback) {
       if (!origin) return callback(null, true);
       const normalized = normalizeOrigin(origin);
-      if (normalized && allowedOrigins.includes(normalized)) return callback(null, true);
+      if (normalized && allowedOrigins.includes(normalized))
+        return callback(null, true);
       return callback(new Error("Not allowed by CORS"));
     },
     credentials: true,
-  })
+  }),
 );
 app.use(express.json({ limit: "2mb" }));
 app.use(cookieParser());
 
 app.use(
   "/api",
-  rateLimit({ windowMs: 15 * 60 * 1000, max: 1000, standardHeaders: true, legacyHeaders: false })
+  rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 1000,
+    standardHeaders: true,
+    legacyHeaders: false,
+  }),
 );
 
 if (!isServerless) {
@@ -78,13 +93,19 @@ app.get("/api/health", (_req, res) =>
     host: isServerless ? "serverless" : "node",
     storage: {
       supabase: isSupabaseConfigured(),
-      mode: isSupabaseConfigured() ? "supabase" : isServerless ? "unconfigured" : "local",
+      mode: isSupabaseConfigured()
+        ? "supabase"
+        : isServerless
+          ? "unconfigured"
+          : "local",
       bucket: process.env.SUPABASE_STORAGE_BUCKET || null,
     },
-  })
+  }),
 );
 
 app.use("/api/auth", authRoutes);
+app.use("/api/auth/me", selfAccount);
+app.use("/api/admin/users", adminUsers);
 app.use("/api/public/destinations", publicDestinations);
 app.use("/api/public/settings", publicSettings);
 app.use("/api/public/sections", publicSections);
