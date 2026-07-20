@@ -249,10 +249,10 @@ async function main() {
 
   // ---------- Counters ----------
   await seedIfEmpty(prisma.counter, [
-    { label: "Years of Experience", value: "12", suffix: "+", order: 0 },
-    { label: "Happy Travelers", value: "5000", suffix: "+", order: 1 },
-    { label: "Tour Packages", value: "150", suffix: "+", order: 2 },
-    { label: "Expert Guides", value: "25", suffix: "+", order: 3 },
+    { label: "Years of Experience", value: "12", suffix: "+", icon: "fa-light fa-award", order: 0 },
+    { label: "Happy Travelers", value: "5000", suffix: "+", icon: "fa-light fa-users", order: 1 },
+    { label: "Tour Packages", value: "150", suffix: "+", icon: "fa-light fa-map", order: 2 },
+    { label: "Expert Guides", value: "25", suffix: "+", icon: "fa-light fa-person-hiking", order: 3 },
   ]);
 
   // ---------- Partner brands (text names for marquee) ----------

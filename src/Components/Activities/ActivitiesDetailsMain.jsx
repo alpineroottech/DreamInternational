@@ -214,8 +214,8 @@ function ActivitiesDetailsMain() {
                     <div className="col-xxl-4 col-lg-5">
                         <aside className="sidebar-area">
                             <div className="widget widget_offer mb-4" style={{ background: 'linear-gradient(135deg,#000f3d,#001a57)', borderRadius: 16, padding: '28px 24px' }}>
-                                <h4 className="text-white mb-1">{activity.price || 'On request'}</h4>
-                                <p className="text-white opacity-75 small mb-4">per person</p>
+                                <h4 className="text-white mb-2">Enquire for availability</h4>
+                                <p className="text-white opacity-75 small mb-4">Tell us your preferred dates and group size — we&apos;ll confirm options and send a tailored quote.</p>
                                 <Link
                                     to={`/contact?subject=Activity+enquiry&message=${encodeURIComponent(`I'd like to enquire about: ${activity.title}`)}`}
                                     className="th-btn th-btn-accent w-100 text-center d-block"

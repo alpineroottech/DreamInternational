@@ -381,6 +381,20 @@
   align-items: center;
   cursor: grab;
 }
+.di-nav-page-row__icon {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: #f1f5f9;
+  color: #1ca8cb;
+  flex-shrink: 0;
+}
+.di-nav-page-row__icon svg {
+  width: 18px;
+  height: 18px;
+}
 .di-nav-page-row__check {
   margin: 0;
   padding: 0;

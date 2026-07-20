@@ -31,7 +31,6 @@ function ActivitiesInner() {
             slug: a.slug,
             image: a.cardImageUrl || a.imageUrl,
             title: a.title,
-            price: a.price || 'On request',
             duration: a.duration,
           }))
         : [];
@@ -88,7 +87,6 @@ function ActivitiesInner() {
                                     activitiesID={data.id}
                                     activitiesImage={data.image}
                                     activitiesTitle={data.title}
-                                    activitiesPrice={data.price}
                                     activitiesDuration={data.duration}
                                     activitiesLink={data.slug ? `/activities/${data.slug}` : undefined}
                                 />

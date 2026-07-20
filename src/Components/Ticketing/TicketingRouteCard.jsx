@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { resolveRouteImage } from "./routeImage";
 
 export default function TicketingRouteCard({ route, ticketType }) {
-  const price = route.priceDisplay || (route.priceFrom ? `From $${route.priceFrom}` : "On request");
   const image = resolveRouteImage(route, ticketType);
   const detailUrl = `/ticketing/${ticketType}/${route.slug}`;
 
@@ -12,7 +11,11 @@ export default function TicketingRouteCard({ route, ticketType }) {
       <article className="ticketing-card">
         <Link to={detailUrl} className="di-card-stretched-link" aria-hidden="true" tabIndex={-1} />
         <Link to={detailUrl} className="ticketing-card__media">
-          <img src={image} alt={route.imageAlt || route.title} loading="lazy" />
+          {image ? (
+            <img src={image} alt={route.imageAlt || route.title} loading="lazy" />
+          ) : (
+            <div className="di-card-img-placeholder" aria-hidden="true" />
+          )}
           {route.isFeatured && <span className="ticketing-card__badge">Popular</span>}
         </Link>
         <div className="ticketing-card__body">
@@ -38,10 +41,9 @@ export default function TicketingRouteCard({ route, ticketType }) {
             {route.flightDuration && <li><i className="fa-light fa-clock" /> {route.flightDuration}</li>}
             {route.frequency && <li><i className="fa-light fa-calendar" /> {route.frequency}</li>}
           </ul>
-          <div className="ticketing-card__footer">
-            <span className="ticketing-card__price">{price}</span>
+          <div className="ticketing-card__footer ticketing-card__footer--enquiry">
             <Link to={detailUrl} className="th-btn style4 th-icon">
-              View Details
+              Request a Quote
             </Link>
           </div>
         </div>

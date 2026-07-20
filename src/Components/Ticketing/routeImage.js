@@ -65,10 +65,10 @@ export function buildRouteImage(route) {
   return encodeSvg(svg);
 }
 
-/** International listings use generated route art; domestic keeps CMS uploads when set. */
+/** International listings use generated route art; domestic uses CMS uploads only. */
 export function resolveRouteImage(route, ticketType) {
   if (ticketType === "international") {
     return buildRouteImage(route);
   }
-  return resolveAssetUrl(route.cardImageUrl || route.imageUrl) || buildRouteImage(route);
+  return resolveAssetUrl(route.cardImageUrl || route.imageUrl) || null;
 }

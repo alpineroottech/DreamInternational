@@ -111,7 +111,7 @@ export const RESOURCE_CONFIG = {
     titleField: "title",
     icon: "solar:running-2-outline",
     hasSlug: true,
-    listColumns: [{ key: "title", label: "Title" }, { key: "price", label: "Price" }, statusCol, featuredCol],
+    listColumns: [{ key: "title", label: "Title" }, statusCol, featuredCol],
     tabs: [
       {
         name: "Basic",

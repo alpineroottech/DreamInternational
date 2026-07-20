@@ -139,7 +139,7 @@ export default function TicketingListing({ ticketType, pageKey, breadcrumbTitle,
               <i className="fa-light fa-plane-slash" />
               <h3>No routes published yet</h3>
               <p>Flight routes will appear here once added in the CMS.</p>
-              <Link to="/contact" className="th-btn style3">Contact us for fares</Link>
+              <Link to="/contact" className="th-btn style3">Contact us for a quote</Link>
             </div>
           )}
         </div>
@@ -154,7 +154,7 @@ export default function TicketingListing({ ticketType, pageKey, breadcrumbTitle,
                 <h2 className="sec-title">Request a Flight Quote</h2>
                 <p className="sec-text">
                   Fill in the details below and our ticketing team will respond within 24 hours
-                  with the best available fares.
+                  with available options for your route.
                 </p>
               </div>
               <FlightBookingForm ticketType={ticketType} />

@@ -116,6 +116,11 @@ export default function Navigation() {
                     <span className="di-nav-page-row__handle" title="Drag to reorder">
                       <Icon icon="solar:menu-dots-bold" />
                     </span>
+                    {page.icon && (
+                      <span className="di-nav-page-row__icon" aria-hidden="true">
+                        <Icon icon={page.icon} />
+                      </span>
+                    )}
                     <label className="di-nav-page-row__check form-check">
                       <input
                         type="checkbox"

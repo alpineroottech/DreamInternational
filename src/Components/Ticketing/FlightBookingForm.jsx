@@ -344,7 +344,7 @@ export default function FlightBookingForm({
       <hr className="my-4" />
       <p className="small text-muted mb-3">
         <i className="fa-light fa-circle-info me-1" />
-        Your contact details — we&apos;ll send you available options and pricing.
+        Your contact details — we&apos;ll send you available options for your enquiry.
       </p>
 
       <div className="row g-3 mb-3">

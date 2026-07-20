@@ -35,7 +35,6 @@ export default function TicketingRouteDetailMain({ ticketType, listingLabel, lis
   }
 
   const image = resolveRouteImage(route, ticketType);
-  const price = route.priceDisplay || (route.priceFrom ? `From $${route.priceFrom}` : "On request");
   const highlights = Array.isArray(route.highlights) ? route.highlights : [];
   const whatsapp = settings.whatsappNumber || settings.contactPhone;
 
@@ -98,10 +97,6 @@ export default function TicketingRouteDetailMain({ ticketType, listingLabel, lis
           <div className="col-lg-5">
             <div className="ticketing-booking-panel">
               <aside className="ticketing-sidebar ticketing-sidebar--compact">
-                <div className="ticketing-sidebar__price">
-                  <span>Starting fare</span>
-                  <strong>{price}</strong>
-                </div>
                 <ul className="ticketing-sidebar__facts">
                   {route.airline && <li><span>Airline</span><strong>{route.airline}</strong></li>}
                   {route.flightDuration && <li><span>Duration</span><strong>{route.flightDuration}</strong></li>}

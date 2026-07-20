@@ -237,10 +237,12 @@
   padding-top: 16px;
 }
 
-.ticketing-card__price {
-  font-size: 1.1rem;
-  font-weight: 800;
-  color: #000f3d;
+.ticketing-card__footer--enquiry {
+  justify-content: flex-end;
+}
+
+.ticketing-card__media .di-card-img-placeholder {
+  min-height: 220px;
 }
 
 .ticketing-empty {
