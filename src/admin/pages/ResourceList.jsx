@@ -16,18 +16,51 @@ export default function ResourceList({ resource: resourceProp }) {
   const [search, setSearch] = useState("");
 
   useEffect(() => {
+    if (!cfg) return;
     setLoading(true);
     setSearch("");
     api
       .get(`/admin/${cfg.apiPath}`, marketFilter ? { params: { market: marketFilter } } : undefined)
-      .then(({ data }) => setItems(data))
+      .then(({ data }) => setItems(Array.isArray(data) ? data : []))
       .finally(() => setLoading(false));
-  }, [cfg.apiPath, marketFilter]);
+  }, [cfg, marketFilter]);
+
+  if (!cfg) {
+    return <div className="text-muted">Unknown content type.</div>;
+  }
+
+  const reload = async () => {
+    const { data } = await api.get(
+      `/admin/${cfg.apiPath}`,
+      marketFilter ? { params: { market: marketFilter } } : undefined,
+    );
+    setItems(Array.isArray(data) ? data : []);
+  };
 
   const remove = async (id, label) => {
+    if (!id) {
+      window.alert("Cannot delete this item — missing ID. Refresh the page and try again.");
+      return;
+    }
     if (!window.confirm(`Delete "${label}"? This cannot be undone.`)) return;
-    await api.delete(`/admin/${cfg.apiPath}/${id}`);
-    setItems((prev) => prev.filter((d) => d.id !== id));
+    try {
+      await api.delete(`/admin/${cfg.apiPath}/${id}`);
+      setItems((prev) => prev.filter((d) => d.id !== id));
+    } catch (err) {
+      const status = err?.response?.status;
+      const msg =
+        status === 404
+          ? "This item was not found. It may have already been deleted."
+          : err?.response?.data?.error || "Could not delete this item. Please try again.";
+      window.alert(msg);
+      if (status === 404) {
+        try {
+          await reload();
+        } catch {
+          /* ignore refresh failure */
+        }
+      }
+    }
   };
 
   const filtered = items.filter((it) =>

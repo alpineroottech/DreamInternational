@@ -1,6 +1,6 @@
-export const API_ORIGIN = (
-  process.env.REACT_APP_API_URL || "http://localhost:4000/api"
-).replace(/\/api$/, "");
+import { resolveApiBaseUrl } from "../lib/apiBaseUrl";
+
+export const API_ORIGIN = resolveApiBaseUrl().replace(/\/api$/, "");
 
 // Resolve an image path: media-library uploads come from the API origin,
 // template assets and absolute URLs are used as-is.
