@@ -6,39 +6,14 @@ import TicketingRouteCard from "./TicketingRouteCard";
 import FlightBookingForm from "./FlightBookingForm";
 import "./ticketing.css";
 
-const DEFAULTS = {
-  domestic: {
-    subTitle: "Domestic Flights",
-    title: "Nepal Domestic Air Tickets",
-    intro: "Book flights across Nepal with competitive fares on major routes — Pokhara, Lukla, Bharatpur, and more.",
-    trustBadges: ["Licensed Travel Agency", "Instant Confirmation", "24/7 Support"],
-  },
-  international: {
-    subTitle: "International Flights",
-    title: "International Air Tickets from Nepal",
-    intro: "Fly from Kathmandu to Delhi, Dubai, Doha, Bangkok, and other global hubs with trusted airline partners.",
-    trustBadges: ["Best Fare Search", "Multi-airline Options", "Visa & Travel Support"],
-  },
-};
-
 export default function TicketingListing({ ticketType, pageKey, breadcrumbTitle, siblingLabel, siblingUrl }) {
   const section = useSection(pageKey, "page");
   const settings = useSettings();
   const cms = useCollection("/public/flight-routes", { ticketType });
-  const defaults = DEFAULTS[ticketType];
   const settingsHeroKey =
     ticketType === "international" ? "ticketing-international" : "ticketing-domestic";
   const heroColor = resolveHeroColor(settingsHeroKey, settings);
-  const hero = {
-    ...defaults,
-    ...(section !== undefined && section ? section : {}),
-  };
   const [query, setQuery] = useState("");
-
-  const scrollToEnquiry = () => {
-    const el = document.getElementById("enquiry-form");
-    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
 
   const routes = useMemo(() => {
     if (cms === undefined) return [];
@@ -53,6 +28,23 @@ export default function TicketingListing({ ticketType, pageKey, breadcrumbTitle,
         r.airline?.toLowerCase().includes(q)
     );
   }, [cms, query]);
+
+  if (section === undefined) {
+    return (
+      <section className="space">
+        <div className="container text-center py-5">
+          <p className="text-muted mb-0">Loading flight routes…</p>
+        </div>
+      </section>
+    );
+  }
+
+  const hero = section || {};
+
+  const scrollToEnquiry = () => {
+    const el = document.getElementById("enquiry-form");
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   const featured = routes.filter((r) => r.isFeatured);
   const regular = routes.filter((r) => !r.isFeatured);

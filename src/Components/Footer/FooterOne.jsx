@@ -4,13 +4,6 @@ import { useSettings, useCollection, resolveCmsList, publicApi } from '../../pub
 import { BRAND_NAME, LOGO_FOOTER } from '../../brand/brandAssets'
 import { tourDetailPath } from '../../lib/tourUrls'
 
-const POPULAR_TOURS_FALLBACK = [
-    { title: 'Annapurna Base Camp Trek', slug: 'annapurna-base-camp-trek', market: 'nepal' },
-    { title: 'Everest Base Camp Trek', slug: 'everest-base-camp-trek', market: 'nepal' },
-    { title: 'Kathmandu Valley Cultural Tour', slug: 'kathmandu-valley-cultural-tour', market: 'nepal' },
-    { title: 'Chitwan Jungle Safari', slug: 'chitwan-jungle-safari', market: 'nepal' },
-];
-
 const COMPANY_LINKS = [
     { label: 'FAQ', url: '/faq' },
     { label: 'Terms & Conditions', url: '/terms-and-conditions' },
@@ -89,7 +82,7 @@ function FooterOne() {
     };
 
     const popularToursCms = useCollection('/public/tours', { featured: true, market: 'nepal' });
-    const { items: popularTours } = resolveCmsList(popularToursCms, POPULAR_TOURS_FALLBACK);
+    const { loading: popularToursLoading, items: popularTours } = resolveCmsList(popularToursCms);
 
     const phone = settings.contactPhone || "+977-1-0000000";
     const email = settings.contactEmail || "info@dreaminternationaltours.com";
@@ -164,7 +157,7 @@ function FooterOne() {
                             <div className="widget widget_nav_menu footer-widget di-footer__links">
                                 <h3 className="widget_title">Popular Tours</h3>
                                 <ul className="menu di-footer__menu">
-                                    {popularTours.slice(0, 5).map((t, i) => (
+                                    {!popularToursLoading && popularTours.slice(0, 5).map((t, i) => (
                                         <li key={t.slug || i}>
                                             <Link to={t.slug ? tourDetailPath(t, t.market || 'nepal') : '/tour'}>
                                                 {t.title}

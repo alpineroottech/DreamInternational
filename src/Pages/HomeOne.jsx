@@ -38,7 +38,7 @@ const DEFAULT_ORDER = [
 ];
 
 function HomeOne() {
-    const { byKey, order } = useHomeSections();
+    const { byKey, order, loaded } = useHomeSections();
     const keys = order?.length ? order : DEFAULT_ORDER;
 
     return (
@@ -48,9 +48,16 @@ function HomeOne() {
                 {keys.map((key) => {
                     const Comp = SECTION_COMPONENTS[key];
                     if (!Comp) return null;
-                    const el = <Comp key={key} data={byKey[key] || {}} />;
-                    // The booking widget always sits directly under the hero.
-                    if (key === "hero") {
+                    const sectionData = byKey[key] || {};
+                    const isHero = key === "hero";
+                    const el = (
+                        <Comp
+                            key={key}
+                            data={sectionData}
+                            {...(isHero ? { loading: !loaded } : {})}
+                        />
+                    );
+                    if (isHero) {
                         return (
                             <div className="di-hero-booking-wrap" key="hero-group">
                                 {el}

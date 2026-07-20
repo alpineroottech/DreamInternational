@@ -42,13 +42,14 @@ const CategoryOne = ({ data = {} }) => {
   const cms = useCollection("/public/categories");
   const { loading, items: categories } = resolveCmsList(cms);
 
-  const displayCategories = categories.map((c) => ({
-    id: c.slug,
-    title: c.name,
-    imgSrc:
-      resolveAssetUrl(c.imageUrl) || "/assets/img/category/category_1_1.jpg",
-    slug: c.slug,
-  }));
+  const displayCategories = categories
+    .map((c) => ({
+      id: c.slug,
+      title: c.name,
+      imgSrc: resolveAssetUrl(c.imageUrl) || "",
+      slug: c.slug,
+    }))
+    .filter((c) => c.imgSrc);
 
   // Swiper disables looping/autoplay whenever the slide track already fits
   // every slide on screen (e.g. 5 categories at slidesPerView 6), so at

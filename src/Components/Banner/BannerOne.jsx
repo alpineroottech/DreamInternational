@@ -7,23 +7,6 @@ import 'swiper/css/pagination';
 import { Link } from 'react-router-dom';
 import { resolveAssetUrl } from '../../public-cms/hooks';
 
-const FALLBACK_SLIDES = [
-    {
-        image: "/assets/img/hero/Hero2.jpg",
-        subtitle: "Welcome to Dream International",
-        title: "Discover the Himalayas of Nepal",
-        primaryCta: { label: "Explore Tours", url: "/tour" },
-        secondaryCta: { label: "Contact Us", url: "/contact" },
-    },
-    {
-        image: "/assets/img/hero/R.jpg",
-        subtitle: "Trusted Local Experts in Nepal",
-        title: "Trekking, Culture & Tailor-Made Journeys",
-        primaryCta: { label: "Explore Tours", url: "/tour" },
-        secondaryCta: { label: "Contact Us", url: "/contact" },
-    },
-];
-
 function HeroCta({ to, label, className }) {
     return (
         <Link to={to} className={`th-btn th-icon-plane ${className || ""}`}>
@@ -33,10 +16,12 @@ function HeroCta({ to, label, className }) {
     );
 }
 
-function BannerOne({ data = {} }) {
+function BannerOne({ data = {}, loading = false }) {
     const swiperRef = useRef(null);
-    const slides = Array.isArray(data.slides) && data.slides.length ? data.slides : FALLBACK_SLIDES;
-    const firstSlideImage = resolveAssetUrl(slides[0]?.image);
+    const slides = Array.isArray(data.slides)
+        ? data.slides.filter((slide) => slide?.image)
+        : [];
+    const firstSlideImage = slides[0]?.image ? resolveAssetUrl(slides[0].image) : "";
 
     useEffect(() => {
         document.querySelectorAll('[data-ani]').forEach((element) => {
@@ -47,10 +32,6 @@ function BannerOne({ data = {} }) {
         });
     }, [slides]);
 
-    // The hero background is the LCP element. It's a CSS background (so it can't
-    // carry fetchpriority), and when the hero comes from the CMS it isn't the
-    // image preloaded in index.html — so inject a high-priority preload for the
-    // actual first slide as early as possible.
     useEffect(() => {
         if (!firstSlideImage) return undefined;
         const link = document.createElement('link');
@@ -63,6 +44,16 @@ function BannerOne({ data = {} }) {
             if (link.parentNode) link.parentNode.removeChild(link);
         };
     }, [firstSlideImage]);
+
+    if (loading || !slides.length) {
+        return (
+            <div className="th-hero-wrapper hero-1 di-hero-mockup di-hero-loading" id="hero" aria-busy="true">
+                <div className="di-hero-loading__inner">
+                    <p className="mb-0">Loading…</p>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="th-hero-wrapper hero-1 di-hero-mockup" id="hero">
@@ -77,7 +68,7 @@ function BannerOne({ data = {} }) {
                 id="heroSlide1"
             >
                 {slides.map((slide, i) => (
-                    <SwiperSlide key={i}>
+                    <SwiperSlide key={slide.image || i}>
                         <div className="hero-inner">
                             <div
                                 className="th-hero-bg"
@@ -96,9 +87,11 @@ function BannerOne({ data = {} }) {
                                             {slide.subtitle}
                                         </span>
                                     )}
-                                    <h1 className="hero-title di-hero-title" data-ani="slideinup" data-ani-delay="0.4s">
-                                        {slide.title}
-                                    </h1>
+                                    {slide.title && (
+                                        <h1 className="hero-title di-hero-title" data-ani="slideinup" data-ani-delay="0.4s">
+                                            {slide.title}
+                                        </h1>
+                                    )}
                                     {slide.text && (
                                         <p className="hero-text" data-ani="slideinup" data-ani-delay="0.5s">
                                             {slide.text}

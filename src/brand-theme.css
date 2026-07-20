@@ -2348,3 +2348,24 @@ select:focus,
 .di-legal-content ul {
     padding-left: 20px;
 }
+
+.di-hero-loading {
+    min-height: clamp(420px, 72vh, 760px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #000f3d 0%, #001a57 100%);
+    color: #fff;
+}
+
+.di-hero-loading__inner {
+    text-align: center;
+    font-size: 1.05rem;
+    opacity: 0.9;
+}
+
+.di-card-img-placeholder {
+    width: 100%;
+    min-height: 220px;
+    background: linear-gradient(135deg, #e8edf7 0%, #d4ddef 100%);
+}

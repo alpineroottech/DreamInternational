@@ -3,14 +3,8 @@ import { Link } from 'react-router-dom'
 import SafeHtml from '../../public-cms/SafeHtml'
 import { cmsImage } from '../../public-cms/cmsImage'
 
-const DEFAULT_IMAGES = {
-    image: "/assets/img/normal/temple.webp",
-    image2: "/assets/img/normal/lake.jpg",
-    image3: "/assets/img/normal/boudha.jpg",
-};
-
 function AboutOne({ data = {} }) {
-    const img1 = cmsImage(data.image, DEFAULT_IMAGES.image);
+    const img1 = cmsImage(data.image);
     const hasImage = Boolean(img1);
     const ctaLabel = data.ctaLabel || "Learn More";
     const ctaUrl = data.ctaUrl || "/about";

@@ -2,40 +2,12 @@ import React, { useState, useRef, useEffect } from "react";
 import { useCollection, resolveCmsList } from "../../public-cms/hooks";
 import SafeHtml from "../../public-cms/SafeHtml";
 
-const FALLBACK = [
-    {
-        question: "How do I book a tour or trek with Dream International?",
-        answer:
-            "You can send us an enquiry through the contact form, email, or phone. Our team will confirm availability, share a tailored itinerary, and guide you through booking and payment.",
-    },
-    {
-        question: "Do I need travel insurance for trekking in Nepal?",
-        answer:
-            "Yes. We strongly recommend comprehensive travel insurance that covers high-altitude trekking, medical treatment, and emergency helicopter evacuation for mountain trips.",
-    },
-    {
-        question: "What is the best time of year to visit Nepal?",
-        answer:
-            "Spring (March–May) and autumn (September–November) offer the clearest skies and most stable weather for trekking and sightseeing, though Nepal can be visited year-round depending on your itinerary.",
-    },
-    {
-        question: "Can you arrange custom or private itineraries?",
-        answer:
-            "Absolutely. We specialise in bespoke trips designed around your interests, schedule, fitness level, and budget — from cultural tours to challenging high-altitude expeditions.",
-    },
-    {
-        question: "Do you handle permits, guides, and logistics?",
-        answer:
-            "Yes. Our local team arranges all necessary permits, licensed English-speaking guides, porters, transport, and accommodation so your journey stays smooth and hassle-free.",
-    },
-];
-
 function FaqInner() {
     const [activeIndex, setActiveIndex] = useState(0);
     const contentRefs = useRef([]);
 
     const cms = useCollection("/public/faqs");
-    const { loading, items: faqs } = resolveCmsList(cms, FALLBACK);
+    const { loading, items: faqs } = resolveCmsList(cms);
 
     const toggleAccordion = (index) => {
         setActiveIndex(activeIndex === index ? null : index);

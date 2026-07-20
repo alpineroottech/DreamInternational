@@ -13,9 +13,7 @@ function formatPrice(price) {
 
 function ActivitiesCard(props) {
     const { activitiesImage, activitiesTitle, activitiesPrice, activitiesLink, activitiesDuration } = props;
-    const src = activitiesImage && (activitiesImage.startsWith('/') || activitiesImage.startsWith('http'))
-        ? resolveAssetUrl(activitiesImage)
-        : `/assets/img/tour/${activitiesImage}`;
+    const src = activitiesImage ? resolveAssetUrl(activitiesImage) : '';
     const link = activitiesLink || '/activities-details';
     const { amount, suffix } = formatPrice(activitiesPrice);
     return (
@@ -23,7 +21,11 @@ function ActivitiesCard(props) {
             <div className="tour-box th-ani di-card-grid">
                 <Link to={link} className="di-card-stretched-link" aria-hidden="true" tabIndex={-1} />
                 <div className="tour-box_img global-img">
-                    <img src={src} alt={activitiesTitle || ''} loading="lazy" />
+                    {src ? (
+                        <img src={src} alt={activitiesTitle || ''} loading="lazy" />
+                    ) : (
+                        <div className="di-card-img-placeholder" aria-hidden="true" />
+                    )}
                 </div>
                 <div className="tour-content">
                     <h3 className="box-title">
@@ -49,3 +51,4 @@ function ActivitiesCard(props) {
 }
 
 export default ActivitiesCard
+
