@@ -91,7 +91,7 @@ export const RESOURCE_CONFIG = {
       {
         name: "Media",
         fields: [
-          { name: "_hintCard", label: "hint", type: "_hint", hint: "Listing card image: ~424×274 px (cropped on the grid). Detail page hero: upload at least 1200×800 px for a sharp full-width image." },
+          { name: "_hintCard", label: "hint", type: "_hint", hint: "Upload any high-resolution image — the CMS automatically resizes card images to 424×274 and featured images to 1200×800 for you." },
           { name: "cardImageUrl", label: "Card image (listing tile)", type: "image" },
           { name: "cardImageAlt", label: "Card image alt", type: "text" },
           { name: "featuredImageUrl", label: "Featured image (detail page)", type: "image" },
@@ -142,7 +142,7 @@ export const RESOURCE_CONFIG = {
       {
         name: "Media",
         fields: [
-          { name: "_hintCard", label: "hint", type: "_hint", hint: "Card image (~424×274) for listing grids. Main image (1200×800+) for the activity detail page. Leave card blank to use the main image on listings." },
+          { name: "_hintCard", label: "hint", type: "_hint", hint: "Upload any size — card images are auto-cropped to 424×274 and detail images to 1200×800. Leave card blank to use the main image on listings." },
           { name: "cardImageUrl", label: "Card image (listing)", type: "image" },
           { name: "cardImageAlt", label: "Card image alt", type: "text" },
           { name: "imageUrl", label: "Main image (detail page)", type: "image" },
@@ -474,7 +474,7 @@ export const RESOURCE_CONFIG = {
       {
         name: "Media",
         fields: [
-          { name: "_hintCard", label: "hint", type: "_hint", hint: "Card image (~424×274) for route listings. Main image (1200×800+) for the route detail page." },
+          { name: "_hintCard", label: "hint", type: "_hint", hint: "Upload any size — card images are auto-cropped to 424×274 and detail images to 1200×800." },
           { name: "cardImageUrl", label: "Card image (listing)", type: "image" },
           { name: "cardImageAlt", label: "Card image alt", type: "text" },
           { name: "imageUrl", label: "Main image (detail page)", type: "image" },
@@ -579,7 +579,7 @@ export const RESOURCE_CONFIG = {
       {
         name: "Media",
         fields: [
-          { name: "_hintCard", label: "hint", type: "_hint", hint: "Card image (~424×274) for listing grids. Featured image (1200×800+) for the detail page." },
+          { name: "_hintCard", label: "hint", type: "_hint", hint: "Upload any size — card images are auto-cropped to 424×274 and featured images to 1200×800." },
           { name: "cardImageUrl", label: "Card image (listing)", type: "image" },
           { name: "cardImageAlt", label: "Card image alt", type: "text" },
           { name: "featuredImageUrl", label: "Featured image (detail page)", type: "image" },

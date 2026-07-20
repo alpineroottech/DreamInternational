@@ -3,6 +3,7 @@ import { Icon } from "@iconify/react";
 import api from "../api/client";
 import RichTextEditor from "./RichTextEditor";
 import { MediaInput } from "./MediaPicker";
+import { purposeForFieldName } from "../lib/imagePurpose";
 import ItineraryDaysEditor from "./ItineraryDaysEditor";
 import TourFaqsEditor from "./TourFaqsEditor";
 
@@ -91,7 +92,7 @@ function Gallery({ value, onChange }) {
     <div>
       {list.map((item, i) => (
         <div className="border rounded p-2 mb-2" key={i}>
-          <MediaInput value={item.url} onChange={(url) => setItem(i, { url })} />
+          <MediaInput value={item.url} onChange={(url) => setItem(i, { url })} imagePurpose="gallery" />
           <div className="input-group mt-2">
             <span className="input-group-text">Alt</span>
             <input className="form-control" value={item.alt || ""} onChange={(e) => setItem(i, { alt: e.target.value })} />
@@ -194,7 +195,13 @@ export default function FieldRenderer({ field, value, onChange, error }) {
       );
       break;
     case "image":
-      control = <MediaInput value={value} onChange={onChange} />;
+      control = (
+        <MediaInput
+          value={value}
+          onChange={onChange}
+          imagePurpose={field.imagePurpose || purposeForFieldName(field.name)}
+        />
+      );
       break;
     case "itineraryDays":
       control = <ItineraryDaysEditor value={value} onChange={onChange} />;

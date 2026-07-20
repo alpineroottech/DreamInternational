@@ -199,13 +199,16 @@ export default function DestinationEdit() {
               </div>
               <div className="col-12">
                 <p className="text-muted small mb-2">
-                  <strong>Card image</strong> (~424×274) appears on destination listing tiles.
-                  <strong> Hero image</strong> (at least 1200×800) powers the detail page — use a high-resolution file there.
+                  Upload any high-resolution photo — the CMS automatically crops and optimizes card images to 424×274 and hero images to 1200×800.
                 </p>
               </div>
               <div className="col-md-8">
                 <label className="form-label fw-semibold">Card image (listing tile)</label>
-                <MediaInput value={form.cardImageUrl || ""} onChange={(url) => set("cardImageUrl", url)} />
+                <MediaInput
+                  value={form.cardImageUrl || ""}
+                  onChange={(url) => set("cardImageUrl", url)}
+                  imagePurpose="card"
+                />
               </div>
               <div className="col-md-4">
                 <label className="form-label fw-semibold">Card image alt</label>
@@ -217,7 +220,11 @@ export default function DestinationEdit() {
               </div>
               <div className="col-md-8">
                 <label className="form-label fw-semibold">Hero image (detail page)</label>
-                <MediaInput value={form.heroImageUrl || ""} onChange={(url) => set("heroImageUrl", url)} />
+                <MediaInput
+                  value={form.heroImageUrl || ""}
+                  onChange={(url) => set("heroImageUrl", url)}
+                  imagePurpose="featured"
+                />
               </div>
               <div className="col-md-4">
                 <label className="form-label fw-semibold">Hero image alt</label>

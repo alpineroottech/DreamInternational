@@ -1,9 +1,11 @@
 import api from "../api/client";
 
 /** Upload a single image file to the media library. */
-export async function uploadMediaFile(file) {
+export async function uploadMediaFile(file, { purpose, altText } = {}) {
   const fd = new FormData();
   fd.append("file", file);
+  if (purpose) fd.append("purpose", purpose);
+  if (altText) fd.append("altText", altText);
   const { data } = await api.post("/admin/media/upload", fd, {
     headers: { "Content-Type": "multipart/form-data" },
   });
@@ -17,7 +19,7 @@ const DEFAULT_CONCURRENCY = 3;
  * Upload multiple images with limited concurrency.
  * Returns { succeeded, failed } — failed items include fileName + error.
  */
-export async function uploadMediaFiles(files, { concurrency = DEFAULT_CONCURRENCY, onProgress } = {}) {
+export async function uploadMediaFiles(files, { concurrency = DEFAULT_CONCURRENCY, onProgress, purpose } = {}) {
   const list = Array.from(files || []).filter((f) => f && /^image\//.test(f.type));
   if (list.length > MAX_BULK_FILES) {
     throw new Error(`You can upload up to ${MAX_BULK_FILES} images at once.`);
@@ -33,7 +35,7 @@ export async function uploadMediaFiles(files, { concurrency = DEFAULT_CONCURRENC
     while (queue.length) {
       const file = queue.shift();
       try {
-        const asset = await uploadMediaFile(file);
+        const asset = await uploadMediaFile(file, { purpose });
         succeeded.push(asset);
       } catch (err) {
         failed.push({

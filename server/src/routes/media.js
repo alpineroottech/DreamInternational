@@ -11,6 +11,7 @@ import {
   objectPathFromSupabaseUrl,
   uploadImageToSupabase,
 } from "../lib/supabaseStorage.js";
+import { adjustFileNameForMime, processImageBuffer } from "../lib/imageProcessing.js";
 
 const __dirname = moduleDir(import.meta.url, "server/src/routes");
 const UPLOAD_DIR = path.resolve(__dirname, "../../uploads");
@@ -58,15 +59,20 @@ router.get("/", async (_req, res) => {
   res.json(items);
 });
 
-async function saveUploadedFile(file, altText) {
+async function saveUploadedFile(file, { altText, purpose } = {}) {
   const { isServerless, useRemoteStorage } = storageMode();
 
+  const processed = await processImageBuffer(file.buffer, file.mimetype, purpose);
+  const uploadBuffer = processed.buffer;
+  const uploadMime = processed.mimetype;
+  const uploadName = adjustFileNameForMime(file.originalname, uploadMime);
+
   let url;
-  let fileName = file.originalname;
+  let fileName = uploadName;
   let publicId = null;
 
   if (useRemoteStorage) {
-    const result = await uploadImageToSupabase(file.buffer, file.originalname, file.mimetype);
+    const result = await uploadImageToSupabase(uploadBuffer, uploadName, uploadMime);
     url = result.url;
     publicId = result.publicId;
     fileName = path.basename(result.publicId);
@@ -78,15 +84,15 @@ async function saveUploadedFile(file, altText) {
     throw err;
   } else {
     if (!fs.existsSync(UPLOAD_DIR)) fs.mkdirSync(UPLOAD_DIR, { recursive: true });
-    const ext = path.extname(file.originalname);
+    const ext = path.extname(uploadName);
     const base = path
-      .basename(file.originalname, ext)
+      .basename(uploadName, ext)
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/-+/g, "-")
       .slice(0, 40);
     const diskName = `${Date.now()}-${base || "image"}${ext}`;
-    fs.writeFileSync(path.join(UPLOAD_DIR, diskName), file.buffer);
+    fs.writeFileSync(path.join(UPLOAD_DIR, diskName), uploadBuffer);
     url = `/uploads/${diskName}`;
     fileName = diskName;
   }
@@ -96,7 +102,9 @@ async function saveUploadedFile(file, altText) {
       url,
       publicId,
       fileName,
-      mimeType: file.mimetype,
+      mimeType: uploadMime,
+      width: processed.width,
+      height: processed.height,
       altText: altText || null,
     },
   });
@@ -107,7 +115,10 @@ router.post("/upload", (req, res, next) => {
     if (err) return handleUploadError(err, req, res, next);
     if (!req.file) return res.status(400).json({ error: "No file uploaded" });
     try {
-      const asset = await saveUploadedFile(req.file, req.body.altText);
+      const asset = await saveUploadedFile(req.file, {
+        altText: req.body.altText,
+        purpose: req.body.purpose,
+      });
       res.status(201).json(asset);
     } catch (e) {
       console.error(e);
@@ -128,7 +139,10 @@ router.post("/upload-bulk", (req, res, next) => {
     for (const file of files) {
       try {
         // eslint-disable-next-line no-await-in-loop
-        const asset = await saveUploadedFile(file, req.body.altText);
+        const asset = await saveUploadedFile(file, {
+          altText: req.body.altText,
+          purpose: req.body.purpose,
+        });
         succeeded.push(asset);
       } catch (e) {
         failed.push({ fileName: file.originalname, error: e.message || "Upload failed" });

@@ -5,7 +5,7 @@ import { resolveAssetUrl } from "../utils";
 import { uploadMediaFile } from "../lib/mediaUpload";
 
 // Modal gallery for selecting or uploading an image; calls onSelect(url).
-export function MediaPickerModal({ onSelect, onClose }) {
+export function MediaPickerModal({ onSelect, onClose, imagePurpose }) {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
@@ -31,7 +31,7 @@ export function MediaPickerModal({ onSelect, onClose }) {
     setUploading(true);
     setError("");
     try {
-      const data = await uploadMediaFile(file);
+      const data = await uploadMediaFile(file, { purpose: imagePurpose });
       setItems((prev) => [data, ...prev]);
       onSelect(data.url);
       onClose();
@@ -103,7 +103,7 @@ export function MediaPickerModal({ onSelect, onClose }) {
 }
 
 // Text input + image preview + "Browse" button that opens the media picker.
-export function MediaInput({ value, onChange, placeholder }) {
+export function MediaInput({ value, onChange, placeholder, imagePurpose }) {
   const [open, setOpen] = useState(false);
   return (
     <div>
@@ -135,7 +135,13 @@ export function MediaInput({ value, onChange, placeholder }) {
           style={{ maxHeight: 90, marginTop: 8, borderRadius: 8, objectFit: "cover" }}
         />
       )}
-      {open && <MediaPickerModal onSelect={onChange} onClose={() => setOpen(false)} />}
+      {open && (
+        <MediaPickerModal
+          onSelect={onChange}
+          onClose={() => setOpen(false)}
+          imagePurpose={imagePurpose}
+        />
+      )}
     </div>
   );
 }
