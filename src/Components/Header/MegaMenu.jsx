@@ -52,20 +52,22 @@ export function useVehicleRentalsMegaMenu() {
     return useMemo(() => groupRentalsByCategory(items), [items]);
 }
 
-function itemDetailPath(item, market, isVehicle) {
+function itemDetailPath(item, market, isVehicle, isActivity) {
     if (!item.slug) return null;
-    return isVehicle ? `/vehicle-rentals/${item.slug}` : tourDetailPath(item, market);
+    if (isActivity || market === 'activities') return `/activities/${item.slug}`;
+    if (isVehicle) return `/vehicle-rentals/${item.slug}`;
+    return tourDetailPath(item, market);
 }
 
 /** Flattens mega-menu columns into the generic { label, url } shape MobileMenu understands. */
-export function megaColumnsToMobileChildren(columns, market, viewAllLabel, viewAllUrl, isVehicle) {
+export function megaColumnsToMobileChildren(columns, market, viewAllLabel, viewAllUrl, isVehicle, isActivity) {
     const children = [];
     columns.forEach((col) => {
         children.push({ label: col.name, isHeading: true });
         col.items.slice(0, MAX_PER_COLUMN).forEach((item) => {
             children.push({
                 label: item.title,
-                url: itemDetailPath(item, market, isVehicle) || '#',
+                url: itemDetailPath(item, market, isVehicle, isActivity) || '#',
             });
         });
     });
@@ -79,7 +81,7 @@ function categoryFilterUrl(viewAllUrl, categorySlug) {
     return `${viewAllUrl}${sep}category=${encodeURIComponent(categorySlug)}`;
 }
 
-function MegaMenu({ columns, market, viewAllLabel, viewAllUrl, isVehicle }) {
+function MegaMenu({ columns, market, viewAllLabel, viewAllUrl, isVehicle, isActivity }) {
     if (!columns || !columns.length) return null;
     return (
         <div className="di-mega-menu">
@@ -93,7 +95,7 @@ function MegaMenu({ columns, market, viewAllLabel, viewAllUrl, isVehicle }) {
                                 <ul>
                                     {col.items.slice(0, MAX_PER_COLUMN).map((item) => (
                                         <li key={item.id || item.slug}>
-                                            <Link to={itemDetailPath(item, market, isVehicle) || viewAllUrl}>
+                                            <Link to={itemDetailPath(item, market, isVehicle, isActivity) || viewAllUrl}>
                                                 <span className="di-mega-menu__label">{item.title}</span>
                                                 {isVehicle && item.showPricing !== false && item.pricePerDay ? (
                                                     <span className="di-mega-menu__price">${item.pricePerDay}/day</span>

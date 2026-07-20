@@ -1,10 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { resolveAssetUrl } from "../../public-cms/hooks";
+import { resolveRouteImage } from "./routeImage";
 
 export default function TicketingRouteCard({ route, ticketType }) {
   const price = route.priceDisplay || (route.priceFrom ? `From $${route.priceFrom}` : "On request");
-  const image = resolveAssetUrl(route.cardImageUrl || route.imageUrl) || "/assets/img/destination/destination_4_1.jpg";
+  const image = resolveRouteImage(route, ticketType);
   const detailUrl = `/ticketing/${ticketType}/${route.slug}`;
 
   return (

@@ -1,5 +1,11 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { publicApi } from "../../public-cms/hooks";
+import {
+  DOMESTIC_CITIES,
+  INTERNATIONAL_DESTINATIONS,
+  INTERNATIONAL_ORIGINS,
+  mergeCityLists,
+} from "./ticketingCities";
 
 const CABIN_CLASSES = ["Economy", "Business", "First"];
 const ANY_AIRLINE = { value: "any", label: "Any airline / Not sure" };
@@ -19,6 +25,8 @@ const INTERNATIONAL_AIRLINES = [
   "Nepal Airlines",
   "Qatar Airways",
   "Emirates",
+  "Flydubai",
+  "Himalaya Airlines",
   "Turkish Airlines",
   "Singapore Airlines",
   "Air India",
@@ -27,20 +35,20 @@ const INTERNATIONAL_AIRLINES = [
   "Cathay Pacific",
   "Etihad Airways",
   "Malaysia Airlines",
+  "Batik Air Malaysia",
+  "Air Arabia",
+  "Kuwait Airways",
+  "SalamAir",
+  "Oman Air",
+  "SriLankan Airlines",
+  "China Eastern",
   "China Southern",
   "Korean Air",
 ];
 
-const NEPAL_CITIES = [
-  "Kathmandu", "Pokhara", "Lukla", "Biratnagar", "Bhairahawa", "Nepalgunj",
-  "Dhangadhi", "Tumlingtar", "Jomsom", "Manang", "Simara", "Bharatpur",
-];
-
-const INTL_CITIES = [
-  "Delhi", "Mumbai", "Dubai", "Doha", "Singapore", "Kuala Lumpur",
-  "Bangkok", "London", "Frankfurt", "Hong Kong", "Tokyo", "Seoul",
-  "Guangzhou", "Istanbul", "Abu Dhabi", "Riyadh", "Colombo",
-];
+const NEPAL_CITIES = DOMESTIC_CITIES;
+const INTL_ORIGIN_CITIES = INTERNATIONAL_ORIGINS;
+const INTL_DESTINATION_CITIES = INTERNATIONAL_DESTINATIONS;
 
 const emptyForm = {
   fromCity: "", toCity: "", travelDate: "", returnDate: "",
@@ -95,13 +103,47 @@ export default function FlightBookingForm({
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
+  const [routes, setRoutes] = useState([]);
+
+  useEffect(() => {
+    let active = true;
+    publicApi
+      .get("/public/flight-routes", { params: { ticketType } })
+      .then(({ data }) => {
+        if (!active) return;
+        setRoutes(Array.isArray(data) ? data : []);
+      })
+      .catch(() => {
+        if (active) setRoutes([]);
+      });
+    return () => {
+      active = false;
+    };
+  }, [ticketType]);
 
   useEffect(() => {
     setForm(initial);
   }, [initial]);
 
-  const cities = ticketType === "domestic" ? NEPAL_CITIES : INTL_CITIES;
-  const airlines = ticketType === "domestic" ? DOMESTIC_AIRLINES : INTERNATIONAL_AIRLINES;
+  const fromCities = useMemo(() => {
+    const dynamic = routes.map((r) => r.fromCity).filter(Boolean);
+    const base = ticketType === "domestic" ? NEPAL_CITIES : INTL_ORIGIN_CITIES;
+    return mergeCityLists(base, dynamic);
+  }, [ticketType, routes]);
+
+  const toCities = useMemo(() => {
+    const dynamic = routes.map((r) => r.toCity).filter(Boolean);
+    const base = ticketType === "domestic" ? NEPAL_CITIES : INTL_DESTINATION_CITIES;
+    return mergeCityLists(base, dynamic);
+  }, [ticketType, routes]);
+
+  const airlines = useMemo(() => {
+    const base = ticketType === "domestic" ? DOMESTIC_AIRLINES : INTERNATIONAL_AIRLINES;
+    const dynamic = routes
+      .flatMap((r) => String(r.airline || "").split("/").map((x) => x.trim()))
+      .filter(Boolean);
+    return Array.from(new Set([...base, ...dynamic])).sort((a, b) => a.localeCompare(b));
+  }, [ticketType, routes]);
 
   const set = (field, val) => setForm((f) => ({ ...f, [field]: val }));
 
@@ -196,8 +238,8 @@ export default function FlightBookingForm({
             required
           >
             <option value="">Select departure city</option>
-            {extraCityOptions(form.fromCity, cities)}
-            {cities.map((c) => <option key={c} value={c}>{c}</option>)}
+            {extraCityOptions(form.fromCity, fromCities)}
+            {fromCities.map((c) => <option key={c} value={c}>{c}</option>)}
             <option value="__other__">Other (specify in message)</option>
           </select>
         </div>
@@ -213,8 +255,8 @@ export default function FlightBookingForm({
             required
           >
             <option value="">Select destination city</option>
-            {extraCityOptions(form.toCity, cities)}
-            {cities.map((c) => <option key={c} value={c}>{c}</option>)}
+            {extraCityOptions(form.toCity, toCities)}
+            {toCities.map((c) => <option key={c} value={c}>{c}</option>)}
             <option value="__other__">Other (specify in message)</option>
           </select>
         </div>

@@ -69,7 +69,7 @@ function ActivitiesInner() {
                                             activitiesTitle={data.title}
                                             activitiesPrice={data.price}
                                             activitiesDuration={data.duration}
-                                            activitiesLink={data.slug ? `/activities-details?slug=${data.slug}` : undefined}
+                                            activitiesLink={data.slug ? `/activities/${data.slug}` : undefined}
                                         />
                                     </div>
                                 ))

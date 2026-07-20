@@ -61,7 +61,7 @@ function HeaderOne() {
     const megaDataByType = {
         nepal: { columns: nepalColumns, market: 'nepal', viewAllLabel: 'View All Nepal Experiences', viewAllUrl: '/tour' },
         international: { columns: intlColumns, market: 'international', viewAllLabel: 'View All International Holidays', viewAllUrl: '/international-holidays' },
-        activities: { columns: activityColumns, market: undefined, viewAllLabel: 'View All Activities', viewAllUrl: '/activities' },
+        activities: { columns: activityColumns, market: 'activities', viewAllLabel: 'View All Activities', viewAllUrl: '/activities', isActivity: true },
         'vehicle-rentals': { columns: vehicleColumns, market: undefined, viewAllLabel: 'View All Vehicle Rentals', viewAllUrl: '/vehicle-rentals', isVehicle: true },
     };
 
@@ -71,7 +71,7 @@ function HeaderOne() {
         if (!data || !data.columns.length) return item;
         return {
             ...item,
-            children: megaColumnsToMobileChildren(data.columns, data.market, data.viewAllLabel, data.viewAllUrl, data.isVehicle),
+            children: megaColumnsToMobileChildren(data.columns, data.market, data.viewAllLabel, data.viewAllUrl, data.isVehicle, data.isActivity),
         };
     });
 
@@ -156,6 +156,7 @@ function HeaderOne() {
                                                             viewAllLabel={megaData.viewAllLabel}
                                                             viewAllUrl={megaData.viewAllUrl}
                                                             isVehicle={megaData.isVehicle}
+                                                            isActivity={megaData.isActivity}
                                                         />
                                                     </li>
                                                 );

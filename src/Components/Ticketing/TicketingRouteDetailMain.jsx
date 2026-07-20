@@ -1,8 +1,9 @@
 import React from "react";
 import { Link, useParams } from "react-router-dom";
-import { useSlugItem, resolveAssetUrl, useSettings } from "../../public-cms/hooks";
+import { useSlugItem, useSettings } from "../../public-cms/hooks";
 import SafeHtml from "../../public-cms/SafeHtml";
 import FlightBookingForm from "./FlightBookingForm";
+import { resolveRouteImage } from "./routeImage";
 import "./ticketing.css";
 
 export default function TicketingRouteDetailMain({ ticketType, listingLabel, listingUrl }) {
@@ -33,7 +34,7 @@ export default function TicketingRouteDetailMain({ ticketType, listingLabel, lis
     );
   }
 
-  const image = resolveAssetUrl(route.imageUrl);
+  const image = resolveRouteImage(route, ticketType);
   const price = route.priceDisplay || (route.priceFrom ? `From $${route.priceFrom}` : "On request");
   const highlights = Array.isArray(route.highlights) ? route.highlights : [];
   const whatsapp = settings.whatsappNumber || settings.contactPhone;
