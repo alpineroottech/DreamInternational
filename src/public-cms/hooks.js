@@ -24,6 +24,35 @@ export function resolveAssetUrl(url) {
 // in-flight requests so the same data is never fetched twice in parallel.
 const collectionCache = new Map();
 
+function collectionKey(path, params) {
+  return `${path}?${JSON.stringify(params || {})}`;
+}
+
+/** Pre-fill the session cache (e.g. from the homepage aggregate endpoint). */
+export function seedCollectionCache(path, params, items) {
+  const key = collectionKey(path, params);
+  const value = Array.isArray(items) && items.length ? items : null;
+  collectionCache.set(key, { status: "resolved", value });
+}
+
+function applyHomePayload(data) {
+  if (!data || typeof data !== "object") return;
+
+  if (isPlainObject(data.settings)) {
+    settingsCache = data.settings;
+    settingsPromise = Promise.resolve(settingsCache);
+  }
+
+  if (Array.isArray(data.collections)) {
+    for (const entry of data.collections) {
+      if (!entry?.path) continue;
+      seedCollectionCache(entry.path, entry.params, entry.items);
+    }
+  }
+}
+
+let homeBootstrapPromise = null;
+
 /**
  * Load a public CMS collection.
  * - `undefined` → still loading (do NOT show fallback yet)
@@ -31,7 +60,7 @@ const collectionCache = new Map();
  * - `array`     → CMS data
  */
 export function useCollection(path, params) {
-  const key = `${path}?${JSON.stringify(params || {})}`;
+  const key = collectionKey(path, params);
   const cached = collectionCache.get(key);
   const [data, setData] = useState(
     cached && cached.status === "resolved" ? cached.value : undefined
@@ -81,6 +110,7 @@ export function useCollection(path, params) {
 /** Drop cached collection responses (e.g. after an admin save) so the next mount refetches. */
 export function clearCollectionCache() {
   collectionCache.clear();
+  homeBootstrapPromise = null;
 }
 
 /**
@@ -108,6 +138,7 @@ let settingsPromise = null;
 export function clearSettingsCache() {
   settingsCache = null;
   settingsPromise = null;
+  homeBootstrapPromise = null;
 }
 
 export function useSettings() {
@@ -134,28 +165,73 @@ export function useSettings() {
   return isPlainObject(settings) ? settings : {};
 }
 
+function loadHomeSectionsFallback(active, setState) {
+  publicApi
+    .get("/public/sections", { params: { page: "home" } })
+    .then((r) => {
+      if (!active) return;
+      if (!Array.isArray(r.data)) {
+        setState({ byKey: {}, order: null, loaded: true });
+        return;
+      }
+      const byKey = {};
+      const sorted = [...r.data].sort((a, b) => a.order - b.order);
+      sorted.forEach((s) => {
+        byKey[s.key] = s.data || {};
+      });
+      setState({ byKey, order: sorted.map((s) => s.key), loaded: true });
+    })
+    .catch(() => active && setState({ byKey: {}, order: null, loaded: true }));
+}
+
+/**
+ * Homepage bootstrap: one request loads settings, sections, and all homepage
+ * collections, then seeds the session cache so child components skip their
+ * own fetches.
+ */
+export function useHomeBootstrap() {
+  const [state, setState] = useState({ byKey: {}, order: null, loaded: false });
+
+  useEffect(() => {
+    let active = true;
+    setState({ byKey: {}, order: null, loaded: false });
+
+    if (!homeBootstrapPromise) {
+      homeBootstrapPromise = publicApi
+        .get("/public/home")
+        .then((r) => r.data)
+        .catch(() => null);
+    }
+
+    homeBootstrapPromise.then((payload) => {
+      if (!active) return;
+      if (payload?.sections) {
+        applyHomePayload(payload);
+        setState({
+          byKey: payload.sections.byKey || {},
+          order: payload.sections.order || null,
+          loaded: true,
+        });
+        return;
+      }
+      loadHomeSectionsFallback(active, setState);
+    });
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  return state;
+}
+
 // Home page sections: returns { byKey, order, loaded }.
 export function useHomeSections() {
   const [state, setState] = useState({ byKey: {}, order: null, loaded: false });
   useEffect(() => {
     let active = true;
     setState({ byKey: {}, order: null, loaded: false });
-    publicApi
-      .get("/public/sections", { params: { page: "home" } })
-      .then((r) => {
-        if (!active) return;
-        if (!Array.isArray(r.data)) {
-          setState({ byKey: {}, order: null, loaded: true });
-          return;
-        }
-        const byKey = {};
-        const sorted = [...r.data].sort((a, b) => a.order - b.order);
-        sorted.forEach((s) => {
-          byKey[s.key] = s.data || {};
-        });
-        setState({ byKey, order: sorted.map((s) => s.key), loaded: true });
-      })
-      .catch(() => active && setState({ byKey: {}, order: null, loaded: true }));
+    loadHomeSectionsFallback(active, setState);
     return () => {
       active = false;
     };

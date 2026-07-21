@@ -15,7 +15,7 @@ import BlogOne from '../Components/Blog/BlogOne'
 import HomeFaq from '../Components/Faq/HomeFaq'
 import FooterOne from '../Components/Footer/FooterOne'
 import ScrollToTop from '../Components/ScrollToTop'
-import { useHomeSections } from '../public-cms/hooks'
+import { useHomeBootstrap } from '../public-cms/hooks'
 
 // Maps a CMS section key to the React component that renders it.
 const SECTION_COMPONENTS = {
@@ -38,7 +38,7 @@ const DEFAULT_ORDER = [
 ];
 
 function HomeOne() {
-    const { byKey, order, loaded } = useHomeSections();
+    const { byKey, order, loaded } = useHomeBootstrap();
     const keys = order?.length ? order : DEFAULT_ORDER;
 
     return (

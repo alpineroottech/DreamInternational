@@ -1,6 +1,13 @@
 import { z } from "zod";
 import { buildResource } from "./lib/crudFactory.js";
 import { transformTourCreate, transformTourUpdate } from "./lib/tourTransforms.js";
+import {
+  tourListShape,
+  tourDetailShape,
+  blogListShape,
+  activityListShape,
+  vehicleRentalListShape,
+} from "./lib/publicShapes.js";
 
 // ---- Shared Zod helpers ----
 const status = z.enum(["DRAFT", "PUBLISHED", "ARCHIVED"]).optional();
@@ -290,9 +297,11 @@ export const RESOURCES = {
     htmlFields: ["description"],
     filterQueryFields: ["market"],
     publicOrderBy: [{ isFeatured: "desc" }, { updatedAt: "desc" }],
+    publicListInclude: { category: true },
     publicInclude: {
       category: true,
       itineraryDays: { orderBy: { dayNumber: "asc" } },
+      faqs: { orderBy: { order: "asc" } },
     },
     adminInclude: {
       category: true,
@@ -301,24 +310,28 @@ export const RESOURCES = {
     },
     transformCreate: transformTourCreate,
     transformUpdate: transformTourUpdate,
-    publicShape: (t) => ({
-      ...t,
-      itinerary: (t.itineraryDays || []).map((d) => ({
-        title: d.title,
-        description: d.description,
-        activities: d.notes ? d.notes.split("\n").filter(Boolean) : [],
-        startLocation: d.startLocation,
-        endLocation: d.endLocation,
-        altitudeM: d.altitudeM,
-        distanceKm: d.distanceKm,
-      })),
-    }),
+    publicListShape: tourListShape,
+    publicShape: tourDetailShape,
   },
-  activities: { modelName: "activity", schema: ActivitySchema, slugFrom: "title", htmlFields: ["description"], publicOrderBy: byOrder },
+  activities: {
+    modelName: "activity",
+    schema: ActivitySchema,
+    slugFrom: "title",
+    htmlFields: ["description"],
+    publicOrderBy: byOrder,
+    publicListShape: activityListShape,
+  },
   services: { modelName: "service", schema: ServiceSchema, slugFrom: "title", htmlFields: ["description"], publicOrderBy: byOrder },
   team: { modelName: "teamMember", schema: TeamSchema, slugFrom: "name", htmlFields: ["bio"], publicOrderBy: byOrder },
   resorts: { modelName: "resort", schema: ResortSchema, slugFrom: "title", htmlFields: ["description"], publicOrderBy: byOrder },
-  blog: { modelName: "blogPost", schema: BlogSchema, slugFrom: "title", htmlFields: ["content"], publicOrderBy: [{ publishedAt: "desc" }] },
+  blog: {
+    modelName: "blogPost",
+    schema: BlogSchema,
+    slugFrom: "title",
+    htmlFields: ["content"],
+    publicOrderBy: [{ publishedAt: "desc" }],
+    publicListShape: blogListShape,
+  },
   categories: { modelName: "category", schema: CategorySchema, slugFrom: "name", hasStatus: false, hasVisibility: true, publicOrderBy: byOrder },
   brands: { modelName: "brand", schema: BrandSchema, hasStatus: false, hasVisibility: true, hasSlug: false, publicOrderBy: byOrder },
   gallery: { modelName: "galleryImage", schema: GallerySchema, hasStatus: false, hasVisibility: true, hasSlug: false, publicOrderBy: byOrder },
@@ -348,8 +361,10 @@ export const RESOURCES = {
     htmlFields: ["description"],
     filterQueryFields: ["vehicleType", "categoryId"],
     publicOrderBy: [{ isFeatured: "desc" }, { order: "asc" }, { updatedAt: "desc" }],
+    publicListInclude: { category: true },
     publicInclude: { category: true },
     adminInclude: { category: true },
+    publicListShape: vehicleRentalListShape,
   },
 };
 

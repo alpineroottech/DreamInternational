@@ -19,6 +19,7 @@ import {
   adminFlightInquiries,
 } from "./routes/flightInquiries.js";
 import mediaRoutes from "./routes/media.js";
+import { publicHome } from "./routes/home.js";
 import { registerResources } from "./resources.js";
 import { isServerlessHost, normalizeOrigin, moduleDir } from "./lib/runtime.js";
 import { isSupabaseConfigured } from "./lib/supabaseStorage.js";
@@ -35,6 +36,12 @@ function buildAllowedOrigins() {
   };
 
   add(process.env.CLIENT_ORIGIN);
+  add(process.env.SITE_URL);
+  if (process.env.ALLOWED_ORIGINS) {
+    for (const part of process.env.ALLOWED_ORIGINS.split(",")) {
+      add(part.trim());
+    }
+  }
   add(process.env.URL);
   add(process.env.DEPLOY_PRIME_URL);
   add(process.env.DEPLOY_URL);
@@ -53,21 +60,34 @@ function buildAllowedOrigins() {
 
 const allowedOrigins = buildAllowedOrigins();
 
+function isSameHostOrigin(origin, hostHeader) {
+  if (!origin || !hostHeader) return false;
+  try {
+    return new URL(origin).host === hostHeader;
+  } catch {
+    return false;
+  }
+}
+
 const app = express();
 
 app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
-app.use(
+app.use((req, res, next) => {
   cors({
     origin(origin, callback) {
       if (!origin) return callback(null, true);
       const normalized = normalizeOrigin(origin);
-      if (normalized && allowedOrigins.includes(normalized))
+      if (normalized && allowedOrigins.includes(normalized)) {
         return callback(null, true);
+      }
+      if (isSameHostOrigin(origin, req.headers.host)) {
+        return callback(null, true);
+      }
       return callback(new Error("Not allowed by CORS"));
     },
     credentials: true,
-  }),
-);
+  })(req, res, next);
+});
 app.use(express.json({ limit: "2mb" }));
 app.use(cookieParser());
 
@@ -107,6 +127,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/auth/me", selfAccount);
 app.use("/api/admin/users", adminUsers);
 app.use("/api/public/destinations", publicDestinations);
+app.use("/api/public/home", publicHome);
 app.use("/api/public/settings", publicSettings);
 app.use("/api/public/sections", publicSections);
 app.use("/api/public/inquiries", publicInquiries);

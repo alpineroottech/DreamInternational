@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useMemo } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
@@ -13,6 +13,7 @@ import {
 // Below this width the carousel is controlled with tap arrows instead of
 // swipe/drag gestures (matches the 768px breakpoint used by the slider).
 const MOBILE_BREAKPOINT = 768;
+const MIN_SLIDES_FOR_LOOP = 12;
 
 function useIsMobile(breakpoint = MOBILE_BREAKPOINT) {
   const [isMobile, setIsMobile] = useState(
@@ -51,74 +52,71 @@ const CategoryOne = ({ data = {} }) => {
     }))
     .filter((c) => c.imgSrc);
 
-  // Swiper disables looping/autoplay whenever the slide track already fits
-  // every slide on screen (e.g. 5 categories at slidesPerView 6), so at
-  // larger breakpoints the carousel would sit still. Repeat the set just
-  // enough (2x the largest slidesPerView) so there are always enough
-  // slides for a smooth, continuous loop no matter the viewport or count.
-  const MIN_SLIDES_FOR_LOOP = 12;
-  let loopSlides = displayCategories;
-  if (
-    displayCategories.length &&
-    displayCategories.length < MIN_SLIDES_FOR_LOOP
-  ) {
-    loopSlides = [];
-    while (loopSlides.length < MIN_SLIDES_FOR_LOOP) {
-      loopSlides.push(...displayCategories);
+  const loopSlides = useMemo(() => {
+    if (isMobile) return displayCategories;
+    if (
+      !displayCategories.length ||
+      displayCategories.length >= MIN_SLIDES_FOR_LOOP
+    ) {
+      return displayCategories;
     }
-  }
+    const slides = [];
+    while (slides.length < MIN_SLIDES_FOR_LOOP) {
+      slides.push(...displayCategories);
+    }
+    return slides;
+  }, [displayCategories, isMobile]);
 
   useEffect(() => {
-    if (!swiperRef.current) return;
+    if (!swiperRef.current) return undefined;
 
     const swiperInstance = swiperRef.current.swiper;
 
-    // ✅ Start autoplay properly
-    if (swiperInstance && swiperInstance.autoplay) {
-      swiperInstance.autoplay.start();
-    }
-    // ✅ Custom pagination with numbers
-    if (swiperInstance.pagination) {
+    if (swiperInstance?.pagination) {
       swiperInstance.pagination.renderBullet = function (index, className) {
-        let formattedNumber = index + 1 < 10 ? "0" + (index + 1) : index + 1;
+        const formattedNumber = index + 1 < 10 ? `0${index + 1}` : index + 1;
         return `<span class="${className} number">${formattedNumber}</span>`;
       };
       swiperInstance.pagination.init();
       swiperInstance.pagination.update();
     }
-    // ✅ Custom wheel effect for category slider
-    const multiplier = {
-      translate: 0.1,
-      rotate: 0.01,
-    };
+
+    if (isMobile) {
+      if (swiperInstance?.autoplay) swiperInstance.autoplay.stop();
+      return undefined;
+    }
+
+    if (swiperInstance?.autoplay) {
+      swiperInstance.autoplay.start();
+    }
+
+    const multiplier = { translate: 0.1, rotate: 0.01 };
+    const sliderRoot = swiperRef.current?.el;
 
     const calculateWheel = () => {
-      const slides = document.querySelectorAll(".single");
+      if (!sliderRoot) return;
+      const slides = sliderRoot.querySelectorAll(".single");
       slides.forEach((slide) => {
         const rect = slide.getBoundingClientRect();
         const r = window.innerWidth * 0.5 - (rect.x + rect.width * 0.5);
         let ty =
-          Math.abs(r) * multiplier.translate -
-          rect.width * multiplier.translate;
-
-        if (ty < 0) {
-          ty = 0;
-        }
+          Math.abs(r) * multiplier.translate - rect.width * multiplier.translate;
+        if (ty < 0) ty = 0;
         const transformOrigin = r < 0 ? "left top" : "right top";
         slide.style.transform = `translate(0, ${ty}px) rotate(${-r * multiplier.rotate}deg)`;
         slide.style.transformOrigin = transformOrigin;
       });
     };
 
+    let frameId = 0;
     const raf = () => {
-      requestAnimationFrame(raf);
       calculateWheel();
+      frameId = requestAnimationFrame(raf);
     };
+    frameId = requestAnimationFrame(raf);
 
-    raf();
-
-    return () => cancelAnimationFrame(raf);
-  }, [displayCategories.length]);
+    return () => cancelAnimationFrame(frameId);
+  }, [displayCategories.length, isMobile]);
 
   if (loading || displayCategories.length === 0) return null;
 
@@ -161,10 +159,14 @@ const CategoryOne = ({ data = {} }) => {
               1400: { slidesPerView: 6 },
             }}
             spaceBetween={28}
-            loop={true}
+            loop={!isMobile && loopSlides.length > 1}
             watchOverflow={false}
-            autoplay={{ delay: 3000, disableOnInteraction: false }}
-            speed={1000}
+            autoplay={
+              isMobile
+                ? false
+                : { delay: 3000, disableOnInteraction: false }
+            }
+            speed={isMobile ? 350 : 1000}
             allowTouchMove={!isMobile}
             simulateTouch={!isMobile}
             pagination={{

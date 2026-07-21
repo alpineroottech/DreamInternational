@@ -3,77 +3,16 @@ import { z } from "zod";
 import prisma from "../lib/prisma.js";
 import { verifyJwt, requireRole } from "../middleware/auth.js";
 import { validate } from "../middleware/validate.js";
-
-// Keys that are safe to expose publicly (used by the public site layout).
-const PUBLIC_KEYS = [
-  "siteTitle",
-  "tagline",
-  "contactEmail",
-  "contactPhone",
-  "whatsappNumber",
-  "address",
-  "officeHours",
-  "facebookUrl",
-  "instagramUrl",
-  "youtubeUrl",
-  "tripadvisorUrl",
-  "headerNav",
-  "footerColumns",
-  "footerAbout",
-  "mapEmbedUrl",
-  "googleMapsEmbed",
-  "privacyPolicyContent",
-  "termsContent",
-  "cancellationPolicyContent",
-  "defaultSeoTitle",
-  "defaultSeoDescription",
-  "defaultOgImage",
-  "defaultHeroImage",
-  "pageHeroes",
-  "defaultHeroColor",
-  "pageHeroColors",
-  "pageHeroEnabled",
-  "aboutSubtitle",
-  "aboutTitle",
-  "aboutText1",
-  "aboutText2",
-  "aboutFeatureOneTitle",
-  "aboutFeatureOneText",
-  "aboutFeatureTwoTitle",
-  "aboutFeatureTwoText",
-  "aboutFeatureThreeTitle",
-  "aboutFeatureThreeText",
-  "aboutCtaLabel",
-  "aboutCtaUrl",
-  "aboutImage1",
-  "aboutImage2",
-  "aboutImage3",
-];
-
-function rowsToObject(rows) {
-  const out = {};
-  for (const r of rows) {
-    let val = r.value;
-    if (r.type === "json" && val != null) {
-      try {
-        val = JSON.parse(val);
-      } catch {
-        /* leave as string */
-      }
-    } else if (r.type === "boolean") {
-      val = val === "true";
-    } else if (r.type === "number") {
-      val = val == null ? null : Number(val);
-    }
-    out[r.key] = val;
-  }
-  return out;
-}
+import { setPublicCache } from "../lib/publicCache.js";
+import { PUBLIC_SETTING_KEYS, rowsToObject } from "../lib/settingsPublic.js";
 
 // ---------- Public settings ----------
 export const publicSettings = Router();
 publicSettings.get("/", async (_req, res) => {
-  const rows = await prisma.setting.findMany({ where: { key: { in: PUBLIC_KEYS } } });
+  const rows = await prisma.setting.findMany({
+    where: { key: { in: PUBLIC_SETTING_KEYS } },
+  });
+  setPublicCache(res, { maxAge: 60, swr: 300 });
   res.json(rowsToObject(rows));
 });
 

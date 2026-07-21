@@ -5,6 +5,7 @@ import { verifyJwt, requireRole } from "../middleware/auth.js";
 import { validate } from "../middleware/validate.js";
 import { uniqueSlug } from "../lib/slug.js";
 import { sanitizeFields } from "../lib/sanitize.js";
+import { setPublicCache } from "../lib/publicCache.js";
 
 const HTML_FIELDS = ["description", "bestTimeToVisit", "gettingThere", "tips"];
 
@@ -44,6 +45,7 @@ publicDestinations.get("/", async (req, res) => {
     where,
     orderBy: [{ isFeatured: "desc" }, { publishedAt: "desc" }, { createdAt: "desc" }],
   });
+  setPublicCache(res, { maxAge: 60, swr: 300 });
   res.json(items.map(toPublic));
 });
 
@@ -52,6 +54,7 @@ publicDestinations.get("/:slug", async (req, res) => {
   if (!d || d.status !== "PUBLISHED") {
     return res.status(404).json({ error: "Destination not found" });
   }
+  setPublicCache(res, { maxAge: 60, swr: 300 });
   return res.json(toPublic(d));
 });
 

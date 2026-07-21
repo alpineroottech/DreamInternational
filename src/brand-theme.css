@@ -1538,6 +1538,13 @@ select:focus,
     .di-category-slider-wrap {
         padding: 0 34px;
     }
+
+    /* Mobile: no 3D wheel transforms — keeps arrow navigation smooth. */
+    .category-area .category-card.single {
+        transform: none !important;
+        transform-origin: center center !important;
+        will-change: auto;
+    }
 }
 
 .di-category-slider-arrow {

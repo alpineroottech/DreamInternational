@@ -4,6 +4,7 @@ import prisma from "../lib/prisma.js";
 import { verifyJwt, requireRole } from "../middleware/auth.js";
 import { validate } from "../middleware/validate.js";
 import { sanitizeRichText } from "../lib/sanitize.js";
+import { setPublicCache } from "../lib/publicCache.js";
 
 // Section `data` is free-form JSON; sanitize the fields we know are rich text.
 const HTML_KEYS = new Set(["text", "content", "html", "body"]);
@@ -35,6 +36,7 @@ publicSections.get("/", async (req, res, next) => {
       where,
       orderBy: [{ order: "asc" }],
     });
+    setPublicCache(res, { maxAge: 60, swr: 300 });
     res.json(rows.map((s) => ({ page: s.page, key: s.key, order: s.order, data: s.data || {} })));
   } catch (e) {
     next(e);
@@ -48,6 +50,7 @@ publicSections.get("/:page/:key", async (req, res, next) => {
       where: { page_key: { page: req.params.page, key: req.params.key } },
     });
     if (!row || !row.enabled) return res.status(404).json({ error: "Not found" });
+    setPublicCache(res, { maxAge: 60, swr: 300 });
     res.json({ page: row.page, key: row.key, data: row.data || {} });
   } catch (e) {
     next(e);

@@ -98,53 +98,6 @@ function BlogInner() {
                                     </button>
                                 </form>
                             </div>
-                            <div className="widget widget_categories  ">
-                                <h3 className="widget_title">Categories</h3>
-                                <ul>
-                                    <li>
-                                        <Link to="/blog">
-                                            <img src="assets/img/theme-img/map.svg" alt="" />
-                                            City Tour
-                                        </Link>
-                                        <span>(8)</span>
-                                    </li>
-                                    <li>
-                                        <Link to="/blog">
-                                            <img src="assets/img/theme-img/map.svg" alt="" />
-                                            Beach Tours
-                                        </Link>
-                                        <span>(6)</span>
-                                    </li>
-                                    <li>
-                                        <Link to="/blog">
-                                            <img src="assets/img/theme-img/map.svg" alt="" />
-                                            Wildlife Tours
-                                        </Link>
-                                        <span>(2)</span>
-                                    </li>
-                                    <li>
-                                        <Link to="/blog">
-                                            <img src="assets/img/theme-img/map.svg" alt="" />
-                                            News &amp; Tips
-                                        </Link>
-                                        <span>(7)</span>
-                                    </li>
-                                    <li>
-                                        <Link to="/blog">
-                                            <img src="assets/img/theme-img/map.svg" alt="" />
-                                            Adventure Tours
-                                        </Link>
-                                        <span>(9)</span>
-                                    </li>
-                                    <li>
-                                        <Link to="/blog">
-                                            <img src="assets/img/theme-img/map.svg" alt="" />
-                                            Mountain Tours
-                                        </Link>
-                                        <span>(10)</span>
-                                    </li>
-                                </ul>
-                            </div>
                             {recentPosts.length > 0 && (
                                 <div className="widget">
                                     <h3 className="widget_title">Recent Posts</h3>

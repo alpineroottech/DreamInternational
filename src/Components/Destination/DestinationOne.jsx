@@ -1,44 +1,47 @@
-import React, { useEffect, useState } from "react";
+import React, { useMemo } from "react";
 import { Link } from "react-router-dom";
-import { publicApi, resolveAssetUrl } from "../../public-cms/hooks";
+import {
+  useCollection,
+  useSlugItem,
+  resolveAssetUrl,
+} from "../../public-cms/hooks";
 import { tourDetailPath } from "../../lib/tourUrls";
 
 function DestinationOne({ data = {} }) {
-  const [tour, setTour] = useState(null);
   const specificSlug = data.tourSlug || data.destinationSlug;
+  const { data: slugTour, loading: slugLoading } = useSlugItem(
+    "/public/tours",
+    specificSlug || null,
+  );
+  const cms = useCollection("/public/tours", {
+    featured: true,
+    market: "nepal",
+  });
 
-  useEffect(() => {
-    let active = true;
-    const req = specificSlug
-      ? publicApi.get(`/public/tours/${specificSlug}`)
-      : publicApi.get("/public/tours", {
-          params: { featured: "true", market: "nepal" },
-        });
+  const tour = useMemo(() => {
+    if (specificSlug) {
+      if (slugLoading) return null;
+      if (slugTour?.slug && (!slugTour.market || slugTour.market === "nepal")) {
+        return slugTour;
+      }
+      return null;
+    }
+    if (cms === undefined) return null;
+    if (!Array.isArray(cms) || !cms.length) return null;
+    const sorted = [...cms].sort((a, b) => {
+      const ap = a.publishedAt ? new Date(a.publishedAt).getTime() : 0;
+      const bp = b.publishedAt ? new Date(b.publishedAt).getTime() : 0;
+      if (bp !== ap) return bp - ap;
+      const au = a.updatedAt ? new Date(a.updatedAt).getTime() : 0;
+      const bu = b.updatedAt ? new Date(b.updatedAt).getTime() : 0;
+      return bu - au;
+    });
+    return sorted[0] || null;
+  }, [specificSlug, slugTour, slugLoading, cms]);
 
-    req
-      .then(({ data: payload }) => {
-        if (!active) return;
-        if (Array.isArray(payload)) {
-          // Ensure homepage picks exactly ONE deterministic featured item.
-          const sorted = [...payload].sort((a, b) => {
-            const ap = a.publishedAt ? new Date(a.publishedAt).getTime() : 0;
-            const bp = b.publishedAt ? new Date(b.publishedAt).getTime() : 0;
-            if (bp !== ap) return bp - ap;
-            const au = a.updatedAt ? new Date(a.updatedAt).getTime() : 0;
-            const bu = b.updatedAt ? new Date(b.updatedAt).getTime() : 0;
-            return bu - au;
-          });
-          if (sorted[0]) setTour(sorted[0]);
-        } else if (payload?.slug) {
-          // Only render Nepal market items in the "featured destination" slot.
-          if (!payload.market || payload.market === "nepal") setTour(payload);
-        }
-      })
-      .catch(() => {});
-    return () => {
-      active = false;
-    };
-  }, [specificSlug]);
+  if ((specificSlug && slugLoading) || (!specificSlug && cms === undefined)) {
+    return null;
+  }
 
   const title = tour?.title || "Everest Base Camp Trek";
   const slug = tour?.slug || "everest-base-camp-trek";

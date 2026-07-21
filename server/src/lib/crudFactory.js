@@ -5,6 +5,7 @@ import { validate } from "../middleware/validate.js";
 import { uniqueSlug } from "./slug.js";
 import { sanitizeFields } from "./sanitize.js";
 import { stripRelationPayload } from "./prismaPayload.js";
+import { setPublicCache } from "./publicCache.js";
 
 const DEFAULT_ROLES = ["SUPER_ADMIN", "ADMIN", "EDITOR"];
 
@@ -22,12 +23,14 @@ export function buildResource(config) {
     slugFrom = "title",
     htmlFields = [],
     publicShape = (x) => x,
+    publicListShape = undefined,
     publicOrderBy,
     adminOrderBy = { updatedAt: "desc" },
     publicBaseWhere = {},
     filterQueryFields = [],
     roles = DEFAULT_ROLES,
     publicInclude = undefined,
+    publicListInclude = undefined,
     adminInclude = undefined,
     transformCreate,
     transformUpdate,
@@ -51,15 +54,19 @@ export function buildResource(config) {
     return where;
   };
 
+  const shapeList = publicListShape || publicShape;
+  const listInclude = publicListInclude ?? publicInclude;
+
   // ---------- Public ----------
   publicRouter.get("/", async (req, res, next) => {
     try {
       const items = await model.findMany({
         where: publicWhere(req),
         orderBy: publicOrderBy || adminOrderBy,
-        ...(publicInclude ? { include: publicInclude } : {}),
+        ...(listInclude ? { include: listInclude } : {}),
       });
-      res.json(items.map(publicShape));
+      setPublicCache(res, { maxAge: 60, swr: 300 });
+      res.json(items.map(shapeList));
     } catch (e) {
       next(e);
     }
@@ -75,6 +82,7 @@ export function buildResource(config) {
         if (!row || (hasStatus && row.status !== "PUBLISHED")) {
           return res.status(404).json({ error: "Not found" });
         }
+        setPublicCache(res, { maxAge: 60, swr: 300 });
         res.json(publicShape(row));
       } catch (e) {
         next(e);
